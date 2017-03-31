@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>JasperFx - Configuration</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">JasperFx</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+            <li>
+              <a href="/tutorial">Tutorial</a>
+            </li>
+		        <li>
+		          <a href="/documentation/getting_started">Getting Started</a>
+		        </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+		        <li>
+		        <li>
+<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/documentation/getting_started" title="Getting Started">Previous</a></li>
+		      	<li><a href="/documentation/servicebus" title="Jasper Service Bus">Next</a></li>
+		      </ul>
+		      <div class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input id="search" type="search" class="form-control" placeholder="Search">
+		        </div>
+		      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Configuration</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>JasperFx 0.1.0</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/servicebus">Jasper Service Bus</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/getting_started">Getting Started</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Configuration<a href="https://github.com/JasperFx/https://github.com/JasperFx/jasper/blob/master/documentation/documentation/configuration.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--title: Configuration-->
+<h2 id="quick-start">Quick Start</h2>
+<p>Probably the most common scenario is to have a single configuration file mapped to a single object:</p>
+<ol>
+<li>Add a class that ends with <code>Settings</code> to your project, e.g. <code>MySettings.cs</code>.</li>
+<li>Add a json file that has properties that match your <code>Settings</code> class.</li>
+<li>Use the <code>Build</code> method to tell Jasper about your configuration file.</li>
+<li>Include your <code>Settings</code> class in the constructor of a class and Jasper will automatically inject the settings object</li>
+</ol>
+<pre><code class="language-csharp">&#xD;&#xA;public class MyApp : JasperRegistry&#xD;&#xA;{&#xD;&#xA;    public MyApp()&#xD;&#xA;    {&#xD;&#xA;        Settings.Build(_ =&gt;&#xD;&#xA;        {&#xD;&#xA;            _.AddJsonFile(&quot;mysettings.json&quot;);&#xD;&#xA;        });&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class SettingsTest&#xD;&#xA;{&#xD;&#xA;    private readonly MySettings _settings;&#xD;&#xA;&#xD;&#xA;    public SettingsTest(MySettings settings)&#xD;&#xA;    {&#xD;&#xA;        _settings = settings;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<h2 id="add-configuration-sources">Add Configuration Sources</h2>
+<p>Jasper uses the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration">.NET Core ConfigurationBuilder</a> to get config data and bind it to objects.</p>
+<pre><code class="language-csharp">&#xD;&#xA;Settings.Build(_ =&gt;&#xD;&#xA;{&#xD;&#xA;    _.SetBasePath(&quot;path&quot;);&#xD;&#xA;    _.AddJsonFile(&quot;myconfig.json&quot;);&#xD;&#xA;    _.AddJsonFile(&quot;myotherconfig.json.config&quot;);&#xD;&#xA;    _.AddEnvironmentVariables();&#xD;&#xA;});&#xD;&#xA;</code></pre>
+<p>If you need to bind a settings class that does not follow the convention of ending with <code>Settings</code> then use the <code>Configure</code> method to tell Jasper which class you want to bind.</p>
+<pre><code class="language-csharp">&#xD;&#xA;Settings.Configure&lt;Colors&gt;();&#xD;&#xA;</code></pre>
+<p>If a settings class needs additional information to bind correctly, such as being in a nested sub-section, use the <code>Configure</code> method.</p>
+<pre><code class="language-csharp">&#xD;&#xA;Settings.Configure&lt;MySettings&gt;(_ =&gt; _.GetSection(&quot;subsection&quot;));&#xD;&#xA;</code></pre>
+<h2 id="modify-settings">Modify Settings</h2>
+<p>It may be necessary to modify a settings object after it has been loaded from configuration.  Settings can be altered:</p>
+<pre><code class="language-csharp">&#xD;&#xA;Settings.Alter&lt;MySettings&gt;(_ =&gt;&#xD;&#xA;{&#xD;&#xA;    _.SomeSetting = 5;&#xD;&#xA;});&#xD;&#xA;</code></pre>
+<p>or completely replaced:</p>
+<pre><code class="language-csharp">&#xD;&#xA;Settings.Replace(new MySettings&#xD;&#xA;{&#xD;&#xA;    SomeSetting = 3,&#xD;&#xA;    OtherSetting = &quot;blue&quot;&#xD;&#xA;});&#xD;&#xA;</code></pre>
+<h2 id="modify-application">Modify Application</h2>
+<p>The <code>JasperRegistry</code> (or the application that inherits from <code>JasperRegistry</code>) can be modified using loaded settings:</p>
+<pre><code class="language-csharp">&#xD;&#xA;public class MyApplication : JasperRegistry&#xD;&#xA;{&#xD;&#xA;    public bool MyBoolean { get; set; }&#xD;&#xA;&#xD;&#xA;    public MyApplication()&#xD;&#xA;    {&#xD;&#xA;        Settings.With&lt;MySettings&gt;(_ =&gt;&#xD;&#xA;        {&#xD;&#xA;            if (_.SomeSetting == 1)&#xD;&#xA;            {&#xD;&#xA;                MyBoolean = true;&#xD;&#xA;            }&#xD;&#xA;        });&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/getting_started">Getting Started</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/servicebus">Jasper Service Bus</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
+</html>
