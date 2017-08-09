@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>JasperFx - Dynamic Subscriptions</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">JasperFx</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+            <li>
+              <a href="/tutorial">Tutorial</a>
+            </li>
+		        <li>
+		          <a href="/documentation/getting_started">Getting Started</a>
+		        </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+		        <li>
+		        <li>
+<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/documentation/messaging/delayed" title="Delayed Job Processing">Previous</a></li>
+		      	<li><a href="/documentation/messaging/errorhandling" title="Error Handling">Next</a></li>
+		      </ul>
+		      <div class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input id="search" type="search" class="form-control" placeholder="Search">
+		        </div>
+		      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li class="active">Dynamic Subscriptions</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>JasperFx 0.2.0</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/errorhandling">Error Handling</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/delayed">Delayed Job Processing</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Dynamic Subscriptions<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/subscriptions.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title:Dynamic Subscriptions-->
+<!--Url:subscriptions-->
+<div class="alert alert-warning">If you're going to use dynamic subscriptions, we strongly recommend you use a separate "control" 
+channel to separate the messages that Jasper sends between running nodes to coordinate subscriptions. We also strongly recommend using
+some kind of durable subscription storage (explained below).</div>
+<p>In more advanced usages of the Jasper service bus, you may want your application to be able to
+subscribe to messages produced by a separate application without having to first configure
+the other application. The <em>subscriptions</em> feature is the mechanism to make this registration.</p>
+<p>First off, remember that Jasper service bus applications can be run as a cluster of executing nodes. Knowing that,
+subscriptions can be either:</p>
+<ul>
+<li><em>Global</em> - subscribe the entire cluster of nodes to specific messages published by another application</li>
+<li><em>Local</em> - subscribes <strong>only</strong> the executing node to specific messages published by another application</li>
+</ul>
+<p>Use a global subscription to take advantage of load balancing between nodes. Use a local subscription if you want the subscribed
+messages to be received by <strong>every node</strong> in the application cluster.</p>
+<p>See also:</p>
+<ul>
+<li><p class="bg-warning" style="padding:5px"><b>Unknown topic key &#x27;documentation/servicebus/channels&#x27;</b><small> -- CTRL&#x2B;SHIFT&#x2B;R to force refresh the topic tree</small></p> for information on static routing rules.
+</li>
+</ul>
+<h2 id="configurating-subscriptions">Configurating Subscriptions</h2>
+<p>Subscriptions are configured in the <code>JasperBusRegistry</code> class that establishes your application.</p>
+<p>First, assume you have a settings object for your service bus application that models both the incoming messages
+channel for your application cluster and a channel to a completely separate application:</p>
+<pre><code class="language-csharp">&#xA;public class NodeSettings&#xA;{&#xA;    // This uri points to a different&#xA;    // application&#xA;    public Uri OtherApp { get; set; }&#xA;&#xA;    // This uri should be the shared&#xA;    // channel that all nodes in the&#xA;    // application cluster are reading&#xA;    public Uri Receiving { get; set; }&#xA;}&#xA;</code></pre>
+<p>Now, to configure both a local subscription to each and every executing node and a global subscription for load balanced
+messages to all the nodes:</p>
+<pre><code class="language-csharp">&#xA;public class LocalApp : JasperRegistry&#xA;{&#xA;    public LocalApp(NodeSettings settings)&#xA;    {&#xA;        // Explicitly set the logical descriptive&#xA;        // name of this application. The default is&#xA;        // derived from the name of the class&#xA;        ServiceName = &quot;MyApplication&quot;;&#xA;&#xA;        // Incoming messages&#xA;        Channels.ListenForMessagesFrom(settings.Receiving);&#xA;&#xA;        // Local subscription to only this node&#xA;        SubscribeLocally()&#xA;            .ToSource(settings.OtherApp)&#xA;            .ToMessage&lt;OtherAppMessage1&gt;();&#xA;&#xA;        // Global subscription to the all the&#xA;        // running nodes in this clustered application&#xA;        SubscribeAt(settings.Receiving)&#xA;            .ToSource(settings.OtherApp)&#xA;            .ToMessage&lt;OtherAppMessage2&gt;()&#xA;            .ToMessage&lt;OtherAppMessage3&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="how-it-works">How it works</h2>
+<p>Jasper exposes the idea of <em>subscription persistence</em> to store information about the list of active applications, nodes, and subscriptions
+in a durable storage of some sort.</p>
+<p>When a Jasper service bus application is initialized, it:</p>
+<ul>
+<li>Persists information about the running node including where it's running and a Uri for a local reply channel to that specific node</li>
+<li>Loads the same information about any other nodes in the logical application cluster from the subscription storage</li>
+<li>Loads the list of previously persisted message subscriptions</li>
+<li>Sends out <code>SubscriptionRequested</code> messages to request dynamic subscriptions</li>
+</ul>
+<h2 id="customizing-subscription-storage">Customizing Subscription Storage</h2>
+<p>The default subscription storage is just an in memory model, so you'll almost certainly want to replace that with some sort of
+durable storage mechanism if you're going to use subscriptions. To use a different subscription storage, you need an implementation
+of the <code>ISubscriptionsRepository</code> interface that you can plug into the application services like so:</p>
+<pre><code class="language-csharp">&#xA;public class SubscriptionStorageApp : JasperRegistry&#xA;{&#xA;    public SubscriptionStorageApp()&#xA;    {&#xA;        // Plug in subscription storage backed by Marten&#xA;        Services.ReplaceService&lt;ISubscriptionsRepository, MartenSubscriptionRepository&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>You can see a <a href="https://github.com/JasperFx/jasper/blob/master/src/JasperBus.Marten/MartenSubscriptionRepository.cs">sample implementation for Marten here</a>.</p>
+<p>The subscription storage was largely based on the assumption that you'd probably opt to use a document database for the backing store.</p>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/delayed">Delayed Job Processing</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/messaging/errorhandling">Error Handling</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
+</html>

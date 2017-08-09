@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>JasperFx - Messaging</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">JasperFx</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+            <li>
+              <a href="/tutorial">Tutorial</a>
+            </li>
+		        <li>
+		          <a href="/documentation/getting_started">Getting Started</a>
+		        </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+		        <li>
+		        <li>
+<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/documentation/configuration" title="Application Configuration">Previous</a></li>
+		      	<li><a href="/documentation/messaging/cascading" title="Cascading Messages">Next</a></li>
+		      </ul>
+		      <div class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input id="search" type="search" class="form-control" placeholder="Search">
+		        </div>
+		      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Messaging</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>JasperFx 0.2.0</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/cascading">Cascading Messages</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/configuration">Application Configuration</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Messaging<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/index.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--title: Messaging-->
+<p>JasperBus is a direct descendent of the <a href="https://fubumvc.github.io/documentation/servicebus/">service bus feature in FubuMVC</a>, which in turn
+was heavily influenced and built as a replacement for the <a href="https://hibernatingrhinos.com/oss/rhino-service-bus">Rhino Service Bus</a>.</p>
+<h2 id="why-use-jasper">Why use Jasper?</h2>
+<p>TODO -- much more here.</p>
+<ul>
+<li>Very little intrusion into the actual application code</li>
+<li>CoreCLR Support out of the gate</li>
+<li>Diagnostics</li>
+<li>XCopy Deployable -- easy deployment, easy</li>
+<li>As a more flexible and performant replacement for MediatR</li>
+</ul>
+<h2 id="quickstart">Quickstart</h2>
+<p>TODO -- stuff here.</p>
+<h2 id="terminology">Terminology</h2>
+<ul>
+<li><em>Node</em> - a running instance of JasperBus. Do note that it's actually possible to run more than
+one JasperBus application in the same process</li>
+<li><em>Transport</em> - a supported mechanism for sending messages between running JasperBus nodes</li>
+<li><em>Channel</em> - a pathway to communicate with a running JasperBus node that is backed by a transport strategy</li>
+<li><em>Envelope</em> - an object that wraps a message being sent or received by JasperBus that adds header metadata and helps control
+how messages are sent and received. See the <a href="http://www.enterpriseintegrationpatterns.com/patterns/messaging/EnvelopeWrapper.html">Envelope Wrapper pattern</a> for more information</li>
+<li><em>Publish/Subscribe</em> (pubsub) - messaging pattern that decouples the sending code from the routing to one or more recipients. One way communication from the sender
+to any receivers. See <a href="http://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html">Publish-Subscribe Channel</a> for more background.</li>
+<li><em>Request/Reply</em> - bi-directional messaging pattern where a request message to one node generates a response message back to the original sender</li>
+<li><em>Frame's</em> - Jasper's middleware strategy</li>
+<li><em>Handler's</em> - a class that handles messages within a Jasper service bus application</li>
+</ul>
+<h2 id="service-bus-topics">Service Bus Topics</h2>
+<ul class="table-of-contents"><li><a href="/documentation/messaging/cascading">Cascading Messages</a></li><li><a href="/documentation/messaging/channels">Channels</a></li><li><a href="/documentation/messaging/logging">Customizing Bus Logging</a></li><li><a href="/documentation/messaging/serialization">Customizing Message Serialization</a></li><li><a href="/documentation/messaging/delayed">Delayed Job Processing</a></li><li><a href="/documentation/messaging/subscriptions">Dynamic Subscriptions</a></li><li><a href="/documentation/messaging/errorhandling">Error Handling</a></li><li><a href="/documentation/messaging/unknown_messages">Handling an Unkown Message</a></li><li><a href="/documentation/messaging/instrumentation">Instrumentation</a></li><li><a href="/documentation/messaging/mediator">Jasper as an in process &quot;Mediator&quot;</a></li><li><a href="/documentation/messaging/handlers">Message Handlers</a></li><li><a href="/documentation/messaging/transports">Messaging Transports</a><ul><li><a href="/documentation/messaging/transports/http">HTTP Transport</a></li><li><a href="/documentation/messaging/transports/lightweight">Lightweight Fire and Forget</a></li><li><a href="/documentation/messaging/transports/loopback">Loopback Locally</a></li></ul></li><li><a href="/documentation/messaging/pubsub">Publish / Subscribe</a></li><li><a href="/documentation/messaging/requestreply">Request / Reply</a></li><li><a href="/documentation/messaging/sending">Sending and Publishing Messages</a></li><li><a href="/documentation/messaging/static_routing">Static _routing</a></li><li><a href="/documentation/messaging/uri_lookups">Uri Lookups</a></li><li><a href="/documentation/messaging/versioning">Versioning</a></li></ul>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/configuration">Application Configuration</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/messaging/cascading">Cascading Messages</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
+</html>

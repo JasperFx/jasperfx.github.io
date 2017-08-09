@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Application Configuration</title>
+		<title>JasperFx - Using Storyteller against Jasper Systems</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/bootstrapping" title="Bootstrapping">Previous</a></li>
-		      	<li><a href="/documentation/messaging" title="Messaging">Next</a></li>
+		      	<li><a href="/documentation/testing/http_endpoints" title="Testing HTTP Endpoints with Alba">Previous</a></li>
+		      	<li><a href="/documentation/cli" title="Command Line Helpers">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -66,7 +66,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Application Configuration</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/testing">Automated Testing Support</a></li><li class="active">Using Storyteller against Jasper Systems</li></ol>
 		  	</nav>
 		  </div>
 
@@ -83,44 +83,20 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging">Messaging</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping">Bootstrapping</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/cli">Command Line Helpers</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/testing/http_endpoints">Testing HTTP Endpoints with Alba</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Application Configuration<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/configuration.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Using Storyteller against Jasper Systems<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/testing/storyteller.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title: Application Configuration-->
-<h2 id="quick-start">Quick Start</h2>
-<p>Probably the most common scenario is to have a single configuration file mapped to a single object:</p>
-<ol>
-<li>Add a class that ends with <code>Settings</code> to your project, e.g. <code>MySettings.cs</code>.</li>
-<li>Add a json file that has properties that match your <code>Settings</code> class.</li>
-<li>Use the <code>Build</code> method to tell Jasper about your configuration file.</li>
-<li>Include your <code>Settings</code> class in the constructor of a class and Jasper will automatically inject the settings object</li>
-</ol>
-<pre><code class="language-csharp">&#xA;public class MyApp : JasperRegistry&#xA;{&#xA;    public MyApp()&#xA;    {&#xA;        Configuration.AddJsonFile(&quot;mysettings.json&quot;);&#xA;    }&#xA;}&#xA;&#xA;public class SettingsTest&#xA;{&#xA;    private readonly MySettings _settings;&#xA;&#xA;    public SettingsTest(MySettings settings)&#xA;    {&#xA;        _settings = settings;&#xA;    }&#xA;}&#xA;</code></pre>
-<h2 id="add-configuration-sources">Add Configuration Sources</h2>
-<p>Jasper uses the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration">.NET Core ConfigurationBuilder</a> to get config data and bind it to objects.</p>
-<pre><code class="language-csharp">&#xA;Configuration.SetBasePath(&quot;path&quot;)&#xA;    .AddJsonFile(&quot;myconfig.json&quot;)&#xA;    .AddJsonFile(&quot;myotherconfig.json.config&quot;)&#xA;    .AddEnvironmentVariables();&#xA;&#xA;</code></pre>
-<p>If you need to bind a settings class that does not follow the convention of ending with <code>Settings</code> then use the <code>Configure</code> method to tell Jasper which class you want to bind.</p>
-<pre><code class="language-csharp">&#xA;Settings.Configure&lt;Colors&gt;();&#xA;</code></pre>
-<p>If a settings class needs additional information to bind correctly, such as being in a nested sub-section, use the <code>Configure</code> method.</p>
-<pre><code class="language-csharp">&#xA;Settings.Configure&lt;MySettings&gt;(_ =&gt; _.GetSection(&quot;subsection&quot;));&#xA;</code></pre>
-<h2 id="modify-settings">Modify Settings</h2>
-<p>It may be necessary to modify a settings object after it has been loaded from configuration.  Settings can be altered:</p>
-<pre><code class="language-csharp">&#xA;Settings.Alter&lt;MySettings&gt;(_ =&gt;&#xA;{&#xA;    _.SomeSetting = 5;&#xA;});&#xA;</code></pre>
-<p>or completely replaced:</p>
-<pre><code class="language-csharp">&#xA;Settings.Replace(new MySettings&#xA;{&#xA;    SomeSetting = 3,&#xA;    OtherSetting = &quot;blue&quot;&#xA;});&#xA;</code></pre>
-<h2 id="modify-application">Modify Application</h2>
-<p>The <code>JasperRegistry</code> (or the application that inherits from <code>JasperRegistry</code>) can be modified using loaded settings:</p>
-<pre><code class="language-csharp">&#xA;public class MyApplication : JasperRegistry&#xA;{&#xA;    public bool MyBoolean { get; set; }&#xA;&#xA;    public MyApplication()&#xA;    {&#xA;        Settings.With&lt;MySettings&gt;(_ =&gt;&#xA;        {&#xA;            if (_.SomeSetting == 1)&#xA;            {&#xA;                MyBoolean = true;&#xA;            }&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+			      		<!--title:Using Storyteller against Jasper Systems-->
 
 			      	</div>
 
@@ -128,12 +104,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/bootstrapping">Bootstrapping</a>
+				        	<strong>Previous: </strong><a href="/documentation/testing/http_endpoints">Testing HTTP Endpoints with Alba</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging">Messaging</a>
+				        	<strong>Next: </strong><a href="/documentation/cli">Command Line Helpers</a>
 
 				        </span>
 			      	</nav>
