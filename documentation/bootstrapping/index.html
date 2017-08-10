@@ -51,7 +51,7 @@
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/getting_started" title="Getting Started">Previous</a></li>
-		      	<li><a href="/documentation/bootstrapping/jasper" title="Idiomatic Jasper Bootstrapping">Next</a></li>
+		      	<li><a href="/documentation/bootstrapping/configuring_jasper" title="Configuring Jasper Applications">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -83,7 +83,7 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/jasper">Idiomatic Jasper Bootstrapping</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/getting_started">Getting Started</a></p>
 
 		        </ul>
@@ -97,6 +97,27 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Bootstrapping-->
+<p>To configure and bootstrap a Jasper application, you are primarily interacting with just a handful of types:</p>
+<ol>
+<li><code>JasperRuntime</code> - this manages the lifecycle of a Jasper application from bootstrapping to cleanly shutting down the application and releasing resources. It also exposes the underlying IoC container for the application and several members that just provide information about the running application</li>
+<li><code>JasperRegistry</code> - this class is used to configure all the options of a Jasper application</li>
+<li><code>JasperAgent</code> - a static helper for bootstrapping and managing a <code>JasperRuntime</code> from
+a console application. See <a href="/documentation/bootstrapping/console">Jasper in Console Applications</a> for more information</li>
+<li><code>IWebHostBuilder.UseJasper()</code> or <code>IApplicationBuilder.AddJasper()</code> - extension methods provided to add Jasper to an ASP.Net Core application. See <a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a> for more information.</li>
+</ol>
+<p>If you do not need to override or add to any of Jasper's default configuration, you can happily bootstrap a <code>JasperRuntime</code> like this:</p>
+<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.Basic())&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
+<p>Which is just syntactical sugar for:</p>
+<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For(new JasperRegistry()))&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
+<p>This option might be enough to do some useful things with Jasper as a command executor at the least, but more likely you'll want to add other elements to your system like additional services to the <a href="/documentation/ioc">underlying IoC container</a>, <a href="/documentation/messaging/channels">messaging channels</a>, or <a href="/documentation/bootstrapping/aspnetcore">ASP.Net Core middleware</a>.</p>
+<p>All configuration and set up of Jasper starts with the <code>JasperRegistry</code> class. Typically you would subclass <code>JasperRegistry</code>, but if you have only minimal configuration needs, you might bootstrap like this:</p>
+<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For(_ =&gt;&#xA;{&#xA;    _.Channels.ListenForMessagesFrom(&quot;jasper://localhost:2001&quot;);&#xA;}))&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
+<p>More likely though is that you will opt to define your application with a custom <code>JasperRegistry</code>:</p>
+<pre><code class="language-csharp">&#xA;public class MyJasperApp : JasperRegistry&#xA;{&#xA;    public MyJasperApp()&#xA;    {&#xA;        ServiceName = &quot;My Jasper App&quot;;&#xA;&#xA;        Configuration.AddEnvironmentVariables();&#xA;&#xA;        Channels.ListenForMessagesFrom(&quot;lq.tcp://localhost:2111/incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>And then use that to bootstrap your application:</p>
+<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For&lt;MyJasperApp&gt;())&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;// or&#xA;&#xA;using (var runtime = JasperRuntime.For(new MyJasperApp()))&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
+<p>See also:</p>
+<ul class="table-of-contents"><li><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a></li><li><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a></li><li><a href="/documentation/bootstrapping/console">Jasper in Console Applications</a></li><li><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a></li><li><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a></li></ul>
 
 			      	</div>
 
@@ -109,7 +130,7 @@
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/bootstrapping/jasper">Idiomatic Jasper Bootstrapping</a>
+				        	<strong>Next: </strong><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a>
 
 				        </span>
 			      	</nav>

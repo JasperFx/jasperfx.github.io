@@ -51,7 +51,7 @@
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/subscriptions" title="Dynamic Subscriptions">Previous</a></li>
-		      	<li><a href="/documentation/messaging/unknown_messages" title="Handling an Unkown Message">Next</a></li>
+		      	<li><a href="/documentation/messaging/unknown_messages" title="Handling an Unknown Message">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -83,7 +83,7 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/unknown_messages">Handling an Unkown Message</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/unknown_messages">Handling an Unknown Message</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/subscriptions">Dynamic Subscriptions</a></p>
 
 		        </ul>
@@ -97,7 +97,7 @@
 
 			      	<div id="main-pane">
 			      		<!--title: Error Handling-->
-<p>The sad truth is that JasperBus will not unfrequently hit exceptions as it processes messages. In all cases, JasperBus will first log the exception using the <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/servicebus/logging'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p>. After that, it walks through the configured error handling policies to
+<p>The sad truth is that JasperBus will not unfrequently hit exceptions as it processes messages. In all cases, JasperBus will first log the exception using the <a href="/documentation/messaging/logging">the IBusLogger sinks</a>. After that, it walks through the configured error handling policies to
 determine what to do next with the message. In the absence of any confugured error handling policies,
 JasperBus will move any message that causes an exception into the error queue for the
 transport that the message arrived from on the first attempt.</p>
@@ -172,7 +172,7 @@ an <code>IContinuation</code> object that will be executed against the current m
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging/unknown_messages">Handling an Unkown Message</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/unknown_messages">Handling an Unknown Message</a>
 
 				        </span>
 			      	</nav>

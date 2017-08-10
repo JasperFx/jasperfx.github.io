@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Application Configuration</title>
+		<title>JasperFx - Application Configuration and Settings</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/bootstrapping" title="Bootstrapping">Previous</a></li>
-		      	<li><a href="/documentation/messaging" title="Messaging">Next</a></li>
+		      	<li><a href="/documentation/bootstrapping/configuring_jasper" title="Configuring Jasper Applications">Previous</a></li>
+		      	<li><a href="/documentation/bootstrapping/console" title="Jasper in Console Applications">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -66,7 +66,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Application Configuration</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/bootstrapping">Bootstrapping</a></li><li class="active">Application Configuration and Settings</li></ol>
 		  	</nav>
 		  </div>
 
@@ -83,20 +83,23 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging">Messaging</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping">Bootstrapping</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/console">Jasper in Console Applications</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Application Configuration<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/configuration.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Application Configuration and Settings<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/bootstrapping/configuration.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title: Application Configuration-->
+			      		<!--title: Application Configuration and Settings-->
+<div class="alert alert-info"><b>Note!</b> All of the code snippets shown in this topic apply to the JasperRegistry syntax</div>
+<p>For application configuration, Jasper supports both the built in .Net Core configuration and a form of strong typed configuration
+we call the <a href="https://jeremydmiller.com/2014/11/07/strong_typed_configuration/">&quot;Settings&quot; model that was originally used in FubuMVC</a>.</p>
 <h2 id="quick-start">Quick Start</h2>
 <p>Probably the most common scenario is to have a single configuration file mapped to a single object:</p>
 <ol>
@@ -106,6 +109,18 @@
 <li>Include your <code>Settings</code> class in the constructor of a class and Jasper will automatically inject the settings object</li>
 </ol>
 <pre><code class="language-csharp">&#xA;public class MyApp : JasperRegistry&#xA;{&#xA;    public MyApp()&#xA;    {&#xA;        Configuration.AddJsonFile(&quot;mysettings.json&quot;);&#xA;    }&#xA;}&#xA;&#xA;public class SettingsTest&#xA;{&#xA;    private readonly MySettings _settings;&#xA;&#xA;    public SettingsTest(MySettings settings)&#xA;    {&#xA;        _settings = settings;&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="configuration-lifecycle">Configuration Lifecycle</h2>
+<p>Application configuration can come from a mix of the built in .Net Core configuration sources and programmatic options set in either your
+<code>JasperRegistry</code> or a loaded extension. While you make all the declarations in your <code>JasperRegistry</code> class, Jasper takes some steps to execute the usage of configuration options at bootstrapping time like so:</p>
+<ol>
+<li>Build out the .Net Core <code>IConfigurationRoot</code> object based on the sources added to <code>JasperRegistry.Configuration</code>.</li>
+<li>Loads the default data for known <code>Settings</code> types</li>
+<li>Apply all the <code>JasperRegistry.Settings.Alter()</code> or <code>Replace()</code> delegates from registered extensions in the order that they were registered</li>
+<li>Apply all the <code>JasperRegistry.Settings.Alter()</code> or <code>Replace()</code> delegates configured in your <code>JasperRegistry</code> in the order that they were
+registered to ensure that the application specific options always win out over the base options or options coming from an extension</li>
+<li>Finally, apply all the <code>JasperRegistry.Settings.With()</code> delegates configured in your <code>JasperRegistry</code> to use the final, configured versions of<br />
+<code>Settings</code> objects to alter your application setup</li>
+</ol>
 <h2 id="add-configuration-sources">Add Configuration Sources</h2>
 <p>Jasper uses the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration">.NET Core ConfigurationBuilder</a> to get config data and bind it to objects.</p>
 <pre><code class="language-csharp">&#xA;Configuration.SetBasePath(&quot;path&quot;)&#xA;    .AddJsonFile(&quot;myconfig.json&quot;)&#xA;    .AddJsonFile(&quot;myotherconfig.json.config&quot;)&#xA;    .AddEnvironmentVariables();&#xA;&#xA;</code></pre>
@@ -115,7 +130,7 @@
 <pre><code class="language-csharp">&#xA;Settings.Configure&lt;MySettings&gt;(_ =&gt; _.GetSection(&quot;subsection&quot;));&#xA;</code></pre>
 <h2 id="modify-settings">Modify Settings</h2>
 <p>It may be necessary to modify a settings object after it has been loaded from configuration.  Settings can be altered:</p>
-<pre><code class="language-csharp">&#xA;Settings.Alter&lt;MySettings&gt;(_ =&gt;&#xA;{&#xA;    _.SomeSetting = 5;&#xA;});&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;Settings.Alter&lt;MySettings&gt;(_ =&gt;&#xA;{&#xA;    _.SomeSetting = 5;&#xA;});&#xA;&#xA;// or additionally use IConfiguration&#xA;Settings.Alter&lt;MySettings&gt;((config, settings) =&gt;&#xA;{&#xA;    settings.SomeSetting = int.Parse(config[&quot;SomeKey&quot;]);&#xA;});&#xA;&#xA;&#xA;</code></pre>
 <p>or completely replaced:</p>
 <pre><code class="language-csharp">&#xA;Settings.Replace(new MySettings&#xA;{&#xA;    SomeSetting = 3,&#xA;    OtherSetting = &quot;blue&quot;&#xA;});&#xA;</code></pre>
 <h2 id="modify-application">Modify Application</h2>
@@ -128,12 +143,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/bootstrapping">Bootstrapping</a>
+				        	<strong>Previous: </strong><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging">Messaging</a>
+				        	<strong>Next: </strong><a href="/documentation/bootstrapping/console">Jasper in Console Applications</a>
 
 				        </span>
 			      	</nav>

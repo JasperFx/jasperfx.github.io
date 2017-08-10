@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/bootstrapping/jasper" title="Idiomatic Jasper Bootstrapping">Previous</a></li>
-		      	<li><a href="/documentation/bootstrapping/jasperregistry" title="Working with JasperRegistry">Next</a></li>
+		      	<li><a href="/documentation/bootstrapping/console" title="Jasper in Console Applications">Previous</a></li>
+		      	<li><a href="/documentation/bootstrapping/environment_tests" title="Environment Tests">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -83,8 +83,8 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/jasperregistry">Working with JasperRegistry</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping/jasper">Idiomatic Jasper Bootstrapping</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping/console">Jasper in Console Applications</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -97,6 +97,34 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Adding Jasper to an ASP.Net Core Application-->
+<div class="alert alert-info">This functionality is very likely to change as it gets used more often and should be considered very preliminary</div>
+<p>.Net is Microsoft's world, and the rest of us are just living in it. Unlike its predecessor <a href="http://fubumvc.github.io">FubuMVC</a>, Jasper tries to
+play nice as a citizen in the greater ASP.Net Core ecosystem. To that end, you can use Jasper within an ASP.Net Core application as
+just a service bus or command executor or as just another part of the ASP.Net Core runtime pipeline.</p>
+<h2 id="if-asp.net-core-is-in-charge">If ASP.Net Core is in charge...</h2>
+<div class="alert alert-warning"><b>Note!</b> At the moment, the UseJasper() method has to be the very last declaration against IWebHostBuilder for the timing of actions to work correctly. We think that we'll be able to address this with some changes to hosting that are coming in ASP.Net Core 2.0</div>
+<p>First off, let's say that you just want to use Jasper as messaging infrastructure inside of an ASP.Net Core application. With that in mind, let's say that you have a <code>JasperRegistry</code> like this:</p>
+<pre><code class="language-csharp">&#xA;public class SimpleJasperBusApp : JasperRegistry&#xA;</code></pre> 
+<p>If you prefer to stick with the idiomatic ASP.Net Core bootstrapping, you can add Jasper to the
+mix with the <code>UseJasper()</code> extension method as shown below:</p>
+<pre><code class="language-csharp">&#xA;var builder = new WebHostBuilder();&#xA;builder&#xA;    .UseKestrel()&#xA;    .UseUrls(&quot;http://localhost:3003&quot;)&#xA;    .UseStartup&lt;Startup&gt;()&#xA;    .UseJasper&lt;SimpleJasperBusApp&gt;();&#xA;&#xA;&#xA;theHost = builder.Build();&#xA;&#xA;theHost.Start();&#xA;</code></pre>
+<p>There's a couple things going on in the sample above:</p>
+<ol>
+<li>Jasper is quietly replacing the ASP.Net Core IoC container with Jasper's internal <a href="http://structuremap.github.io">StructureMap</a> container after pulling in all the service registrations made directly to the <code>IWebHostBuilder</code>. For the moment, we're doing this under the belief that it's best to avoid having two different IoC containers at runtime.</li>
+<li>If you don't specify exactly where you want Jasper to run within the middleware pipeline of your ASP.Net Core application, Jasper puts itself as the very last <code>RequestDelegate</code> in the middleware chain.</li>
+<li>The <code>UseJasper()</code> method is bootstrapping the <code>JasperRuntime</code> and putting that into the IoC container, so that disposing the <code>IWebHost</code> will also shut down the Jasper services as well.</li>
+</ol>
+<p>To control the order of where Jasper executes within your ASP.Net Core application pipeline, you can
+explicitly add the Jasper middleware like this:</p>
+<pre><code class="language-csharp">&#xA;var builder = new WebHostBuilder();&#xA;builder&#xA;    .UseKestrel()&#xA;    .UseUrls(&quot;http://localhost:3003&quot;)&#xA;    .Configure(app =&gt;&#xA;    {&#xA;        app.UseMiddleware&lt;CustomMiddleware&gt;();&#xA;&#xA;        // Add the Jasper middleware&#xA;        app.AddJasper();&#xA;&#xA;        // Nothing stopping you from using Jasper *and*&#xA;        // MVC, NancyFx, or any other ASP.Net Core&#xA;        // compatible framework&#xA;        app.AddMvc();&#xA;    })&#xA;    .UseJasper&lt;SimpleJasperBusApp&gt;();&#xA;&#xA;&#xA;theHost = builder.Build();&#xA;&#xA;theHost.Start();&#xA;</code></pre>
+<h2 id="if-jasper-is-in-charge">If Jasper is in charge...</h2>
+<div class="alert alert-success">Doing the bootstrapping the idiomatic Jasper way allows Jasper to parallelize quite a bit of the bootstrapping behavior for faster startup times.</div>
+<p>If you choose to use Jasper idiomatically, it can bootstrap ASP.Net Core itself if you're using the HTTP features. <code>JasperRegistry.Http</code> exposes the ASP.Net <code>IWebHostBuilder</code> to configure the Http hosting as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class JasperServerApp : JasperRegistry&#xA;{&#xA;    public JasperServerApp()&#xA;    {&#xA;        Messaging.Handlers.ConventionalDiscoveryDisabled = true;&#xA;&#xA;        Http&#xA;            .UseKestrel()&#xA;            .UseUrls(&quot;http://localhost:3002&quot;)&#xA;            .UseStartup&lt;Startup&gt;();&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>In the case above, Jasper will automatically configure itself as the <code>RequestDelegate</code> for the application.</p>
+<p>To get more precise with how ASP.Net Core middleware is ordered with Jasper, you can again use the
+<code>AddJasper()</code> extension method:</p>
+<pre><code class="language-csharp">&#xA;public class AppWithMiddleware : JasperRegistry&#xA;{&#xA;    public AppWithMiddleware()&#xA;    {&#xA;        Http.Configure(app =&gt;&#xA;        {&#xA;            app.UseMiddleware&lt;CustomMiddleware&gt;();&#xA;&#xA;            app.AddJasper();&#xA;&#xA;            // Just to show how you can configure ASP.Net Core&#xA;            // middleware that runs after Jasper&#x27;s RequestDelegate,&#xA;            // but do note that Jasper has its own default &quot;not found&quot;&#xA;            // behavior&#xA;            app.Run(c =&gt;&#xA;            {&#xA;                c.Response.StatusCode = 404;&#xA;&#xA;                return c.Response.WriteAsync(&quot;Not found&quot;);&#xA;            });&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -104,12 +132,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/bootstrapping/jasper">Idiomatic Jasper Bootstrapping</a>
+				        	<strong>Previous: </strong><a href="/documentation/bootstrapping/console">Jasper in Console Applications</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/bootstrapping/jasperregistry">Working with JasperRegistry</a>
+				        	<strong>Next: </strong><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a>
 
 				        </span>
 			      	</nav>

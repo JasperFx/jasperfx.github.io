@@ -50,7 +50,7 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/configuration" title="Application Configuration">Previous</a></li>
+		      	<li><a href="/documentation/bootstrapping" title="Bootstrapping">Previous</a></li>
 		      	<li><a href="/documentation/messaging/cascading" title="Cascading Messages">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
@@ -84,7 +84,7 @@
 		        </ul>
 
 		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/cascading">Cascading Messages</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/configuration">Application Configuration</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping">Bootstrapping</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -97,19 +97,8 @@
 
 			      	<div id="main-pane">
 			      		<!--title: Messaging-->
-<p>JasperBus is a direct descendent of the <a href="https://fubumvc.github.io/documentation/servicebus/">service bus feature in FubuMVC</a>, which in turn
+<p>Jasper is a direct descendent of the <a href="https://fubumvc.github.io/documentation/servicebus/">service bus feature in FubuMVC</a>, which in turn
 was heavily influenced and built as a replacement for the <a href="https://hibernatingrhinos.com/oss/rhino-service-bus">Rhino Service Bus</a>.</p>
-<h2 id="why-use-jasper">Why use Jasper?</h2>
-<p>TODO -- much more here.</p>
-<ul>
-<li>Very little intrusion into the actual application code</li>
-<li>CoreCLR Support out of the gate</li>
-<li>Diagnostics</li>
-<li>XCopy Deployable -- easy deployment, easy</li>
-<li>As a more flexible and performant replacement for MediatR</li>
-</ul>
-<h2 id="quickstart">Quickstart</h2>
-<p>TODO -- stuff here.</p>
 <h2 id="terminology">Terminology</h2>
 <ul>
 <li><em>Node</em> - a running instance of JasperBus. Do note that it's actually possible to run more than
@@ -125,7 +114,7 @@ to any receivers. See <a href="http://www.enterpriseintegrationpatterns.com/patt
 <li><em>Handler's</em> - a class that handles messages within a Jasper service bus application</li>
 </ul>
 <h2 id="service-bus-topics">Service Bus Topics</h2>
-<ul class="table-of-contents"><li><a href="/documentation/messaging/cascading">Cascading Messages</a></li><li><a href="/documentation/messaging/channels">Channels</a></li><li><a href="/documentation/messaging/logging">Customizing Bus Logging</a></li><li><a href="/documentation/messaging/serialization">Customizing Message Serialization</a></li><li><a href="/documentation/messaging/delayed">Delayed Job Processing</a></li><li><a href="/documentation/messaging/subscriptions">Dynamic Subscriptions</a></li><li><a href="/documentation/messaging/errorhandling">Error Handling</a></li><li><a href="/documentation/messaging/unknown_messages">Handling an Unkown Message</a></li><li><a href="/documentation/messaging/instrumentation">Instrumentation</a></li><li><a href="/documentation/messaging/mediator">Jasper as an in process &quot;Mediator&quot;</a></li><li><a href="/documentation/messaging/handlers">Message Handlers</a></li><li><a href="/documentation/messaging/transports">Messaging Transports</a><ul><li><a href="/documentation/messaging/transports/http">HTTP Transport</a></li><li><a href="/documentation/messaging/transports/lightweight">Lightweight Fire and Forget</a></li><li><a href="/documentation/messaging/transports/loopback">Loopback Locally</a></li></ul></li><li><a href="/documentation/messaging/pubsub">Publish / Subscribe</a></li><li><a href="/documentation/messaging/requestreply">Request / Reply</a></li><li><a href="/documentation/messaging/sending">Sending and Publishing Messages</a></li><li><a href="/documentation/messaging/static_routing">Static _routing</a></li><li><a href="/documentation/messaging/uri_lookups">Uri Lookups</a></li><li><a href="/documentation/messaging/versioning">Versioning</a></li></ul>
+<ul class="table-of-contents"><li><a href="/documentation/messaging/cascading">Cascading Messages</a></li><li><a href="/documentation/messaging/channels">Channels</a></li><li><a href="/documentation/messaging/logging">Customizing Bus Logging</a></li><li><a href="/documentation/messaging/serialization">Customizing Message Serialization</a></li><li><a href="/documentation/messaging/delayed">Delayed Job Processing</a></li><li><a href="/documentation/messaging/subscriptions">Dynamic Subscriptions</a></li><li><a href="/documentation/messaging/errorhandling">Error Handling</a></li><li><a href="/documentation/messaging/unknown_messages">Handling an Unknown Message</a></li><li><a href="/documentation/messaging/mediator">Jasper as an in process &quot;Mediator&quot;</a></li><li><a href="/documentation/messaging/handlers">Message Handlers</a></li><li><a href="/documentation/messaging/transports">Messaging Transports</a><ul><li><a href="/documentation/messaging/transports/http">HTTP Transport</a></li><li><a href="/documentation/messaging/transports/lightweight">Lightweight Fire and Forget</a></li><li><a href="/documentation/messaging/transports/loopback">Loopback Locally</a></li></ul></li><li><a href="/documentation/messaging/pubsub">Publish / Subscribe</a></li><li><a href="/documentation/messaging/requestreply">Request / Reply</a></li><li><a href="/documentation/messaging/sending">Sending and Publishing Messages</a></li><li><a href="/documentation/messaging/static_routing">Static Publishing Rules</a></li><li><a href="/documentation/messaging/uri_lookups">Uri Lookups</a></li><li><a href="/documentation/messaging/versioning">Versioning</a></li></ul>
 
 			      	</div>
 
@@ -133,7 +122,7 @@ to any receivers. See <a href="http://www.enterpriseintegrationpatterns.com/patt
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/configuration">Application Configuration</a>
+				        	<strong>Previous: </strong><a href="/documentation/bootstrapping">Bootstrapping</a>
 
 				        </span>
 				        <span class="pull-right">

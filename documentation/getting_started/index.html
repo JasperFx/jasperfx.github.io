@@ -104,7 +104,7 @@ pipeline within a different framework, or any combination thereof. Jasper can be
 <pre>dotnet new console -n MyApp</pre>
 <p>While this isn't expressly necessary, you probably want to create a new <code>JasperRegistry</code> that will define the active options and configuration for your application:</p>
 <pre><code class="language-csharp">&#xA;public class MyAppRegistry : JasperRegistry&#xA;{&#xA;    public MyAppRegistry()&#xA;    {&#xA;        // Configure or select options in this constructor function&#xA;    }&#xA;}&#xA;</code></pre>
-<p>See <a href="/documentation/bootstrapping/jasperregistry">Working with JasperRegistry</a> for more information about using the <code>JasperRegistry</code> class.</p>
+<p>See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/bootstrapping/jasperregistry'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information about using the <code>JasperRegistry</code> class.</p>
 <p>Now, to bootstrap your application, add this code to the entrypoint of your console application:</p>
 <pre><code class="language-csharp">&#xA;using Jasper;&#xA;&#xA;namespace MyApp&#xA;{&#xA;    class Program&#xA;    {&#xA;        static void Main(string[] args)&#xA;        {&#xA;            // This bootstraps and runs the Jasper&#xA;            // application as defined by MyAppRegistry&#xA;            // until the executable is stopped&#xA;            JasperAgent.Run&lt;MyAppRegistry&gt;();&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>By itself, this doesn't really do much, so let's add Kestrel as a web server for serving HTTP services and start listening for messages from other applications using Jasper's built in, lightweight transport:</p>
@@ -118,7 +118,7 @@ Listening for messages at jasper://localhost:2222/incoming
 Now listening on: http://localhost:3001
 Application started. Press Ctrl+C to shut down.
 </code></pre>
-<p>See <a href="/documentation/bootstrapping/jasper">Idiomatic Jasper Bootstrapping</a> for more information about idiomatic Jasper bootstrapping.</p>
+<p>See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/bootstrapping/jasper'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information about idiomatic Jasper bootstrapping.</p>
 <p>That covers bootstrapping Jasper by itself, but next let's see how you can add Jasper
 to an idiomatic ASP.Net Core application.</p>
 <h2 id="adding-jasper-to-an-asp.net-core-application">Adding Jasper to an ASP.Net Core Application</h2>
