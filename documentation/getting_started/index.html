@@ -106,9 +106,9 @@ pipeline within a different framework, or any combination thereof. Jasper can be
 <pre><code class="language-csharp">&#xA;public class MyAppRegistry : JasperRegistry&#xA;{&#xA;    public MyAppRegistry()&#xA;    {&#xA;        // Configure or select options in this constructor function&#xA;    }&#xA;}&#xA;</code></pre>
 <p>See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/bootstrapping/jasperregistry'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information about using the <code>JasperRegistry</code> class.</p>
 <p>Now, to bootstrap your application, add this code to the entrypoint of your console application:</p>
-<pre><code class="language-csharp">&#xA;using Jasper;&#xA;&#xA;namespace MyApp&#xA;{&#xA;    class Program&#xA;    {&#xA;        static void Main(string[] args)&#xA;        {&#xA;            // This bootstraps and runs the Jasper&#xA;            // application as defined by MyAppRegistry&#xA;            // until the executable is stopped&#xA;            JasperAgent.Run&lt;MyAppRegistry&gt;();&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;&#xA;using Jasper.CommandLine;&#xA;&#xA;namespace MyApp&#xA;{&#xA;    class Program&#xA;    {&#xA;        static int Main(string[] args)&#xA;        {&#xA;            // This bootstraps and runs the Jasper&#xA;            // application as defined by MyAppRegistry&#xA;            // until the executable is stopped&#xA;            return JasperAgent.Run&lt;MyAppRegistry&gt;(args);&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>By itself, this doesn't really do much, so let's add Kestrel as a web server for serving HTTP services and start listening for messages from other applications using Jasper's built in, lightweight transport:</p>
-<pre><code class="language-csharp">&#xA;public class MyAppRegistry : JasperRegistry&#xA;{&#xA;    public MyAppRegistry()&#xA;    {&#xA;        Http.UseKestrel().UseUrls(&quot;http://localhost:3001&quot;);&#xA;&#xA;        // TODO -- use the new syntax from GH-163 when it exists&#xA;        Channels.ListenForMessagesFrom(&quot;jasper://localhost:2222/incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MyAppRegistry : JasperRegistry&#xA;{&#xA;    public MyAppRegistry()&#xA;    {&#xA;        Http.UseKestrel().UseUrls(&quot;http://localhost:3001&quot;);&#xA;&#xA;        Transports.Lightweight.ListenOnPort(2222);&#xA;&#xA;        Publish.Message&lt;Message1&gt;();&#xA;        Publish.Message&lt;Message2&gt;();&#xA;        Publish.Message&lt;Message3&gt;();&#xA;&#xA;        Subscribe.At(&quot;tcp://server1:2222&quot;);&#xA;        Subscribe.To&lt;Message4&gt;();&#xA;        Subscribe.To&lt;Message5&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Now, when you run the console application you should see output like this:</p>
 <pre><code>Hosting environment: Production
 Content root path: /Users/jeremill/code/jasper/src/MyApp/bin/Debug/netcoreapp1.1
@@ -134,7 +134,7 @@ to an idiomatic ASP.Net Core application.</p>
 <p>Let's say you're building an invoicing application and your application should handle an
 <code>InvoiceCreated</code> event. The skeleton for the message handler for that event would look like this:</p>
 <pre><code class="language-csharp">&#xA;public class InvoiceCreated&#xA;{&#xA;&#xA;}&#xA;&#xA;public class InvoiceHandler&#xA;{&#xA;    public void Handle(InvoiceCreated created)&#xA;    {&#xA;        // do something here with the created variable...&#xA;    }&#xA;}&#xA;</code></pre>
-<p>See <a href="/documentation/messaging/handlers">Message Handlers</a> for more information on message handler actions.</p>
+<p>See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/handlers'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information on message handler actions.</p>
 
 			      	</div>
 

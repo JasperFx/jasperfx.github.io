@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Loopback Locally</title>
+		<title>JasperFx - Local Loopback Transport</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/messaging/transports/lightweight" title="Lightweight Fire and Forget">Previous</a></li>
-		      	<li><a href="/documentation/messaging/pubsub" title="Publish / Subscribe">Next</a></li>
+		      	<li><a href="/documentation/messaging/transports/durable" title="Durable Store and Forward Transport">Previous</a></li>
+		      	<li><a href="/documentation/messaging/transports/http" title="HTTP Transport">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -66,7 +66,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/transports">Messaging Transports</a></li><li class="active">Loopback Locally</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/transports">Messaging Transports</a></li><li class="active">Local Loopback Transport</li></ol>
 		  	</nav>
 		  </div>
 
@@ -83,20 +83,27 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/pubsub">Publish / Subscribe</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/transports/lightweight">Lightweight Fire and Forget</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/transports/http">HTTP Transport</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/transports/durable">Durable Store and Forward Transport</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Loopback Locally<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/transports/loopback.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Local Loopback Transport<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/transports/loopback.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--Title:Loopback Locally-->
+			      		<!--Title:Local Loopback Transport-->
+<div class="alert alert-info"><b>Note!</b> The loopback transport is used underneath the covers by Jasper for retrying
+locally enqueued messages or scheduled messages that may have initially failed.</div>
+<p>The &quot;loopback&quot; transport is a local, in memory transport that allows you to queue messages. This transport is enabled
+by default, and the <code>Uri</code> structure is <em>loopback://queuename</em>. Here are some examples of how it is configured:</p>
+<p>Do note that messages to any known queue will be processed without any kind of explicit configuration to make the
+loopback queues be &quot;incoming.&quot;</p>
+<pre><code class="language-csharp">&#xA;public class LoopbackTransportApp : JasperRegistry&#xA;{&#xA;    public LoopbackTransportApp()&#xA;    {&#xA;        // Configure the maximum number of threads dedicated to processing&#xA;        // messages being received by queue. 5 is the default&#xA;        Transports.Loopback.DefaultQueue.MaximumParallelization(5);&#xA;        Transports.Loopback.Queue(&quot;important&quot;).MaximumParallelization(10);&#xA;        Transports.Loopback.Queue(&quot;lowpriority&quot;).MaximumParallelization(3);&#xA;        Transports.Loopback.Queue(&quot;control&quot;).Sequential();&#xA;&#xA;        // Publish the message Message2 the important queue&#xA;        Publish.Message&lt;Message2&gt;().To(&quot;loopback://important&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -104,12 +111,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/messaging/transports/lightweight">Lightweight Fire and Forget</a>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/transports/durable">Durable Store and Forward Transport</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging/pubsub">Publish / Subscribe</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/transports/http">HTTP Transport</a>
 
 				        </span>
 			      	</nav>

@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/messaging/cascading" title="Cascading Messages">Previous</a></li>
-		      	<li><a href="/documentation/messaging/logging" title="Customizing Bus Logging">Next</a></li>
+		      	<li><a href="/documentation/messaging/logging" title="Customizing Bus Logging">Previous</a></li>
+		      	<li><a href="/documentation/http" title="HTTP Services">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -83,8 +83,8 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/logging">Customizing Bus Logging</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/cascading">Cascading Messages</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/http">HTTP Services</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/logging">Customizing Bus Logging</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -106,19 +106,19 @@ and an in memory transport for testing.</p>
 desired transport, port, and queue name.</p>
 <p>We first need to build a <a href="/documentation/bootstrapping/configuration">&quot;Settings&quot; object</a> for two channels
 identified as <code>Pinger</code> and <code>Ponger</code>:</p>
-<pre><code class="language-csharp">&#xA;public class SampleSettings&#xA;{&#xA;    public Uri Pinger { get; set; } =&#xA;        &quot;lq.tcp://localhost:2352/pinger&quot;.ToUri();&#xA;&#xA;    public Uri Ponger { get; set; } =&#xA;        &quot;lq.tcp://localhost:2353/ponger&quot;.ToUri();&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class SampleSettings&#xA;{&#xA;    public Uri Pinger { get; set; } =&#xA;        &quot;durable://localhost:2352/pinger&quot;.ToUri();&#xA;&#xA;    public Uri Ponger { get; set; } =&#xA;        &quot;durable://localhost:2353/ponger&quot;.ToUri();&#xA;}&#xA;</code></pre>
 <p>All the <code>SampleSettings</code> class is is a way to identify channels and act as a means to communicate the channel Uri's to
 the service bus model. I'm hard coding the Uri's in the code above, but that information can be pulled from any kind of configuration using
 the built in support for <a href="/documentation/bootstrapping/configuration">strong typed configuration</a> in Jasper.</p>
 <p>To configure service bus channels, it's easiest to define your application with a <code>JasperBusRegistry</code> class.</p>
-<pre><code class="language-csharp">&#xA;public class PingApp : JasperRegistry&#xA;{&#xA;    public PingApp(SampleSettings settings)&#xA;    {&#xA;        // Configuring PingApp to send PingMessage&#x27;s&#xA;        // to the PongApp&#xA;        Messaging.Send&lt;PingMessage&gt;()&#xA;            .To(settings.Pinger);&#xA;&#xA;        // Listen for incoming messages from &quot;Pinger&quot;&#xA;        Channels.ListenForMessagesFrom(settings.Pinger);&#xA;    }&#xA;}&#xA;&#xA;public class PongApp : JasperRegistry&#xA;{&#xA;    public PongApp(SampleSettings settings)&#xA;    {&#xA;        // Listen for incoming messages from &quot;Ponger&quot;&#xA;        Channels.ListenForMessagesFrom(settings.Ponger);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class PingApp : JasperRegistry&#xA;{&#xA;    public PingApp(SampleSettings settings)&#xA;    {&#xA;        // Configuring PingApp to send PingMessage&#x27;s&#xA;        // to the PongApp&#xA;        Publish.Message&lt;PingMessage&gt;()&#xA;            .To(settings.Pinger);&#xA;&#xA;        // Listen for incoming messages from &quot;Pinger&quot;&#xA;        Transports.ListenForMessagesFrom(settings.Pinger);&#xA;    }&#xA;}&#xA;&#xA;public class PongApp : JasperRegistry&#xA;{&#xA;    public PongApp(SampleSettings settings)&#xA;    {&#xA;        // Listen for incoming messages from &quot;Ponger&quot;&#xA;        Transports.ListenForMessagesFrom(settings.Ponger);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The <code>JasperBusRegistry</code> is a subclass of the <code>JasperRegistry</code> class that adds additional options
 germaine to the service bus feature.</p>
 <h2 id="listening-to-messages-from-a-channel">Listening to Messages from a Channel</h2>
 <p>While you can always send messages to any configured channel, you must explicitly state which
 channels should be monitored for incoming messages to the current node. That's done with the
 <code>ListenForMessagesFrom()</code> method shown below:</p>
-<pre><code class="language-csharp">&#xA;public class ListeningApp : JasperRegistry&#xA;{&#xA;    public ListeningApp(SampleSettings settings)&#xA;    {&#xA;        // Listen for incoming messages from &quot;Pinger&quot;&#xA;        Channels.ListenForMessagesFrom(settings.Pinger);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class ListeningApp : JasperRegistry&#xA;{&#xA;    public ListeningApp(SampleSettings settings)&#xA;    {&#xA;        // Listen for incoming messages from &quot;Pinger&quot;&#xA;        Transports.ListenForMessagesFrom(settings.Pinger);&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="static-message-routing-rules">Static Message Routing Rules</h2>
 <p>When you publish a message using <code>IServiceBus</code> without explicitly setting the Uri of the desired
 destination, Jasper has to invoke the known message routing rules and dynamic subscriptions to
@@ -127,17 +127,17 @@ figure out which locations should receive the message. Consider this code that p
 <pre><code class="language-csharp">&#xA;public class SendingExample&#xA;{&#xA;    public async Task SendPingsAndPongs(IServiceBus bus)&#xA;    {&#xA;        // Publish a message&#xA;        await bus.Send(new PingMessage());&#xA;&#xA;        // Request/Reply&#xA;        var pong = await bus.Request&lt;PongMessage&gt;(new PingMessage());&#xA;    }&#xA;}&#xA;</code></pre>
 <p>To route <code>PingMessage</code> to a channel, we can apply static message routing rules by using one of the
 <em>SendMessage****</em> methods as shown below:</p>
-<pre><code class="language-csharp">&#xA;public class StaticRoutingApp : JasperRegistry&#xA;{&#xA;    public StaticRoutingApp(AppSettings settings)&#xA;    {&#xA;        // Explicitly add a single message type&#xA;        Messaging.Send&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any types matching the supplied filter&#xA;        // to this channel&#xA;        Messaging.SendMatching(&quot;Message suffix&quot;, type =&gt; type.Name.EndsWith(&quot;Message&quot;))&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the assembly&#xA;        // to this channel, by supplying a type contained&#xA;        // within that assembly&#xA;        Messaging.SendFromAssemblyContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the named&#xA;        // assembly to this channel&#xA;        Messaging.SendFromAssembly(Assembly.Load(new AssemblyName(&quot;MyMessageLibrary&quot;)))&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the&#xA;        // namespace given to this channel&#xA;        Messaging.SendFromNamespace(&quot;MyMessageLibrary&quot;)&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the namespace&#xA;        // of the type to this channel&#xA;        Messaging.SendFromNamespaceContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class StaticRoutingApp : JasperRegistry&#xA;{&#xA;    public StaticRoutingApp(AppSettings settings)&#xA;    {&#xA;        // Explicitly add a single message type&#xA;        Publish.Message&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any types matching the supplied filter&#xA;        // to this channel&#xA;        Publish.MessagesMatching(&quot;Message suffix&quot;, type =&gt; type.Name.EndsWith(&quot;Message&quot;))&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the assembly&#xA;        // to this channel, by supplying a type contained&#xA;        // within that assembly&#xA;        Publish.MessagesFromAssemblyContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the named&#xA;        // assembly to this channel&#xA;        Publish.MessagesFromAssembly(Assembly.Load(new AssemblyName(&quot;MyMessageLibrary&quot;)))&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the&#xA;        // namespace given to this channel&#xA;        Publish.MessagesFromNamespace(&quot;MyMessageLibrary&quot;)&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the namespace&#xA;        // of the type to this channel&#xA;        Publish.MessagesFromNamespaceContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Do note that doing the message type filtering by namespace will also include child namespaces. In
 our own usage we try to rely on either namespace rules or by using shared message assemblies.</p>
-<p>See also the <a href="/documentation/messaging/subscriptions">Dynamic Subscriptions</a></p>
+<p>See also the <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/subscriptions'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p></p>
 <h2 id="message-persistence">Message Persistence</h2>
 <p>If the transport you're using supports this switch (the LightningQueues transport does), you can declare channels to publish messages
 with either a delivery guaranteed, persistent strategy or by a non-persistent strategy. The non-guaranteed
 delivery mode is significantly faster, but probably only suitable for message types where throughput
 is more important than message reliability.</p>
 <p>Below is a sample of explicitly controlling the channel persistence:</p>
-<pre><code class="language-csharp">&#xA;public class AppSettings&#xA;{&#xA;    // This channel handles &quot;fire and forget&quot;&#xA;    // control messages&#xA;    public Uri Control { get; set; }&#xA;        = new Uri(&quot;lq.tcp://localhost:2345/control&quot;);&#xA;&#xA;&#xA;    // This channel handles normal business&#xA;    // processing messages&#xA;    public Uri Transactions { get; set; }&#xA;        = new Uri(&quot;lq.tcp://localhost:2346/transactions&quot;);&#xA;}&#xA;&#xA;public class BigApp : JasperRegistry&#xA;{&#xA;    public BigApp(AppSettings settings)&#xA;    {&#xA;        // Declare that the &quot;Control&quot; channel&#xA;        // use the faster, but unsafe transport mechanism&#xA;        Channels[settings.Control]&#xA;            .DeliveryFastWithoutGuarantee()&#xA;            .UseAsControlChannel();&#xA;&#xA;&#xA;        Channels[settings.Transactions]&#xA;            // This is the default, but you can&#xA;            // still configure it explicitly&#xA;            .DeliveryGuaranteed();&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppSettings&#xA;{&#xA;    // This channel handles &quot;fire and forget&quot;&#xA;    // control messages&#xA;    public Uri Control { get; set; }&#xA;        = new Uri(&quot;durable://localhost:2345/control&quot;);&#xA;&#xA;&#xA;    // This channel handles normal business&#xA;    // processing messages&#xA;    public Uri Transactions { get; set; }&#xA;        = new Uri(&quot;durable://localhost:2346/transactions&quot;);&#xA;}&#xA;&#xA;</code></pre>
 <h2 id="control-queues">Control Queues</h2>
 <p>Jasper may need to send messages between running service bus nodes to coordinate activities, register for dynamic subscriptions,
 or perform health checks. Some of these messages are time sensitive, so it will frequently be valuable to set up a separate
@@ -145,7 +145,7 @@ or perform health checks. Some of these messages are time sensitive, so it will 
 <p>Also, the control messages fit the &quot;fire and forget&quot; messaging model, so we recommend using the non-persistent channel mode with these
 channels.</p>
 <p>Below is a sample of setting up a control channel:</p>
-<pre><code class="language-csharp">&#xA;public class ControlChannelApp : JasperRegistry&#xA;{&#xA;    public ControlChannelApp(AppSettings settings)&#xA;    {&#xA;        Channels[settings.Control]&#xA;            .UseAsControlChannel()&#xA;            .DeliveryFastWithoutGuarantee();&#xA;    }&#xA;}&#xA;</code></pre>
+<p class="bg-warning" style="padding:10px"><b>Missing code sample &#x27;ControlChannelApp&#x27;</b><small> -- Wait for dotnet stdocs to catch up reading samples or CTRL&#x2B;SHIFT&#x2B;R to force refresh</small></p>
 
 			      	</div>
 
@@ -153,12 +153,12 @@ channels.</p>
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/messaging/cascading">Cascading Messages</a>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/logging">Customizing Bus Logging</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging/logging">Customizing Bus Logging</a>
+				        	<strong>Next: </strong><a href="/documentation/http">HTTP Services</a>
 
 				        </span>
 			      	</nav>

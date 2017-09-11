@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Jasper in Console Applications</title>
+		<title>JasperFx - Message Handlers</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/bootstrapping/configuration" title="Application Configuration and Settings">Previous</a></li>
-		      	<li><a href="/documentation/bootstrapping/aspnetcore" title="Adding Jasper to an ASP.Net Core Application">Next</a></li>
+		      	<li><a href="/documentation/messaging/handling/discovery" title="Message Handler Discovery">Previous</a></li>
+		      	<li><a href="/documentation/messaging/sending" title="Publishing Messages">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -66,7 +66,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/bootstrapping">Bootstrapping</a></li><li class="active">Jasper in Console Applications</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/handling">Handling Received Messages</a></li><li class="active">Message Handlers</li></ol>
 		  	</nav>
 		  </div>
 
@@ -83,30 +83,20 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/sending">Publishing Messages</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/handling/discovery">Message Handler Discovery</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Jasper in Console Applications<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/bootstrapping/console.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Message Handlers<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/handling/handlers.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title:Jasper in Console Applications-->
-<p>At this time, the Jasper team is focused on hosting applications either in IIS (or nginx) or as a console application that would be suitable for
-running in a Docker container. To that end, we've added the <code>JasperAgent</code> static class as a helper for quickly standing up Jasper applications in a
-console application.</p>
-<p>The sample usage from the <a href="/documentation/getting_started">getting started</a> topic would look like this:</p>
-<pre><code class="language-csharp">&#xA;&#xA;using Jasper.CommandLine;&#xA;&#xA;namespace MyApp&#xA;{&#xA;    class Program&#xA;    {&#xA;        static int Main(string[] args)&#xA;        {&#xA;            // This bootstraps and runs the Jasper&#xA;            // application as defined by MyAppRegistry&#xA;            // until the executable is stopped&#xA;            return JasperAgent.Run&lt;MyAppRegistry&gt;(args);&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
-<p>At runtime, <code>JasperAgent</code> uses the <code>JasperRegistry</code> you hand it to <a href="/documentation/bootstrapping">bootstrap a JasperRuntime</a> and run the application until the console process is stopped.</p>
-<p>You can also use the command line arguments to customize how the application runs like this:</p>
-<pre><code class="language-csharp">&#xA;static int Main(string[] args)&#xA;{&#xA;    return JasperAgent.Run&lt;MyAppRegistry&gt;(args, _ =&gt;&#xA;    {&#xA;        if (args.Length == 1)&#xA;        {&#xA;            _.EnvironmentName = args[0];&#xA;        }&#xA;    });&#xA;}&#xA;</code></pre>
-<p>Or like this:</p>
-<pre><code class="language-csharp">&#xA;static int Main(string[] args)&#xA;{&#xA;    // This gives you the ability to programmatically&#xA;    // construct the application based on the command line&#xA;    // arguments&#xA;    var registry = new JasperRegistry();&#xA;&#xA;&#xA;    return JasperAgent.Run(registry);&#xA;}&#xA;</code></pre>
+			      		<!--title:Message Handlers -->
 
 			      	</div>
 
@@ -114,12 +104,12 @@ console application.</p>
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/handling/discovery">Message Handler Discovery</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/sending">Publishing Messages</a>
 
 				        </span>
 			      	</nav>
