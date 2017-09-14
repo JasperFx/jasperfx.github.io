@@ -133,7 +133,7 @@ to an idiomatic ASP.Net Core application.</p>
 <h2 id="your-first-message-handler">Your First Message Handler</h2>
 <p>Let's say you're building an invoicing application and your application should handle an
 <code>InvoiceCreated</code> event. The skeleton for the message handler for that event would look like this:</p>
-<pre><code class="language-csharp">&#xA;public class InvoiceCreated&#xA;{&#xA;&#xA;}&#xA;&#xA;public class InvoiceHandler&#xA;{&#xA;    public void Handle(InvoiceCreated created)&#xA;    {&#xA;        // do something here with the created variable...&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class InvoiceCreated&#xA;{&#xA;    public Guid InvoiceId { get; set; }&#xA;}&#xA;&#xA;public class InvoiceHandler&#xA;{&#xA;    public void Handle(InvoiceCreated created)&#xA;    {&#xA;        // do something here with the created variable...&#xA;    }&#xA;}&#xA;</code></pre>
 <p>See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/handlers'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information on message handler actions.</p>
 
 			      	</div>
