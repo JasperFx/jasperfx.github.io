@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Jasper.Protobuf</title>
+		<title>JasperFx - Publish / Subscribe</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/extensions/marten" title="Jasper.Marten">Previous</a></li>
-		      	<li><a href="/documentation/extensions/swagger" title="Jasper.Swagger">Next</a></li>
+		      	<li><a href="/documentation/messaging/publishing" title="Publishing Messages">Previous</a></li>
+		      	<li><a href="/documentation/messaging/publishing/requestreply" title="Request / Reply">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -66,7 +66,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/extensions">Extensions</a></li><li class="active">Jasper.Protobuf</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/publishing">Publishing Messages</a></li><li class="active">Publish / Subscribe</li></ol>
 		  	</nav>
 		  </div>
 
@@ -76,27 +76,38 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.2.0</h3>
+		      	<h3>JasperFx 0.5.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/swagger">Jasper.Swagger</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/marten">Jasper.Marten</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/publishing/requestreply">Request / Reply</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/publishing">Publishing Messages</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Jasper.Protobuf<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/extensions/protobuf.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Publish / Subscribe<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/publishing/pubsub.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title:Jasper.Protobuf-->
+			      		<!--title:Publish / Subscribe -->
+<p>Publish/Subscribe is a messaging pattern where the senders of messages do not need to specifically know what the specific subscribers are for a given message. In this case, some kind of middleware or infrastructure is responsible for either allowing subscribers to express interest in what messages they need to receive or apply routing rules to send the published messages to the right places. Jasper's messaging support was largely built to support the publish/subscibe.</p>
+<p>To send a message with Jasper, use the <code>IServiceBus</code> like this:</p>
+<pre><code class="language-csharp">&#xA;public Task SendMessage(IServiceBus bus)&#xA;{&#xA;    // In this case, we&#x27;re sending an &quot;InvoiceCreated&quot;&#xA;    // message&#xA;    var @event = new InvoiceCreated&#xA;    {&#xA;        Time = DateTime.UtcNow,&#xA;        Purchaser = &quot;Guy Fieri&quot;,&#xA;        Amount = 112.34,&#xA;        Item = &quot;Cookbook&quot;&#xA;    };&#xA;&#xA;    return bus.Send(@event);&#xA;}&#xA;</code></pre>
+<p>That by itself will send the <code>InvoiceCreated</code> message to whatever subscribers are interested in
+that message.</p>
+<h2 id="sending-and-awaiting-acknowledgement">Sending and Awaiting Acknowledgement</h2>
+<p>Much rarer is the need to send a message, but wait until the message is successfully acknowledged as received by the receiver before continuing onto other work:</p>
+<pre><code class="language-csharp">&#xA;public async Task SendMessageAndAwait(IServiceBus bus)&#xA;{&#xA;    var @event = new InvoiceCreated&#xA;    {&#xA;        Time = DateTime.UtcNow,&#xA;        Purchaser = &quot;Guy Fieri&quot;,&#xA;        Amount = 112.34,&#xA;        Item = &quot;Cookbook&quot;&#xA;    };&#xA;&#xA;    await bus.SendAndWait(@event);&#xA;}&#xA;</code></pre>
+<h2 id="sending-to-a-specific-destination">Sending to a Specific Destination</h2>
+<p>You can bypass the routing and subscribing rules and designate the destination for a message like this:</p>
+<pre><code class="language-csharp">&#xA;public async Task SendMessageToSpecificDestination(IServiceBus bus)&#xA;{&#xA;    var @event = new InvoiceCreated&#xA;    {&#xA;        Time = DateTime.UtcNow,&#xA;        Purchaser = &quot;Guy Fieri&quot;,&#xA;        Amount = 112.34,&#xA;        Item = &quot;Cookbook&quot;&#xA;    };&#xA;&#xA;    await bus.Send(new Uri(&quot;tcp://server1:2222&quot;), @event);&#xA;&#xA;    // or&#xA;&#xA;    await bus.Send(@event, e =&gt;&#xA;    {&#xA;        e.Destination = new Uri(&quot;tcp://server1:2222&quot;);&#xA;    });&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -104,12 +115,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/extensions/marten">Jasper.Marten</a>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/publishing">Publishing Messages</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/extensions/swagger">Jasper.Swagger</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/publishing/requestreply">Request / Reply</a>
 
 				        </span>
 			      	</nav>

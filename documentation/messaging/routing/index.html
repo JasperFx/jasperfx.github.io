@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/messaging/sending" title="Publishing Messages">Previous</a></li>
-		      	<li><a href="/documentation/messaging/routing/no_routing" title=""No Route" Behavior">Next</a></li>
+		      	<li><a href="/documentation/messaging/publishing" title="Publishing Messages">Previous</a></li>
+		      	<li><a href="/documentation/messaging/routing/static_routing" title="Static Publishing Rules">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -76,15 +76,15 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.2.0</h3>
+		      	<h3>JasperFx 0.5.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/routing/no_routing">"No Route" Behavior</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/sending">Publishing Messages</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/publishing">Publishing Messages</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -97,6 +97,12 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Routing Messages-->
+<p>When a message is published without any explicit destination, Jasper evaluates its own routing rules to determine
+where the message should be delivered and with what representation according to the receiving application's capabilities.</p>
+<p>The routing can be done simply by using <a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a> that require your application
+to know where the messages should go, or by using <a href="/documentation/messaging/routing/subscriptions">Dynamic Subscriptions</a> where your application
+will determine subscribers for any message type. Lastly, you can control how Jasper behaves when it is not able to determine where to
+send a message with <a href="/documentation/messaging/routing/no_routing">&quot;No Route&quot; Behavior</a>.</p>
 
 			      	</div>
 
@@ -104,12 +110,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/messaging/sending">Publishing Messages</a>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/publishing">Publishing Messages</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging/routing/no_routing">"No Route" Behavior</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a>
 
 				        </span>
 			      	</nav>

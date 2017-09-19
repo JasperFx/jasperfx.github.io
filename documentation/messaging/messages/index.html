@@ -76,7 +76,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.2.0</h3>
+		      	<h3>JasperFx 0.5.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -126,12 +126,12 @@ subscriptions.</p>
 <p>Let's say that you have a basic message structure like this:</p>
 <pre><code class="language-csharp">&#xA;public class PersonBorn&#xA;{&#xA;    public string FirstName { get; set; }&#xA;    public string LastName { get; set; }&#xA;&#xA;    // This is obviously a contrived example&#xA;    // so just let this go for now;)&#xA;    public int Day { get; set; }&#xA;    public int Month { get; set; }&#xA;    public int Year { get; set; }&#xA;}&#xA;</code></pre>
 <p>By default, Jasper will identify this type by just using the .Net full name like so:</p>
-<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void message_alias_is_fullname_by_default()&#xA;{&#xA;    Envelope.ForMessage(new PersonBorn())&#xA;        .MessageType.ShouldBe(typeof(PersonBorn).FullName);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void message_alias_is_fullname_by_default()&#xA;{&#xA;    new Envelope(new PersonBorn())&#xA;        .MessageType.ShouldBe(typeof(PersonBorn).FullName);&#xA;}&#xA;</code></pre>
 <p>However, if you want to explicitly control the message type because you aren't sharing the DTO types or for some
 other reason (readability? diagnostics?), you can override the message type alias with an attribute:</p>
 <pre><code class="language-csharp">&#xA;[MessageAlias(&quot;person-born&quot;)]&#xA;public class PersonBorn&#xA;{&#xA;    public string FirstName { get; set; }&#xA;    public string LastName { get; set; }&#xA;    public int Day { get; set; }&#xA;    public int Month { get; set; }&#xA;    public int Year { get; set; }&#xA;}&#xA;</code></pre>
 <p>Which now gives you different behavior:</p>
-<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void message_alias_is_fullname_by_default()&#xA;{&#xA;    Envelope.ForMessage(new PersonBorn())&#xA;        .MessageType.ShouldBe(&quot;person-born&quot;);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void message_alias_is_fullname_by_default()&#xA;{&#xA;    new Envelope(new PersonBorn())&#xA;        .MessageType.ShouldBe(&quot;person-born&quot;);&#xA;}&#xA;</code></pre>
 <h2 id="versioning">Versioning</h2>
 <p>By default, Jasper will just assume that any message is &quot;V1&quot; unless marked otherwise.
 Going back to the original <code>PersonBorn</code> message class in previous sections, let's say that you

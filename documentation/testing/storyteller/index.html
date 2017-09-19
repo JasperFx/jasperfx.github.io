@@ -76,7 +76,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.2.0</h3>
+		      	<h3>JasperFx 0.5.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -97,6 +97,14 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Using Storyteller against Jasper Systems-->
+<p>Jasper comes with a pre-built recipe for doing integration or acceptance testing with <a href="http://storyteller.github.io">Storyteller</a> using
+the <em>Jasper.Storyteller</em> extension library.</p>
+<p>To get started with this package, create a new console application in your solution and add the <code>Jasper.Storyteller</code> Nuget dependency. Next,
+in the <code>Program.Main()</code> method, use this code to connect your application to Storyteller:</p>
+<pre><code class="language-csharp">&#xA;JasperStorytellerHost.Run&lt;MyJasperAppRegistry&gt;(args);&#xA;</code></pre>
+<p>In this case, <code>MyJasperAppRegistry</code> would be the name of whatever the <code>JasperRegistry</code> class is for your application.</p>
+<h2 id="messagingfixture">MessagingFixture</h2>
+<p>TODO -- more stuff here.</p>
 
 			      	</div>
 

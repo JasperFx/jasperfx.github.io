@@ -76,7 +76,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.2.0</h3>
+		      	<h3>JasperFx 0.5.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -114,6 +114,7 @@ we call the <a href="https://jeremydmiller.com/2014/11/07/strong_typed_configura
 <code>JasperRegistry</code> or a loaded extension. While you make all the declarations in your <code>JasperRegistry</code> class, Jasper takes some steps to execute the usage of configuration options at bootstrapping time like so:</p>
 <ol>
 <li>Build out the .Net Core <code>IConfigurationRoot</code> object based on the sources added to <code>JasperRegistry.Configuration</code>.</li>
+<li>Apply any of the actions registered by <code>Settings.WithConfig()</code></li>
 <li>Loads the default data for known <code>Settings</code> types</li>
 <li>Apply all the <code>JasperRegistry.Settings.Alter()</code> or <code>Replace()</code> delegates from registered extensions in the order that they were registered</li>
 <li>Apply all the <code>JasperRegistry.Settings.Alter()</code> or <code>Replace()</code> delegates configured in your <code>JasperRegistry</code> in the order that they were
@@ -125,9 +126,16 @@ registered to ensure that the application specific options always win out over t
 <p>Jasper uses the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration">.NET Core ConfigurationBuilder</a> to get config data and bind it to objects.</p>
 <pre><code class="language-csharp">&#xA;Configuration.SetBasePath(&quot;path&quot;)&#xA;    .AddJsonFile(&quot;myconfig.json&quot;)&#xA;    .AddJsonFile(&quot;myotherconfig.json.config&quot;)&#xA;    .AddEnvironmentVariables();&#xA;&#xA;</code></pre>
 <p>If you need to bind a settings class that does not follow the convention of ending with <code>Settings</code> then use the <code>Configure</code> method to tell Jasper which class you want to bind.</p>
-<pre><code class="language-csharp">&#xA;Settings.Configure&lt;Colors&gt;();&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;Settings.Require&lt;Colors&gt;();&#xA;</code></pre>
 <p>If a settings class needs additional information to bind correctly, such as being in a nested sub-section, use the <code>Configure</code> method.</p>
 <pre><code class="language-csharp">&#xA;Settings.Configure&lt;MySettings&gt;(_ =&gt; _.GetSection(&quot;subsection&quot;));&#xA;</code></pre>
+<h2 id="alter-the-application-with-iconfiguration">Alter the Application with IConfiguration</h2>
+<p>To actually use the compiled configuration to alter the current <code>JasperRegistry</code> that defines
+your application like this simple example that just plucks a value from configuration and applies
+that to the <code>ServiceName</code> for the application:</p>
+<pre><code class="language-csharp">&#xA;public class UsingConfigApp : JasperRegistry&#xA;{&#xA;    public UsingConfigApp()&#xA;    {&#xA;        // Ignore this please;)&#xA;        Handlers.DisableConventionalDiscovery();&#xA;&#xA;&#xA;        Configuration&#xA;            .AddInMemoryCollection(new Dictionary&lt;string, string&gt; {{&quot;AppName&quot;, &quot;WocketInMyPocket&quot;}});&#xA;&#xA;        Settings.WithConfig(c =&gt; ServiceName = c[&quot;AppName&quot;]);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Just to show that in action, here is the unit test for that behavior:</p>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void can_customize_based_on_only_configuration()&#xA;{&#xA;    using (var runtime = JasperRuntime.For&lt;UsingConfigApp&gt;())&#xA;    {&#xA;        runtime.ServiceName.ShouldBe(&quot;WocketInMyPocket&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="modify-settings">Modify Settings</h2>
 <p>It may be necessary to modify a settings object after it has been loaded from configuration.  Settings can be altered:</p>
 <pre><code class="language-csharp">&#xA;Settings.Alter&lt;Jasper.Testing.Settings.MyFakeSettings&gt;(_ =&gt;&#xA;{&#xA;    _.SomeSetting = 5;&#xA;});&#xA;&#xA;// or additionally use IConfiguration&#xA;Settings.Alter&lt;MyFakeSettings&gt;((config, settings) =&gt;&#xA;{&#xA;    settings.SomeSetting = int.Parse(config[&quot;SomeKey&quot;]);&#xA;});&#xA;&#xA;&#xA;</code></pre>

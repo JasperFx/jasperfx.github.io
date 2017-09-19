@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - General Conventions</title>
+		<title>JasperFx - Request / Reply</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/conventions/datetime" title="DateTime Conventions">Previous</a></li>
-		      	<li><a href="/documentation/conventions/http" title="HTTP Conventions">Next</a></li>
+		      	<li><a href="/documentation/messaging/publishing/pubsub" title="Publish / Subscribe">Previous</a></li>
+		      	<li><a href="/documentation/messaging/publishing/delayed" title="Delayed Job Processing">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -66,7 +66,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/conventions">Conventions</a></li><li class="active">General Conventions</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/publishing">Publishing Messages</a></li><li class="active">Request / Reply</li></ol>
 		  	</nav>
 		  </div>
 
@@ -76,27 +76,42 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.2.0</h3>
+		      	<h3>JasperFx 0.5.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/conventions/http">HTTP Conventions</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/conventions/datetime">DateTime Conventions</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/publishing/delayed">Delayed Job Processing</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/publishing/pubsub">Publish / Subscribe</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>General Conventions<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/conventions/general.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Request / Reply<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/publishing/requestreply.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title:General Conventions-->
+			      		<!--title:Request / Reply -->
+<p>From <a href="https://en.wikipedia.org/wiki/Request%E2%80%93response">Wikipedia</a>:</p>
+<blockquote>
+<p>Request–response, or request–reply, is one of the basic methods computers use to communicate with each other, in which the first computer sends a request for some data and the second computer responds to the request. Usually, there is a series of such interchanges until the complete message is sent; browsing a web page is an example of request–response communication. Request–response can be seen as a telephone call, in which someone is called and they answer the call.</p>
+</blockquote>
+<p>While you'll probably use HTTP services more often than not for request/reply, you also have the option to use the messaging support like this:</p>
+<pre><code class="language-csharp">&#xA;public async Task RequestReply(IServiceBus bus)&#xA;{&#xA;    var pong = await bus.Request&lt;PongMessage&gt;(new PingMessage());&#xA;    // do something with the pong&#xA;}&#xA;</code></pre>
+<p>In this case, we're sending a <code>Ping</code> message and getting a <code>Task&lt;Pong&gt;</code> object back to track
+the expected response. This operation works by sending a message with header values denoting that the original sender is interested in a response. When the response is successfully received back
+in the original sender, Jasper will set the result of the <code>Task&lt;Pong&gt;</code>.</p>
+<p>Definitely note that this operation will throw a timeout exception if the reply is not received within the set threshold (10 seconds by default).</p>
+<p>To customize the timeout or even the destination for the request, you have this syntax:</p>
+<pre><code class="language-csharp">&#xA;public async Task CustomizedRequestReply(IServiceBus bus)&#xA;{&#xA;    var pong = await bus.Request&lt;PongMessage&gt;(new PingMessage(), new RequestOptions&#xA;    {&#xA;        // Override the destination&#xA;        Destination = new Uri(&quot;tcp://someserver:2000&quot;),&#xA;&#xA;        // Override the timeout period for the expected reply&#xA;        Timeout = 20.Seconds()&#xA;    });&#xA;    // do something with the pong&#xA;}&#xA;</code></pre>
+<p>To add some more context, the request in the receiving system should have a handler that
+returns a <code>Pong</code> message as a cascading message like this one:</p>
+<pre><code class="language-csharp">&#xA;public class PingPongHandler&#xA;{&#xA;    public PongMessage Handle(PingMessage message)&#xA;    {&#xA;        return new PongMessage();&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -104,12 +119,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/conventions/datetime">DateTime Conventions</a>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/publishing/pubsub">Publish / Subscribe</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/conventions/http">HTTP Conventions</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/publishing/delayed">Delayed Job Processing</a>
 
 				        </span>
 			      	</nav>

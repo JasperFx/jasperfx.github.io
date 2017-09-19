@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - DateTime Conventions</title>
+		<title>JasperFx - Invoking or Enqueuing a Message Locally</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -50,8 +50,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/conventions" title="Conventions">Previous</a></li>
-		      	<li><a href="/documentation/conventions/general" title="General Conventions">Next</a></li>
+		      	<li><a href="/documentation/messaging/publishing/delayed" title="Delayed Job Processing">Previous</a></li>
+		      	<li><a href="/documentation/messaging/publishing/customizing_envelopes" title="Customizing the Sent Message Envelopes">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -66,7 +66,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/conventions">Conventions</a></li><li class="active">DateTime Conventions</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/publishing">Publishing Messages</a></li><li class="active">Invoking or Enqueuing a Message Locally</li></ol>
 		  	</nav>
 		  </div>
 
@@ -76,27 +76,36 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.2.0</h3>
+		      	<h3>JasperFx 0.5.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/conventions/general">General Conventions</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/conventions">Conventions</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/publishing/customizing_envelopes">Customizing the Sent Message Envelopes</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/publishing/delayed">Delayed Job Processing</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>DateTime Conventions<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/conventions/datetime.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Invoking or Enqueuing a Message Locally<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/publishing/invoke.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title:DateTime Conventions-->
+			      		<!--title:Invoking or Enqueuing a Message Locally-->
+<p>Assuming that your application has a message handler for a given message like <code>InvoiceCreated</code>
+in the sample below, you can consume and process that message inline with this code:</p>
+<pre><code class="language-csharp">&#xA;public Task Invoke(IServiceBus bus)&#xA;{&#xA;    var @event = new InvoiceCreated&#xA;    {&#xA;        Time = DateTime.UtcNow,&#xA;        Purchaser = &quot;Guy Fieri&quot;,&#xA;        Amount = 112.34,&#xA;        Item = &quot;Cookbook&quot;&#xA;    };&#xA;&#xA;    return bus.Invoke(@event);&#xA;}&#xA;</code></pre>
+<p>The <code>Invoke()</code> method will <strong>not</strong> apply any error policies to retry the message if it fails and you will see exceptions bubble up on failures. This mechanism will process <a href="/documentation/messaging/handling/cascading">Cascading Messages</a> if the message succeeds.</p>
+<p>As an alternative, you can enqueue a message to a local queue to be handled later by the currently running node with <code>IServiceBus.Enqueue()</code>:</p>
+<pre><code class="language-csharp">&#xA;public Task Enqueue(IServiceBus bus)&#xA;{&#xA;    var @event = new InvoiceCreated&#xA;    {&#xA;        Time = DateTime.UtcNow,&#xA;        Purchaser = &quot;Guy Fieri&quot;,&#xA;        Amount = 112.34,&#xA;        Item = &quot;Cookbook&quot;&#xA;    };&#xA;&#xA;    return bus.Enqueue(@event);&#xA;}&#xA;</code></pre>
+<p>The <code>InvoiceCreated</code> message above will be enqueued locally in the application's default channel. By default, that's one of the <a href="/documentation/messaging/transports/loopback">Local Loopback Transport</a> channels, but you can override that to any channel Uri that supports local enqueuing like so:</p>
+<pre><code class="language-csharp">&#xA;public class SetDefaultChannel : JasperRegistry&#xA;{&#xA;    public SetDefaultChannel()&#xA;    {&#xA;        Transports.DefaultIs(&quot;loopback://default&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Today that pretty well means using the loopback transport, but before too long the <a href="/documentation/messaging/transports/durable">Durable Store and Forward Transport</a> will be usable locally as well for persistent queueing in this case. See <a href="https://github.com/JasperFx/jasper/issues/179">this GitHub issue</a> to track the progress.</p>
 
 			      	</div>
 
@@ -104,12 +113,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/conventions">Conventions</a>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/publishing/delayed">Delayed Job Processing</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/conventions/general">General Conventions</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/publishing/customizing_envelopes">Customizing the Sent Message Envelopes</a>
 
 				        </span>
 			      	</nav>

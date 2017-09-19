@@ -76,7 +76,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.2.0</h3>
+		      	<h3>JasperFx 0.5.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -99,6 +99,10 @@
 			      		<!--title:Environment Tests-->
 <p>See <a href="https://github.com/JasperFx/jasper/issues/154">Environment tests on startup</a> for a discussion on what
 this will look like</p>
+<h2 id="ignoring-startup-issues">Ignoring Startup Issues</h2>
+<p>If you so choose, you can allow a Jasper application to successfully start up even with detected
+environment test failures with this configuration:</p>
+<pre><code class="language-csharp">&#xA;public class IgnoreValidationErrors : JasperRegistry&#xA;{&#xA;    public IgnoreValidationErrors()&#xA;    {&#xA;        Advanced.ThrowOnValidationErrors = false;&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
