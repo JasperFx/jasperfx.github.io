@@ -149,7 +149,7 @@ arguments that will be passed into your method by Jasper when a new message is b
 <li>Any service that is registered in your application's IoC container</li>
 <li><code>Envelope</code></li>
 <li>The <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/conventions/datetime'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p></li>
-<li>Services or variables that match a registered code generation strategy. See <a href="/documentation/middleware_and_codegen">Middleware and Runtime Code Generation</a> for more information on this mechanism.</li>
+<li>Services or variables that match a registered code generation strategy. See <a href="/documentation/middleware_and_codegen">Jasper Middleware and Codegen</a> for more information on this mechanism.</li>
 </ol>
 <h2 id="cascading-messages-from-actions">Cascading Messages from Actions</h2>
 <p>To have additional messages queued up to be sent out when the current message has been successfully completed,
@@ -158,7 +158,7 @@ you can return the outgoing messages from your handler methods with <a href="/do
 <p>To access the <code>Envelope</code> for the current message being handled in your message handler, just accept <code>Envelope</code> as a method
 argument like this:</p>
 <pre><code class="language-csharp">&#xA;public class EnvelopeUsingHandler&#xA;{&#xA;    public void Handle(InvoiceCreated message, Envelope envelope)&#xA;    {&#xA;        var howOldIsThisMessage =&#xA;            DateTime.UtcNow.Subtract(envelope.SentAt);&#xA;    }&#xA;}&#xA;</code></pre>
-<p>See <a href="/documentation/messaging/envelope">Working with Message Envelopes</a> for more information on interacting with <code>Envelope</code> objects.</p>
+<p>See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/envelope'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information on interacting with <code>Envelope</code> objects.</p>
 
 			      	</div>
 

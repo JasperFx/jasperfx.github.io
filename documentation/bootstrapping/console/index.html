@@ -98,8 +98,8 @@
 			      	<div id="main-pane">
 			      		<!--title:Jasper in Console Applications-->
 <p>At this time, the Jasper team is focused on hosting applications either in IIS (or nginx) or as a console application that would be suitable for
-running in a Docker container. To that end, we've added the <code>JasperAgent</code> static class as a helper for quickly standing up Jasper applications in a
-console application.</p>
+running in a Docker container. To that end, we've added the <code>JasperAgent</code> static class in the
+external <code>Jasper.CommandLine</code> Nuget library as a helper for quickly standing up Jasper applications in a console application.</p>
 <p>The sample usage from the <a href="/documentation/getting_started">getting started</a> topic would look like this:</p>
 <pre><code class="language-csharp">&#xA;&#xA;using Jasper.CommandLine;&#xA;&#xA;namespace MyApp&#xA;{&#xA;    class Program&#xA;    {&#xA;        static int Main(string[] args)&#xA;        {&#xA;            // This bootstraps and runs the Jasper&#xA;            // application as defined by MyAppRegistry&#xA;            // until the executable is stopped&#xA;            return JasperAgent.Run&lt;MyAppRegistry&gt;(args);&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>At runtime, <code>JasperAgent</code> uses the <code>JasperRegistry</code> you hand it to <a href="/documentation/bootstrapping">bootstrap a JasperRuntime</a> and run the application until the console process is stopped.</p>
@@ -107,6 +107,43 @@ console application.</p>
 <pre><code class="language-csharp">&#xA;static int Main(string[] args)&#xA;{&#xA;    return JasperAgent.Run&lt;MyAppRegistry&gt;(args, _ =&gt;&#xA;    {&#xA;        if (args.Length == 1)&#xA;        {&#xA;            _.EnvironmentName = args[0];&#xA;        }&#xA;    });&#xA;}&#xA;</code></pre>
 <p>Or like this:</p>
 <pre><code class="language-csharp">&#xA;static int Main(string[] args)&#xA;{&#xA;    // This gives you the ability to programmatically&#xA;    // construct the application based on the command line&#xA;    // arguments&#xA;    var registry = new JasperRegistry();&#xA;&#xA;&#xA;    return JasperAgent.Run(registry);&#xA;}&#xA;</code></pre>
+<p>Let's say that your Jasper application compiles to <code>MyApp.exe</code> and uses the <code>JasperAgent</code> class
+to run the commands. In that case you can run your application simply by typing <code>MyApp</code> at the
+command line with no arguments.</p>
+<p>However, the <code>Jasper.CommandLine</code> library adds some additional commands for running, validating, or describing the running application.</p>
+<h2 id="overriding-the-environment-name">Overriding the Environment Name</h2>
+<p>For example, you can also use this syntax to run your application in &quot;Development&quot; mode:</p>
+<pre><code>MyApp run --environment Development
+</code></pre>
+<p>or</p>
+<pre><code>MyApp run -e Development
+</code></pre>
+<p>If you run this command, your application will start with <code>JasperRegistry.EnvironmentName</code> equal to <em>Development</em>. If you programmatically set the environment name in your <code>JasperRegistry</code>, that
+setting will win out over the command line flag.</p>
+<h2 id="running-with-verbose-console-tracing">Running with Verbose Console Tracing</h2>
+<p>Likewise, to see more verbose information on start up and runtime console tracing, use:</p>
+<pre><code>MyApp run --verbose
+</code></pre>
+<p>or</p>
+<pre><code>MyApp run -v
+</code></pre>
+<h2 id="validating-the-configured-application">Validating the Configured Application</h2>
+<p>You may want to simply try to bootstrap the application and run all the <a href="/documentation/bootstrapping/environment_tests">environment tests</a> and report out the results. That syntax is:</p>
+<pre><code>MyApp validate
+</code></pre>
+<p>which also respects the same <code>--environment</code> and <code>--verbose</code> flags as the run command. This command will bootstrap the application, run all the environment tests and start up validations, report on the success or failure, and shut down the application. Do note that if any environment tests fail, this command will return a non-zero return code that should be sufficient to let any
+build scripting tool you're using know that the validation failed.</p>
+<h2 id="list-registered-services">List Registered Services</h2>
+<p><strong>This is in flight</strong></p>
+<p>As of right now (Sept 2017), Jasper only supports the <a href="http://structuremap.github.io">StructureMap</a> container, but is likely to transition to just using the built in
+ASP.Net Core IoC container before it hits 1.0. Regardless, we expect this command will live on.</p>
+<p>To bootstrap the application and list out all the services registered to the system's IoC container, use this command:</p>
+<pre><code>MyApp services
+</code></pre>
+<p>And again, this command respects both the <code>--environment</code> and <code>--verbose</code> flags</p>
+<h2 id="subscriptions">Subscriptions</h2>
+<p>See <a href="/documentation/messaging/routing/subscriptions">Dynamic Subscriptions</a> for information about the <code>subscriptions</code> command and related workflow for exporting, updating, or validating dynamic
+subscriptions.</p>
 
 			      	</div>
 

@@ -97,6 +97,24 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Jasper.Marten-->
+<p>The Jasper.Marten library provides some easy to use recipes for integrating  <a href="https://jasperfx.github.io/marten">Marten</a> and Postgresql into a Jasper application. All you need to do to get
+started with Marten + Jasper is to add the <em>Jasper.Marten</em> nuget to your project and at minimum,
+at least set the connection string to the underlying Postgresql database by configuring
+Marten's <code>StoreOptions</code> object like this:</p>
+<pre><code class="language-csharp">&#xA;public class AppWithMarten : JasperRegistry&#xA;{&#xA;    public AppWithMarten()&#xA;    {&#xA;        // StoreOptions is a Marten object that fulfills the same&#xA;        // role as JasperRegistry&#xA;        Settings.Alter&lt;StoreOptions&gt;((config, marten) =&gt;&#xA;        {&#xA;            // At the simplest, you would just need to tell Marten&#xA;            // the connection string to the application database&#xA;            marten.Connection(config.GetConnectionString(&quot;marten&quot;));&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Once that's done, you will be able to inject the following Marten services as either constructor
+arguments or method parameters in message or HTTP handlers:</p>
+<ol>
+<li><code>IDocumentStore</code></li>
+<li><code>IDocumentSession</code> - opened with the default <code>IDocumentStore.OpenSession()</code> method</li>
+<li><code>IQuerySession</code></li>
+</ol>
+<p>Likewise, all of these service will be registered in the underlying IoC container for the application.</p>
+<p>If you need to customize an <code>IDocumentSession</code> for something like transaction levels or automatic dirty checking, we recommend that you just take in <code>IDocumentStore</code> and create teh session in the application code.</p>
+<p>As an example:</p>
+<pre><code class="language-csharp">&#xA;public class UsingDocumentSessionHandler&#xA;{&#xA;    // Take in IDocumentStore as a constructor argument&#xA;    public UsingDocumentSessionHandler(IDocumentStore store)&#xA;    {&#xA;    }&#xA;&#xA;    // Take in IDocumentSession as an argument&#xA;    public void Handle(Message1 message, IDocumentSession session)&#xA;    {&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>On top of the auto-discovered Marten service integration, the Jasper.Marten extension also has:</p>
+<ul class="table-of-contents"><li><a href="/documentation/extensions/marten/subscriptions">Marten Backed Subscription Storage</a></li><li><a href="/documentation/extensions/marten/middleware">Transactional Middleware</a></li></ul>
 
 			      	</div>
 

@@ -50,7 +50,7 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/extensions/marten/streaming" title="Streaming Marten Data in HTTP Services">Previous</a></li>
+		      	<li><a href="/documentation/extensions/marten/subscriptions" title="Marten Backed Subscription Storage">Previous</a></li>
 		      	<li><a href="/documentation/diagnostics" title="Jasper Diagnostics">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
@@ -84,7 +84,7 @@
 		        </ul>
 
 		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/diagnostics">Jasper Diagnostics</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/marten/streaming">Streaming Marten Data in HTTP Services</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/marten/subscriptions">Marten Backed Subscription Storage</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -97,6 +97,17 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Transactional Middleware-->
+<p>You can explicitly apply transactional middleware to a message or HTTP handler action with the
+<code>[MartenTransaction]</code> attribute as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class CreateDocCommandHandler&#xA;{&#xA;    [MartenTransaction]&#xA;    public void Handle(CreateDocCommand message, IDocumentSession session)&#xA;    {&#xA;        session.Store(new FakeDoc{Id = message.Id});&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Doing this will simply insert a call to <code>IDocumentSession.SaveChangesAsync()</code> after the last handler action is called within the generated <code>MessageHandler</code>. This effectively makes a unit of work out of all the actions that might be called to process a single message.</p>
+<p>This attribute can appear on either the handler class that will apply to all the actions on that class, or on a specific action method.</p>
+<p>If so desired, you <em>can</em> also use a policy to apply the Marten transaction semantics with a policy. As an example, let's say that you want every message handler where the message type
+name ends with &quot;Command&quot; to use the Marten transaction middleware. You could accomplish that
+with a handler policy like this:</p>
+<pre><code class="language-csharp">&#xA;public class CommandsAreTransactional : IHandlerPolicy&#xA;{&#xA;    public void Apply(HandlerGraph graph)&#xA;    {&#xA;        // Important! Create a brand new TransactionalFrame&#xA;        // for each chain&#xA;        graph&#xA;            .Chains&#xA;            .Where(x =&gt; x.MessageType.Name.EndsWith(&quot;Command&quot;))&#xA;            .Each(x =&gt; x.Middleware.Add(new TransactionalFrame()));&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Then add the policy to your application like this:</p>
+<pre><code class="language-csharp">&#xA;public class CommandsAreTransactionalApp : JasperRegistry&#xA;{&#xA;    public CommandsAreTransactionalApp()&#xA;    {&#xA;        // And actually use the policy&#xA;        Handlers.GlobalPolicy&lt;CommandsAreTransactional&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -104,7 +115,7 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/extensions/marten/streaming">Streaming Marten Data in HTTP Services</a>
+				        	<strong>Previous: </strong><a href="/documentation/extensions/marten/subscriptions">Marten Backed Subscription Storage</a>
 
 				        </span>
 				        <span class="pull-right">
