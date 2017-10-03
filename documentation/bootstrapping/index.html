@@ -37,9 +37,6 @@
 		    </div>
 		    <nav class="collapse navbar-collapse" role="navigation">
 		      <ul class="nav navbar-nav pull-right">
-            <li>
-              <a href="/tutorial">Tutorial</a>
-            </li>
 		        <li>
 		          <a href="/documentation/getting_started">Getting Started</a>
 		        </li>
@@ -109,7 +106,7 @@ a console application. See <a href="/documentation/bootstrapping/console">Jasper
 <pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.Basic())&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
 <p>Which is just syntactical sugar for:</p>
 <pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For(new JasperRegistry()))&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
-<p>This option might be enough to do some useful things with Jasper as a command executor at the least, but more likely you'll want to add other elements to your system like additional services to the <a href="/documentation/ioc">underlying IoC container</a>, <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/channels'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p>, or <a href="/documentation/bootstrapping/aspnetcore">ASP.Net Core middleware</a>.</p>
+<p>This option might be enough to do some useful things with Jasper as a command executor at the least, but more likely you'll want to add other elements to your system like additional services to the <a href="/documentation/ioc">underlying IoC container</a>, <a href="/documentation/messaging/configuration">the messaging configuration</a>, or <a href="/documentation/bootstrapping/aspnetcore">ASP.Net Core middleware</a>.</p>
 <p>All configuration and set up of Jasper starts with the <code>JasperRegistry</code> class. Typically you would subclass <code>JasperRegistry</code>, but if you have only minimal configuration needs, you might bootstrap like this:</p>
 <pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For(_ =&gt;&#xA;{&#xA;    _.Transports.ListenForMessagesFrom(&quot;tcp://localhost:2001&quot;);&#xA;}))&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
 <p>More likely though is that you will opt to define your application with a custom <code>JasperRegistry</code>:</p>

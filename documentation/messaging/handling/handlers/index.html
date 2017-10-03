@@ -37,9 +37,6 @@
 		    </div>
 		    <nav class="collapse navbar-collapse" role="navigation">
 		      <ul class="nav navbar-nav pull-right">
-            <li>
-              <a href="/tutorial">Tutorial</a>
-            </li>
 		        <li>
 		          <a href="/documentation/getting_started">Getting Started</a>
 		        </li>
@@ -148,7 +145,7 @@ arguments that will be passed into your method by Jasper when a new message is b
 <ol>
 <li>Any service that is registered in your application's IoC container</li>
 <li><code>Envelope</code></li>
-<li>The <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/conventions/datetime'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p></li>
+<li>The current time in UTC if you have a parameter like <code>DateTime now</code> or <code>DateTimeOffset now</code></li>
 <li>Services or variables that match a registered code generation strategy. See <a href="/documentation/middleware_and_codegen">Jasper Middleware and Codegen</a> for more information on this mechanism.</li>
 </ol>
 <h2 id="cascading-messages-from-actions">Cascading Messages from Actions</h2>
@@ -158,7 +155,7 @@ you can return the outgoing messages from your handler methods with <a href="/do
 <p>To access the <code>Envelope</code> for the current message being handled in your message handler, just accept <code>Envelope</code> as a method
 argument like this:</p>
 <pre><code class="language-csharp">&#xA;public class EnvelopeUsingHandler&#xA;{&#xA;    public void Handle(InvoiceCreated message, Envelope envelope)&#xA;    {&#xA;        var howOldIsThisMessage =&#xA;            DateTime.UtcNow.Subtract(envelope.SentAt);&#xA;    }&#xA;}&#xA;</code></pre>
-<p>See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/envelope'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information on interacting with <code>Envelope</code> objects.</p>
+<p>See <a href="/documentation/messaging/publishing/customizing_envelopes">Customizing the Sent Message Envelopes</a> for more information on interacting with <code>Envelope</code> objects.</p>
 
 			      	</div>
 

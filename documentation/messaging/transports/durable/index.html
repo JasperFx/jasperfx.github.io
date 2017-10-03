@@ -37,9 +37,6 @@
 		    </div>
 		    <nav class="collapse navbar-collapse" role="navigation">
 		      <ul class="nav navbar-nav pull-right">
-            <li>
-              <a href="/tutorial">Tutorial</a>
-            </li>
 		        <li>
 		          <a href="/documentation/getting_started">Getting Started</a>
 		        </li>
@@ -98,7 +95,7 @@
 			      	<div id="main-pane">
 			      		<!--title:Durable Store and Forward Transport-->
 <div class="alert alert-warning"><b>Note!</b> This transport works by sending traffic directly via sockets and may not be acceptable in your IT department policies. We are pursuing the usage of JWT's to secure the traffic between applications using the socket based transports, see <a href="https://github.com/JasperFx/jasper/issues/184">the GitHub issue</a></div>
-<div class="alert alert-info"><b>Note!</b> The durable transport is "wire compatible" with the lightweight transport, and it is possible to send from 
+<div class="alert alert-info"><b>Note!</b> The durable transport is "wire compatible" with the lightweight transport, and it is possible to send from
 a durable transport Uri in one application to a lightweight transport listener in a second application or vice versa.</div>
 <p>The durable transport is meant for scenarios where guaranteed delivery is required. The durable transport is a &quot;<a href="https://en.wikipedia.org/wiki/Store_and_forward">store and forward</a>&quot; queueing mechanism
 that uses some kind of pluggable persistence to track messages from the sender until they are successfully received by the intended subscriber,
@@ -108,7 +105,7 @@ after too many failures.</p>
 storage and processed when the system is restarted. Jasper does not include any kind of persistence in the core Jasper library, so you'll have to use
 an extension library to add that behavior. Today the options are:</p>
 <ol>
-<li>A <a href="https://github.com/CoreyKaylor/Lightning.NET">LightningDb</a> backed local persistence mechanism. See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/extensions/lightningdb/local'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information on using this addon.</li>
+<li>A <a href="https://github.com/CoreyKaylor/Lightning.NET">LightningDb</a> backed local persistence mechanism. See <a href="/documentation/extensions/lightningdb">Jasper.LightningDb</a> for more information on using this addon.</li>
 <li><strong>Forthcoming</strong> - we're looking into adding a database-backed message persistence mechanism. Follow <a href="https://github.com/JasperFx/jasper/issues/204">that discussion on GitHub here</a>.</li>
 </ol>
 <p>To use the durable transport, here are examples of all the common use cases:</p>
