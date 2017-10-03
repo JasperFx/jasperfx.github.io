@@ -124,7 +124,7 @@ Jasper framework will pull the real values from the underlying <code>IConfigurat
 <pre><code class="language-csharp">&#xA;public class MyAppUsingUriLookups : JasperRegistry&#xA;{&#xA;    public MyAppUsingUriLookups()&#xA;    {&#xA;        Configuration&#xA;            .AddInMemoryCollection(new Dictionary&lt;string, string&gt;{{&quot;incoming&quot;, &quot;tcp://server3:2000&quot;}});&#xA;&#xA;        // This usage assumes that there is a value in the configuration&#xA;        // with the key &quot;incoming&quot; that corresponds to a Uri&#xA;        Transports.ListenForMessagesFrom(&quot;config://incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Behind the scenes, the value for <em>config://incoming</em> is interpreted by Jasper as the Uri string stored in configuration with the key &quot;incoming,&quot;
 or in code terms, <code>IConfigurationRoot.GetValue&lt;string&gt;(&quot;incoming&quot;)</code></p>
-<p>There is also an addon Uri lookup that uses Consul. See <a href="/documentation/extensions/consul/uri_lookup">Consul Backed Uri Lookups</a> for more information.</p>
+<p>There is also an addon Uri lookup that uses Consul. See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/extensions/consul/uri_lookup'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information.</p>
 <p>The Uri aliases are respected anywhere where <code>Uri's</code> are accepted as arguments in <code>JasperRegistry</code> or when explicitly specifying the destination
 of a message being sent through the messaging.</p>
 
