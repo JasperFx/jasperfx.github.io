@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>JasperFx - Using Storyteller against Jasper Systems</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">JasperFx</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+		        <li>
+		          <a href="/documentation/getting_started">Getting Started</a>
+		        </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+		        <li>
+		        <li>
+<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/documentation/testing/http_endpoints" title="Testing HTTP Endpoints with Alba">Previous</a></li>
+		      	<li><a href="/documentation/testing/message_tracking" title="Message Tracking">Next</a></li>
+		      </ul>
+		      <div class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input id="search" type="search" class="form-control" placeholder="Search">
+		        </div>
+		      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/testing">Automated Testing Support</a></li><li class="active">Using Storyteller against Jasper Systems</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>JasperFx 0.5.0</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/testing/message_tracking">Message Tracking</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/testing/http_endpoints">Testing HTTP Endpoints with Alba</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Using Storyteller against Jasper Systems<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/testing/storyteller.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--title:Using Storyteller against Jasper Systems-->
+<p>Jasper comes with a pre-built recipe for doing integration or acceptance testing with <a href="http://storyteller.github.io">Storyteller</a> using
+the <em>Jasper.Storyteller</em> extension library.</p>
+<p>To get started with this package, create a new console application in your solution and add the <code>Jasper.Storyteller</code> Nuget dependency. Next,
+in the <code>Program.Main()</code> method, use this code to connect your application to Storyteller:</p>
+<pre><code class="language-csharp">&#xA;JasperStorytellerHost.Run&lt;MyJasperAppRegistry&gt;(args);&#xA;</code></pre>
+<p>In this case, <code>MyJasperAppRegistry</code> would be the name of whatever the <code>JasperRegistry</code> class is for your application.</p>
+<p>If you want to hook into events during the Storyteller bootstrapping, teardown, or specification execution, you can subclass <code>JasperStorytellerHost&lt;T&gt;</code> like this:</p>
+<pre><code class="language-csharp">&#xA;public class MyJasperStorytellerHarness : JasperStorytellerHost&lt;MyJasperAppRegistry&gt;&#xA;{&#xA;    public MyJasperStorytellerHarness()&#xA;    {&#xA;&#xA;        // Customize the application by adding testing concerns,&#xA;        // extra logging, or maybe override service registrations&#xA;        // with stubs&#xA;        Registry.EnvironmentName = &quot;Testing&quot;;&#xA;&#xA;        Registry.Logging.UseConsoleLogging = true;&#xA;    }&#xA;&#xA;    protected override void beforeAll()&#xA;    {&#xA;        // Runs before any specification are executed one time&#xA;        // Perfect place to load any kind of static data&#xA;&#xA;        // Note that you have access to the JasperRuntime&#xA;        // of the running application here&#xA;        Runtime.Get&lt;ISomeService&gt;().StartUp();&#xA;    }&#xA;&#xA;    protected override void afterEach(ISpecContext context)&#xA;    {&#xA;        // Called immediately after each specification is executed&#xA;        Runtime.Get&lt;ISomeService&gt;().CleanUpTestRunData();&#xA;    }&#xA;&#xA;    protected override void beforeEach()&#xA;    {&#xA;        // Called immediately before each specification is executed&#xA;        Runtime.Get&lt;ISomeService&gt;().LoadTestingData();&#xA;    }&#xA;&#xA;    protected override void afterAll()&#xA;    {&#xA;        // Called right before shutting down the Storyteller harness&#xA;        Runtime.Get&lt;ISomeService&gt;().Shutdown();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Then, your bootstrapping changes slightly to:</p>
+<pre><code class="language-csharp">&#xA;StorytellerAgent.Run(args, new MyJasperStorytellerHarness());&#xA;</code></pre>
+<h2 id="messagingfixture">MessagingFixture</h2>
+<p>Jasper.Storyteller also comes with a <code>MessagingFixture</code> base class you can use to create Storyteller Fixtures that send messages to the running service bus with some facility to use
+the built in <a href="/documentation/testing/message_tracking">Message Tracking</a> to &quot;know&quot; when all the activity
+related to the message being sent has completed.</p>
+<p>Here's a sample <code>MessagingFixture</code> from the sample project:</p>
+<pre><code class="language-csharp">&#xA;public class TeamFixture : MessagingFixture&#xA;{&#xA;    [FormatAs(&quot;A new team {team} has joined the league&quot;)]&#xA;    public Task CreateNewTeam(string team)&#xA;    {&#xA;        // This method sends a message to the service bus and waits&#xA;        // until it can detect that the message has been fully processed&#xA;        // on the receiving side or timed out&#xA;        return SendMessageAndWaitForCompletion(new TeamAdded {Name = team});&#xA;    }&#xA;&#xA;    [FormatAs(&quot;On {day}, the score was {homeTeam} {homeScore} vs. {visitorTeam} {visitorScore}&quot;)]&#xA;    public Task RecordGameResult(DateTime day, string homeTeam, int homeScore, string visitorTeam, int visitorScore)&#xA;    {&#xA;        var message = new GamePlayed&#xA;        {&#xA;            Date = day.Date,&#xA;            Home = new TeamResult{Name = homeTeam, Score = homeScore},&#xA;            Visitor = new TeamResult{Name = visitorTeam, Score = visitorScore}&#xA;        };&#xA;&#xA;        return SendMessageAndWaitForCompletion(message);&#xA;    }&#xA;&#xA;    [FormatAs(&quot;Send an un-handled message&quot;)]&#xA;    public Task SendUnHandledMessage()&#xA;    {&#xA;        return SendMessageAndWaitForCompletion(new UnhandledMessage());&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="diagnostics">Diagnostics</h2>
+<p>If there is any messages sent or received by the service bus feature during a Storyteller specification, there will be a custom results tab called &quot;Messages&quot; in the Storyteller
+specification results that presents information about the message activity that will
+look like this:</p>
+<p><h5><strong>content/storyteller-messaging-log.png</strong></h5><img src="/content/storyteller-messaging-log.png" style="max-width:100%" /></p>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/testing/http_endpoints">Testing HTTP Endpoints with Alba</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/testing/message_tracking">Message Tracking</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>JasperFx - Lightweight Fire and Forget Transport</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">JasperFx</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+		        <li>
+		          <a href="/documentation/getting_started">Getting Started</a>
+		        </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+		        <li>
+		        <li>
+<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/documentation/messaging/transports" title="Messaging Transports">Previous</a></li>
+		      	<li><a href="/documentation/messaging/transports/durable" title="Durable Store and Forward Transport">Next</a></li>
+		      </ul>
+		      <div class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input id="search" type="search" class="form-control" placeholder="Search">
+		        </div>
+		      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/transports">Messaging Transports</a></li><li class="active">Lightweight Fire and Forget Transport</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>JasperFx 0.5.0</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/transports/durable">Durable Store and Forward Transport</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/transports">Messaging Transports</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Lightweight Fire and Forget Transport<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/transports/lightweight.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--title:Lightweight Fire and Forget Transport-->
+<div class="alert alert-info"><b>Note!</b> The lightweight transport was conceived as a .Net equivalent to <a href="http://zeromq.org/">ZeroMQ</a></div>
+<div class="alert alert-warning"><b>Note!</b> This transport works by sending traffic directly via sockets and may not be acceptable in your IT department policies. We are pursuing the usage of JWT's to secure the traffic between applications using the socket based transports, see <a href="https://github.com/JasperFx/jasper/issues/184">the GitHub issue</a></div>
+<p>The lightweight transport is meant for scenarios where message delivery speed and throughput is important <strong>and</strong> guaranteed delivery is not required.
+In the case of a failure to send a message, the lightweight transport will retry to send the message a few times (3 is the default), but the message will
+be permanently discarded in about 10 seconds if it is unsuccessful. The lightweight transport is useful for control messages or messages that have
+a very limited value in terms of time. My shop uses this transport for frequent status update messages that are very quickly obsolete.</p>
+<p>To use the lightweight transport, here are examples of all the common use cases:</p>
+<pre><code class="language-csharp">&#xA;public class LightweightTransportApp : JasperRegistry&#xA;{&#xA;    public LightweightTransportApp()&#xA;    {&#xA;        // Nevermind, just disable it altogether&#xA;        Transports.Durable.Disable();&#xA;&#xA;        // Set up a listener (this is optional)&#xA;        Transports.Lightweight.ListenOnPort(4000);&#xA;&#xA;        // Make it even faster by discarding any message that fails&#xA;        Transports.Lightweight.MaximumSendAttempts(1);&#xA;&#xA;        // Configure the maximum number of threads dedicated to processing&#xA;        // messages being received by queue. 5 is the default&#xA;        Transports.Lightweight.DefaultQueue.MaximumParallelization(5);&#xA;        Transports.Lightweight.Queue(&quot;important&quot;).MaximumParallelization(10);&#xA;        Transports.Lightweight.Queue(&quot;lowpriority&quot;).MaximumParallelization(3);&#xA;        Transports.Lightweight.Queue(&quot;control&quot;).Sequential();&#xA;&#xA;&#xA;        // Or, listen by Uri&#xA;        // This directs Jasper to listen for messages at port 2200&#xA;        // with the lightweight transport&#xA;        Transports.ListenForMessagesFrom(&quot;tcp://localhost:2200&quot;);&#xA;&#xA;&#xA;        // Registering a subscription to Message1 that should be&#xA;        // delivered to a load balancer Uri at port 2200 and the &quot;important&quot;&#xA;        // queue&#xA;        Subscribe.To&lt;Message1&gt;().At(&quot;tcp://loadbalancer:2200/important&quot;);&#xA;&#xA;        // Publish the message Message2 to the DNS entry &quot;remoteserver&quot;&#xA;        Publish.Message&lt;Message2&gt;().To(&quot;tcp://remoteserver:2201&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/transports">Messaging Transports</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/messaging/transports/durable">Durable Store and Forward Transport</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
+</html>

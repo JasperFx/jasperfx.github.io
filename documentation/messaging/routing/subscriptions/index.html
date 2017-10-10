@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>JasperFx - Dynamic Subscriptions</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">JasperFx</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+		        <li>
+		          <a href="/documentation/getting_started">Getting Started</a>
+		        </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+		        <li>
+		        <li>
+<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/documentation/messaging/routing/static_routing" title="Static Publishing Rules">Previous</a></li>
+		      	<li><a href="/documentation/messaging/routing/no_routing" title=""No Route" Behavior">Next</a></li>
+		      </ul>
+		      <div class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input id="search" type="search" class="form-control" placeholder="Search">
+		        </div>
+		      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/routing">Routing Messages</a></li><li class="active">Dynamic Subscriptions</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>JasperFx 0.5.0</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/routing/no_routing">"No Route" Behavior</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Dynamic Subscriptions<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/routing/subscriptions.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title:Dynamic Subscriptions-->
+<!--Url:subscriptions-->
+<p>In more advanced usages of the Jasper service bus, you may want your application to be able to
+subscribe to messages produced by a separate application without having to first configure
+the other application. The <em>subscriptions</em> feature is the mechanism to make this registration without having
+to directly couple your Jasper applications to each other.</p>
+<p>The subscriptions support consists of a few pieces and concepts:</p>
+<p><h5><strong>content/subscriptions.png</strong></h5><img src="/content/subscriptions.png" style="max-width:100%" /></p>
+<ol>
+<li>Your application <em>should</em> declare the published messages it wants to subscribe to</li>
+<li><em>Optionally</em>, you may declare the messages that your application publishes <strong>strictly for the sake of diagnostics</strong></li>
+<li>A subscription storage mechanism that persists all the message subscriptions</li>
+<li>Jasper's internal message routing that uses the known subscriptions to decide where published messages should be sent</li>
+<li><em>Optional</em> <a href="/documentation/bootstrapping/console">command line tooling</a> to publish, list, or validate the known subscriptions</li>
+</ol>
+<h2 id="subscription-storage">Subscription Storage</h2>
+<p>The default subscription storage is just an in memory model, so you'll almost certainly want to replace that with some sort of
+durable storage mechanism if you're going to use subscriptions. To use a different subscription storage, you need an implementation
+of the <code>ISubscriptionsRepository</code> interface that you can plug into the application services like so:</p>
+<pre><code class="language-csharp">&#xA;public class SubscriptionStorageApp : JasperRegistry&#xA;{&#xA;    public SubscriptionStorageApp()&#xA;    {&#xA;        // Plug in subscription storage backed by Marten&#xA;        Services.AddSingleton&lt;ISubscriptionsRepository, MartenSubscriptionRepository&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>You can see a <a href="https://github.com/JasperFx/jasper/blob/master/src/JasperBus.Marten/MartenSubscriptionRepository.cs">sample implementation for Marten here</a>.</p>
+<p>As of today, the Jasper community has working subscription storage based on <a href="/documentation/extensions/consul">Consul</a> and
+<a href="/documentation/extensions/marten/subscriptions">Marten</a> on top of a Postgresql database.</p>
+<h2 id="configurating-subscriptions">Configurating Subscriptions</h2>
+<p>Subscriptions are configured in the <code>JasperRegistry</code> class that establishes your application.</p>
+<p>As an example, let's say you have an application that wants to subscribe to messages:</p>
+<pre><code class="language-csharp">&#xA;public class LocalApp : JasperRegistry&#xA;{&#xA;    public LocalApp()&#xA;    {&#xA;        // Explicitly set the logical descriptive&#xA;        // name of this application. The default is&#xA;        // derived from the name of the class&#xA;        ServiceName = &quot;MyApplication&quot;;&#xA;&#xA;        // Incoming messages&#xA;        Transports.ListenForMessagesFrom(&quot;tcp://localhost:2333&quot;);&#xA;&#xA;        // *Optionally* make the subscriptions to the location of the load&#xA;        // balancer in front of your logical application nodes&#xA;        Subscribe.At(&quot;tcp://loadbalancer:2333&quot;);&#xA;&#xA;        // Declare subscriptions to specific message types&#xA;        Subscribe&#xA;            .To&lt;OtherAppMessage1&gt;()&#xA;            .To&lt;OtherAppMessage2&gt;()&#xA;            .To&lt;OtherAppMessage3&gt;();&#xA;&#xA;        // Or just quickly say, &quot;send me everything that&#xA;        // I understand how to handle&quot;&#xA;        Subscribe.ToAllMessages();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>A couple things to note from the sample above:</p>
+<ul>
+<li>The <code>Subscribe.At(Uri)</code> call isn't technically mandatory, but if it's left out, the subscription will be made
+to the local machine where the Jasper node is running. If you're running multiple nodes behind a hardware load
+balancer or using a clustered queue like RabbitMQ, you'll want the subscription made to the load balancer.</li>
+<li>When Jasper makes the subscription, it also gathers up all the message versions and representations that your application
+knows how to read. As long as the publishing application can write to one of those representations and supports the transport
+in your call to <code>Subscribe.At(Uri)</code>, you should be good to go. See the section below on validating subscriptions.</li>
+<li>Your Jasper application <strong>does not automatically publish its subscriptions on application startup</strong>. This is a change from its
+FubuTransportation antecedent. See the section below about publishing subscriptions.</li>
+</ul>
+<h2 id="publishing-subscriptions">Publishing Subscriptions</h2>
+<p>Assuming that you are using the <code>Jasper.CommandLine</code> package to <a href="/documentation/bootstrapping/console">run your Jasper application</a>,
+you'll have an extra command to publish all the subscriptions to the registered subscription storage. Assuming that
+your application compiles to &quot;MyApp.exe,&quot; the command line would be:</p>
+<pre><code>|&gt; MyApp subscriptions publish
+</code></pre>
+<p>If you just want to export the subscriptions to a JSON file where you can view the data that would be published to the
+subscription storage, use:</p>
+<pre><code>|&gt; MyApp subscriptions export --directory ~/subscriptions
+</code></pre>
+<p>where the <code>--directory / -d</code> flag just denotes where you want the file written. assuming that the
+service name is <em>MyApp</em>, the file exported will be <code>MyApp.capabilities.json</code>.</p>
+<p>To just list the subscriptions in the console, it's:</p>
+<pre><code>|&gt; MyApp subscriptions list
+</code></pre>
+<h2 id="declaring-published-messages">Declaring Published Messages</h2>
+<p>Strictly for informational or diagnostic purposes, you can explicitly declare which message types your application
+publishes like this:</p>
+<pre><code class="language-csharp">&#xA;public class PublisherApp : JasperRegistry&#xA;{&#xA;    public PublisherApp()&#xA;    {&#xA;        // Opt into the Consul backed subscriptions&#xA;        // using the default Consul configuration&#xA;        Include&lt;ConsulBackedSubscriptions&gt;();&#xA;&#xA;        Transports.Lightweight.ListenOnPort(2211);&#xA;&#xA;        // 100% Optional for diagnostics&#xA;        Publish.Message&lt;NewUser&gt;();&#xA;        Publish.Message&lt;DeleteUser&gt;();&#xA;&#xA;        // Assume that all concrete types in your application&#xA;        // in your application assembly that implement a marker&#xA;        // interface are published by the application&#xA;        // NOTE: IPublished is just an example and does not exist in Jasper&#xA;        Publish.MessagesMatching(x =&gt; x.CanBeCastTo&lt;IPublished&gt;());&#xA;&#xA;        // This would be the Uri to the load balancer&#xA;        Subscribe.At(&quot;tcp://localhost:2211&quot;);&#xA;        Subscribe.ToAllMessages();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Or if you're okay with this approach, you can use the <code>[Publish]</code> attribute in Jasper like so:</p>
+<pre><code class="language-csharp">&#xA;[Publish]&#xA;public class PublishedMessage1&#xA;{&#xA;&#xA;}&#xA;</code></pre>
+<p><strong>Do note that you can send message types even if that message type is not declared as being published.</strong></p>
+<h2 id="validating-subscriptions">Validating Subscriptions</h2>
+<p>The command line support also has the ability to scan through exported &quot;capabilities&quot; files from the <code>MyApp subscriptions export</code> command
+and report and validate against the entire known ecosystem. Assuming that every related application exports their capabilities (requested subscriptions and known published messages) to a common directory or source control repository, you can use this command:</p>
+<pre><code>|&gt; MyApp subscriptions validate --file subscription-report.json
+</code></pre>
+<p>In the sample above, we're writing the whole <em>messaging graph</em> of matched routes and potential problems to a file named
+<code>subscription-report.json</code>.</p>
+<p>Do note that this command will fail at the command line if it detects any problems unless you also use the <code>--ignore-failures</code> flag. Definitel use this flag if you are only using this command for informational purposes or you aren't being strict about
+marking published messages.</p>
+<p>This command compares publisher and subscription capabilities based on supported transports and message representations. This report can detect:</p>
+<ul>
+<li>Valid message routes for each permutation of message type, subscriber, and publisher</li>
+<li>Messages referenced in subscriptions that have no known known publisher</li>
+<li>Messages that are marked as published but not subscribed to by any known application</li>
+<li>Mismatched subscriptions based on publisher and subscriber capabilities. This will catch any issue with
+having no compatible message representations or matching transports</li>
+</ul>
+<p>See <a href="/documentation/messaging/messages">Reading, Writing, and Versioning Messages</a> for more information.</p>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/messaging/routing/no_routing">"No Route" Behavior</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
+</html>
