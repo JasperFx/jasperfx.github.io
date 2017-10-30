@@ -140,7 +140,7 @@ Any custom serializers should follow some kind of naming convention for content 
 <h2 id="disallowing-non-versioned-messages">Disallowing Non-Versioned Messages</h2>
 <p>As an easy on ramp, Jasper will publish and accept messages with the default <code>application/json</code> content type using Newtonsoft.Json serialization.
 If instead you'd like to enforce versions on all messages being sent or received, you can configure Jasper to only use the versioned content types:</p>
-<pre><code class="language-csharp">&#xA;public class NoUnVersionedMessages : JasperRegistry&#xA;{&#xA;    public NoUnVersionedMessages()&#xA;    {&#xA;        Advanced.AllowNonVersionedSerialization = false;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class NoUnVersionedMessages : JasperRegistry&#xA;{&#xA;    public NoUnVersionedMessages()&#xA;    {&#xA;        Advanced.MediaSelectionMode = MediaSelectionMode.VersionedOnly;&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="message-serializers-and-deserializers">Message Serializers and Deserializers</h2>
 <p>You can create custom message deserializers for a message by providing your own implementation of the <code>IMessageDeserializer</code> interface from Jasper:</p>
 <pre><code class="language-csharp">&#xA;public interface IMessageDeserializer&#xA;{&#xA;    string MessageType { get; }&#xA;    Type DotNetType { get; }&#xA;&#xA;    string ContentType { get; }&#xA;    object ReadFromData(byte[] data);&#xA;    Task&lt;T&gt; ReadFromRequest&lt;T&gt;(HttpRequest request);&#xA;}&#xA;</code></pre>
@@ -156,7 +156,7 @@ reader or writers from another assembly, you just need to add them to the underl
 <h2 id="custom-serializers">Custom Serializers</h2>
 <p>To use additional .Net serializers, you just need to create a new implementation of the <code>Jasper.Conneg.ISerializerFactory</code> interface and register
 that into the IoC service container.</p>
-<pre><code class="language-csharp">&#xA;public interface ISerializerFactory&#xA;{&#xA;    void Serialize(object message, Stream stream);&#xA;&#xA;    object Deserialize(Stream message);&#xA;&#xA;    string ContentType { get; }&#xA;&#xA;    IMessageDeserializer[] ReadersFor(Type messageType);&#xA;    IMessageSerializer[] WritersFor(Type messageType);&#xA;    IMessageDeserializer VersionedReaderFor(Type incomingType);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface ISerializerFactory&#xA;{&#xA;    object Deserialize(Stream message);&#xA;&#xA;    string ContentType { get; }&#xA;&#xA;    IMessageDeserializer[] ReadersFor(Type messageType, MediaSelectionMode mode);&#xA;    IMessageSerializer[] WritersFor(Type messageType, MediaSelectionMode mode);&#xA;    IMessageDeserializer VersionedReaderFor(Type incomingType);&#xA;}&#xA;</code></pre>
 <p>See the <a href="https://github.com/JasperFx/jasper/blob/master/src/Jasper/Conneg/NewtonsoftSerializerFactory.cs">built in Newtonsoft.Json adapter</a> for an example usage.</p>
 <h2 id="versioned-message-forwarding">Versioned Message Forwarding</h2>
 <p>If you make breaking changes to an incoming message in a later version, you can simply handle both versions of that message separately:</p>

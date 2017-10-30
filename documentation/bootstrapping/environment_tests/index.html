@@ -94,8 +94,23 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Environment Tests-->
-<p>See <a href="https://github.com/JasperFx/jasper/issues/154">Environment tests on startup</a> for a discussion on what
-this will look like</p>
+<p>Jasper supports the idea of registerable <a href="http://codebetter.com/jeremymiller/2006/04/06/environment-tests-and-self-diagnosing-configuration-with-structuremap/">environment tests</a> that you can use to verify an application is in a usable state as part of bootstrapping. The goal here is to <a href="https://en.wikipedia.org/wiki/Fail-fast">fail fast</a> with environmental errors diagnosed as part of deployment.</p>
+<p>What kind of things might you assert?</p>
+<ul>
+<li>Can your system connect to a designated database or external system?</li>
+<li>Is all the required configuration available?</li>
+<li>Are expected files where the system expects them to be?</li>
+</ul>
+<p>Environment checks can be registered as lambda's or as implementations of <code>IEnvironmentCheck</code>:</p>
+<pre><code class="language-csharp">&#xA;public class AppWithEnvironmentChecks : JasperRegistry&#xA;{&#xA;    public AppWithEnvironmentChecks()&#xA;    {&#xA;        // Register an IEnvironmentCheck object&#xA;        EnvironmentChecks.Register(new FileExistsCheck(&quot;settings.json&quot;));&#xA;&#xA;        // or declaratively say a file should exist (this is just syntactic sugar)&#xA;        EnvironmentChecks.FileShouldExist(&quot;settings.json&quot;);&#xA;&#xA;        // or do it manually w/ a lambda&#xA;        EnvironmentChecks.Register(&quot;settings.json can be found&quot;, () =&gt;&#xA;        {&#xA;            if (!File.Exists(&quot;settings.json&quot;))&#xA;            {&#xA;                throw new Exception(&quot;File cannot be found&quot;);&#xA;            }&#xA;        });&#xA;&#xA;        // Or register a check type&#xA;        EnvironmentChecks.Register&lt;CustomCheck&gt;();&#xA;&#xA;        // The concrete Store class exposes IEnvironmentCheck&#xA;        Services.AddTransient&lt;IStore, Store&gt;();&#xA;&#xA;&#xA;    }&#xA;}&#xA;&#xA;public interface IStore&#xA;{&#xA;&#xA;}&#xA;&#xA;// Jasper will still use this as an environment check&#xA;public class Store : IStore, IEnvironmentCheck&#xA;{&#xA;    public void Assert(JasperRuntime runtime)&#xA;    {&#xA;        // do the assertion of valid state&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Do note that Jasper is just finding every possible service registered in the system's IoC container that implements
+the <code>IEnvironmentCheck</code> interface and executes each check. All environment checks will be executed when a Jasper system is
+bootstrapped, and will throw a single aggregate exception with any failures.</p>
+<h2 id="custom-environment-checks">Custom Environment Checks</h2>
+<p>Environment checks just need to implement this interface:</p>
+<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// Executed during bootstrapping time to carry out environment tests&#xA;/// against the application&#xA;/// &lt;/summary&gt;&#xA;public interface IEnvironmentCheck&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// Asserts that the current check is valid. Throw an exception&#xA;    /// to denote a failure&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;param name=&quot;runtime&quot;&gt;&lt;/param&gt;&#xA;    void Assert(JasperRuntime runtime);&#xA;}&#xA;</code></pre>
+<p>Like this sample from Jasper itself:</p>
+<pre><code class="language-csharp">&#xA;public class FileExistsCheck : IEnvironmentCheck&#xA;{&#xA;    private readonly string _file;&#xA;&#xA;    public FileExistsCheck(string file)&#xA;    {&#xA;        _file = file;&#xA;    }&#xA;&#xA;    public void Assert(JasperRuntime runtime)&#xA;    {&#xA;        if (!File.Exists(_file))&#xA;        {&#xA;            throw new Exception($&quot;File {_file} cannot be found!&quot;);&#xA;        }&#xA;    }&#xA;&#xA;    public override string ToString()&#xA;    {&#xA;        return $&quot;File {_file} exists&quot;;&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="ignoring-startup-issues">Ignoring Startup Issues</h2>
 <p>If you so choose, you can allow a Jasper application to successfully start up even with detected
 environment test failures with this configuration:</p>
