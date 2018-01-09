@@ -45,9 +45,9 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/messaging/transports/durable" title="Durable Store and Forward Transport">Previous</a></li>
+		      	<li><a href="/documentation/messaging/transports/tcp" title="TCP Transport">Previous</a></li>
 		      	<li><a href="/documentation/messaging/transports/http" title="HTTP Transport">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
@@ -81,7 +81,7 @@
 		        </ul>
 
 		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/transports/http">HTTP Transport</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/transports/durable">Durable Store and Forward Transport</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/transports/tcp">TCP Transport</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -96,11 +96,12 @@
 			      		<!--Title:Local Loopback Transport-->
 <div class="alert alert-info"><b>Note!</b> The loopback transport is used underneath the covers by Jasper for retrying
 locally enqueued messages or scheduled messages that may have initially failed.</div>
-<p>The &quot;loopback&quot; transport is a local, in memory transport that allows you to queue messages. This transport is enabled
-by default, and the <code>Uri</code> structure is <em>loopback://queuename</em>. Here are some examples of how it is configured:</p>
-<p>Do note that messages to any known queue will be processed without any kind of explicit configuration to make the
-loopback queues be &quot;incoming.&quot;</p>
-<pre><code class="language-csharp">&#xA;public class LoopbackTransportApp : JasperRegistry&#xA;{&#xA;    public LoopbackTransportApp()&#xA;    {&#xA;        // Configure the maximum number of threads dedicated to processing&#xA;        // messages being received by queue. 5 is the default&#xA;        Transports.Loopback.DefaultQueue.MaximumParallelization(5);&#xA;        Transports.Loopback.Queue(&quot;important&quot;).MaximumParallelization(10);&#xA;        Transports.Loopback.Queue(&quot;lowpriority&quot;).MaximumParallelization(3);&#xA;        Transports.Loopback.Queue(&quot;control&quot;).Sequential();&#xA;&#xA;        // Publish the message Message2 the important queue&#xA;        Publish.Message&lt;Message2&gt;().To(&quot;loopback://important&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>The &quot;loopback&quot; transport is a local, in memory transport that allows you to queue messages directly to the internal <a href="/documentation/messaging/handling/workerqueues">worker queues</a>. This transport is enabled
+by default, and the <code>Uri</code> structure is <em>loopback://queuename</em>, where &quot;queuename&quot; is the name of a worker queue. Here are some examples of how it is configured:</p>
+<pre><code class="language-csharp">&#xA;public class LoopbackTransportApp : JasperRegistry&#xA;{&#xA;    public LoopbackTransportApp()&#xA;    {&#xA;        Processing.Worker(&quot;important&quot;)&#xA;            .IsDurable()&#xA;            .MaximumParallelization(10);&#xA;&#xA;        // Publish the message Message2 the important queue&#xA;        Publish.Message&lt;Message2&gt;().To(&quot;loopback://important&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>While you can use <a href="/documentation/messaging/routing/static_routing">explicit publishing rules</a> by message type to route messages locally to the loopback transport, it's probably easier to just use the explicit methods on <code>IServiceBus</code> shown below:</p>
+<pre><code class="language-csharp">&#xA;public static async Task enqueue_locally(IServiceBus bus)&#xA;{&#xA;    // Enqueue a message to the local, loopback transport&#xA;    // using the default worker queue &amp; durability rules&#xA;    // for the message type&#xA;    await bus.Enqueue(new Message1());&#xA;&#xA;    // Enqueue a message locally non-durably&#xA;    await bus.EnqueueLightweight(new Message1());&#xA;&#xA;    // Enqueue a message locally &amp; durably&#xA;    await bus.EnqueueDurably(new Message1());&#xA;}&#xA;</code></pre>
+<p>See <a href="/documentation/messaging/handling/workerqueues">Worker Queues and Message Priority</a> and <a href="/documentation/messaging/transports/durable">Durable Messaging</a> for more information.</p>
 
 			      	</div>
 
@@ -108,7 +109,7 @@ loopback queues be &quot;incoming.&quot;</p>
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/messaging/transports/durable">Durable Store and Forward Transport</a>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/transports/tcp">TCP Transport</a>
 
 				        </span>
 				        <span class="pull-right">

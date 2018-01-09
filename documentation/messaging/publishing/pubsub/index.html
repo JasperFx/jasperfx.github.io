@@ -45,7 +45,7 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/publishing" title="Publishing Messages">Previous</a></li>
 		      	<li><a href="/documentation/messaging/publishing/requestreply" title="Request / Reply">Next</a></li>
@@ -94,7 +94,7 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Publish / Subscribe -->
-<p>Publish/Subscribe is a messaging pattern where the senders of messages do not need to specifically know what the specific subscribers are for a given message. In this case, some kind of middleware or infrastructure is responsible for either allowing subscribers to express interest in what messages they need to receive or apply routing rules to send the published messages to the right places. Jasper's messaging support was largely built to support the publish/subscibe.</p>
+<p>Publish/Subscribe is a messaging pattern where the senders of messages do not need to specifically know what the specific subscribers are for a given message. In this case, some kind of middleware or infrastructure is responsible for either allowing subscribers to express interest in what messages they need to receive or apply routing rules to send the published messages to the right places. Jasper's messaging support was largely built to support the publish/subscibe messaging patterm.</p>
 <p>To send a message with Jasper, use the <code>IServiceBus</code> like this:</p>
 <pre><code class="language-csharp">&#xA;public Task SendMessage(IServiceBus bus)&#xA;{&#xA;    // In this case, we&#x27;re sending an &quot;InvoiceCreated&quot;&#xA;    // message&#xA;    var @event = new InvoiceCreated&#xA;    {&#xA;        Time = DateTime.UtcNow,&#xA;        Purchaser = &quot;Guy Fieri&quot;,&#xA;        Amount = 112.34,&#xA;        Item = &quot;Cookbook&quot;&#xA;    };&#xA;&#xA;    return bus.Send(@event);&#xA;}&#xA;</code></pre>
 <p>That by itself will send the <code>InvoiceCreated</code> message to whatever subscribers are interested in

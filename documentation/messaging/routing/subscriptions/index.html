@@ -45,10 +45,10 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/routing/static_routing" title="Static Publishing Rules">Previous</a></li>
-		      	<li><a href="/documentation/messaging/routing/no_routing" title=""No Route" Behavior">Next</a></li>
+		      	<li><a href="/documentation/messaging/logging" title="Customizing Message Logging">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -80,7 +80,7 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/routing/no_routing">"No Route" Behavior</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/logging">Customizing Message Logging</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a></p>
 
 		        </ul>
@@ -113,7 +113,7 @@ to directly couple your Jasper applications to each other.</p>
 durable storage mechanism if you're going to use subscriptions. To use a different subscription storage, you need an implementation
 of the <code>ISubscriptionsRepository</code> interface that you can plug into the application services like so:</p>
 <pre><code class="language-csharp">&#xA;public class SubscriptionStorageApp : JasperRegistry&#xA;{&#xA;    public SubscriptionStorageApp()&#xA;    {&#xA;        // Plug in subscription storage backed by Marten&#xA;        Services.AddSingleton&lt;ISubscriptionsRepository, MartenSubscriptionRepository&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
-<p>You can see a <a href="https://github.com/JasperFx/jasper/blob/master/src/JasperBus.Marten/MartenSubscriptionRepository.cs">sample implementation for Marten here</a>.</p>
+<p>You can see a <a href="https://github.com/JasperFx/jasper/blob/master/src/Jasper.Marten/Subscriptions/MartenSubscriptionRepository.cs">sample implementation for Marten here</a>.</p>
 <p>As of today, the Jasper community has working subscription storage based on <a href="/documentation/extensions/consul">Consul</a> and
 <a href="/documentation/extensions/marten/subscriptions">Marten</a> on top of a Postgresql database.</p>
 <h2 id="configurating-subscriptions">Configurating Subscriptions</h2>
@@ -149,7 +149,7 @@ service name is <em>MyApp</em>, the file exported will be <code>MyApp.capabiliti
 <h2 id="declaring-published-messages">Declaring Published Messages</h2>
 <p>Strictly for informational or diagnostic purposes, you can explicitly declare which message types your application
 publishes like this:</p>
-<pre><code class="language-csharp">&#xA;public class PublisherApp : JasperRegistry&#xA;{&#xA;    public PublisherApp()&#xA;    {&#xA;        // Opt into the Consul backed subscriptions&#xA;        // using the default Consul configuration&#xA;        Include&lt;ConsulBackedSubscriptions&gt;();&#xA;&#xA;        Transports.Lightweight.ListenOnPort(2211);&#xA;&#xA;        // 100% Optional for diagnostics&#xA;        Publish.Message&lt;NewUser&gt;();&#xA;        Publish.Message&lt;DeleteUser&gt;();&#xA;&#xA;        // Assume that all concrete types in your application&#xA;        // in your application assembly that implement a marker&#xA;        // interface are published by the application&#xA;        // NOTE: IPublished is just an example and does not exist in Jasper&#xA;        Publish.MessagesMatching(x =&gt; x.CanBeCastTo&lt;IPublished&gt;());&#xA;&#xA;        // This would be the Uri to the load balancer&#xA;        Subscribe.At(&quot;tcp://localhost:2211&quot;);&#xA;        Subscribe.ToAllMessages();&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class PublisherApp : JasperRegistry&#xA;{&#xA;    public PublisherApp()&#xA;    {&#xA;        // Opt into the Consul backed subscriptions&#xA;        // using the default Consul configuration&#xA;        Include&lt;ConsulBackedSubscriptions&gt;();&#xA;&#xA;        Transports.LightweightListenerAt(2211);&#xA;&#xA;        // 100% Optional for diagnostics&#xA;        Publish.Message&lt;NewUser&gt;();&#xA;        Publish.Message&lt;DeleteUser&gt;();&#xA;&#xA;        // Assume that all concrete types in your application&#xA;        // in your application assembly that implement a marker&#xA;        // interface are published by the application&#xA;        // NOTE: IPublished is just an example and does not exist in Jasper&#xA;        Publish.MessagesMatching(x =&gt; x.CanBeCastTo&lt;IPublished&gt;());&#xA;&#xA;        // This would be the Uri to the load balancer&#xA;        Subscribe.At(&quot;tcp://localhost:2211&quot;);&#xA;        Subscribe.ToAllMessages();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Or if you're okay with this approach, you can use the <code>[Publish]</code> attribute in Jasper like so:</p>
 <pre><code class="language-csharp">&#xA;[Publish]&#xA;public class PublishedMessage1&#xA;{&#xA;&#xA;}&#xA;</code></pre>
 <p><strong>Do note that you can send message types even if that message type is not declared as being published.</strong></p>
@@ -160,12 +160,12 @@ and report and validate against the entire known ecosystem. Assuming that every 
 </code></pre>
 <p>In the sample above, we're writing the whole <em>messaging graph</em> of matched routes and potential problems to a file named
 <code>subscription-report.json</code>.</p>
-<p>Do note that this command will fail at the command line if it detects any problems unless you also use the <code>--ignore-failures</code> flag. Definitel use this flag if you are only using this command for informational purposes or you aren't being strict about
+<p>Do note that this command will fail at the command line if it detects any problems unless you also use the <code>--ignore-failures</code> flag. Definitely use this flag if you are only using this command for informational purposes or you aren't being strict about
 marking published messages.</p>
 <p>This command compares publisher and subscription capabilities based on supported transports and message representations. This report can detect:</p>
 <ul>
 <li>Valid message routes for each permutation of message type, subscriber, and publisher</li>
-<li>Messages referenced in subscriptions that have no known known publisher</li>
+<li>Messages referenced in subscriptions that have no known publisher</li>
 <li>Messages that are marked as published but not subscribed to by any known application</li>
 <li>Mismatched subscriptions based on publisher and subscriber capabilities. This will catch any issue with
 having no compatible message representations or matching transports</li>
@@ -183,7 +183,7 @@ having no compatible message representations or matching transports</li>
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging/routing/no_routing">"No Route" Behavior</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/logging">Customizing Message Logging</a>
 
 				        </span>
 			      	</nav>

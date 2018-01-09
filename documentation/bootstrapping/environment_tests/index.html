@@ -45,7 +45,7 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/bootstrapping/aspnetcore" title="Adding Jasper to an ASP.Net Core Application">Previous</a></li>
 		      	<li><a href="/documentation/messaging" title="Messaging">Next</a></li>
@@ -108,7 +108,7 @@ the <code>IEnvironmentCheck</code> interface and executes each check. All enviro
 bootstrapped, and will throw a single aggregate exception with any failures.</p>
 <h2 id="custom-environment-checks">Custom Environment Checks</h2>
 <p>Environment checks just need to implement this interface:</p>
-<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// Executed during bootstrapping time to carry out environment tests&#xA;/// against the application&#xA;/// &lt;/summary&gt;&#xA;public interface IEnvironmentCheck&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// Asserts that the current check is valid. Throw an exception&#xA;    /// to denote a failure&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;param name=&quot;runtime&quot;&gt;&lt;/param&gt;&#xA;    void Assert(JasperRuntime runtime);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IEnvironmentCheck&#xA;{&#xA;    void Assert(JasperRuntime runtime);&#xA;}&#xA;</code></pre>
 <p>Like this sample from Jasper itself:</p>
 <pre><code class="language-csharp">&#xA;public class FileExistsCheck : IEnvironmentCheck&#xA;{&#xA;    private readonly string _file;&#xA;&#xA;    public FileExistsCheck(string file)&#xA;    {&#xA;        _file = file;&#xA;    }&#xA;&#xA;    public void Assert(JasperRuntime runtime)&#xA;    {&#xA;        if (!File.Exists(_file))&#xA;        {&#xA;            throw new Exception($&quot;File {_file} cannot be found!&quot;);&#xA;        }&#xA;    }&#xA;&#xA;    public override string ToString()&#xA;    {&#xA;        return $&quot;File {_file} exists&quot;;&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="ignoring-startup-issues">Ignoring Startup Issues</h2>

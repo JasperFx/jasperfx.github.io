@@ -45,7 +45,7 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/transports" title="Messaging Transports">Previous</a></li>
 		      	<li><a href="/documentation/messaging/handling" title="Handling Received Messages">Next</a></li>
@@ -94,8 +94,8 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Reading, Writing, and Versioning Messages-->
-<p>Jasper ultimately needs to be able to dehydrate any published message to a <code>byte[]</code> array, then ship that information along with the related header
-metadata to the receiving application that will ultimately hydrate that <code>byte[]</code> array back to a .Net object. Out of the box, Jasper comes with support for using <a href="https://www.newtonsoft.com/json">Newtonsoft.Json</a> to serialize and deserialize objects for
+<p>Jasper ultimately needs to be able to dehydrate any published message to a <code>byte[]</code> then ship that information along with the related header
+metadata to the receiving application that will ultimately hydrate that <code>byte[]</code> back to a .Net object. Out of the box, Jasper comes with support for using <a href="https://www.newtonsoft.com/json">Newtonsoft.Json</a> to serialize and deserialize objects for
 transport across the wire. The easiest, and likely starting point, for using Jasper for messaging is to use a shared DTO (Data Transfer Object) library that
 exposes the shared message types that can easily be serialized and deserialized from and to Json.</p>
 <p>This is probably going to be fine in many circumstances, but you could easily need to:</p>
@@ -157,7 +157,7 @@ reader or writers from another assembly, you just need to add them to the underl
 <p>To use additional .Net serializers, you just need to create a new implementation of the <code>Jasper.Conneg.ISerializerFactory</code> interface and register
 that into the IoC service container.</p>
 <pre><code class="language-csharp">&#xA;public interface ISerializerFactory&#xA;{&#xA;    object Deserialize(Stream message);&#xA;&#xA;    string ContentType { get; }&#xA;&#xA;    IMessageDeserializer[] ReadersFor(Type messageType, MediaSelectionMode mode);&#xA;    IMessageSerializer[] WritersFor(Type messageType, MediaSelectionMode mode);&#xA;    IMessageDeserializer VersionedReaderFor(Type incomingType);&#xA;}&#xA;</code></pre>
-<p>See the <a href="https://github.com/JasperFx/jasper/blob/master/src/Jasper/Conneg/NewtonsoftSerializerFactory.cs">built in Newtonsoft.Json adapter</a> for an example usage.</p>
+<p>See the <a href="https://github.com/JasperFx/jasper/blob/master/src/Jasper/Conneg/Json/NewtonsoftSerializerFactory.cs">built in Newtonsoft.Json adapter</a> for an example usage.</p>
 <h2 id="versioned-message-forwarding">Versioned Message Forwarding</h2>
 <p>If you make breaking changes to an incoming message in a later version, you can simply handle both versions of that message separately:</p>
 <pre><code class="language-csharp">&#xA;public class PersonCreatedHandler&#xA;{&#xA;    public static void Handle(PersonBorn person)&#xA;    {&#xA;        // do something w/ the message&#xA;    }&#xA;&#xA;    public static void Handle(PersonBornV2 person)&#xA;    {&#xA;        // do something w/ the message&#xA;    }&#xA;}&#xA;</code></pre>

@@ -45,7 +45,7 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/handling/discovery" title="Message Handler Discovery">Previous</a></li>
 		      	<li><a href="/documentation/messaging/handling/cascading" title="Cascading Messages">Next</a></li>
@@ -145,13 +145,13 @@ message(s) to send out. Use this capability if you want to notify senders when a
 <p>** TODO -- talk about how to send it back to the original sender **</p>
 <h2 id="custom-error-handlers">Custom Error Handlers</h2>
 <p>If the built in recipes don't cover your exception handling needs, all isn't lost. You can bypass
-the helpers and write your own class that implements the <code>IErrorPolicy</code> interface shown below:</p>
-<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// Potentially choose a continuation that would determine what happens next for a message&#xA;/// that encountered the given exception at processing time&#xA;/// &lt;/summary&gt;&#xA;public interface IErrorHandler&#xA;{&#xA;    IContinuation DetermineContinuation(Envelope envelope, Exception ex);&#xA;}&#xA;</code></pre>
+the helpers and write your own class that implements the <code>IErrorHandler</code> interface shown below:</p>
+<pre><code class="language-csharp">&#xA;public interface IErrorHandler&#xA;{&#xA;    IContinuation DetermineContinuation(Envelope envelope, Exception ex);&#xA;}&#xA;</code></pre>
 <p>Your error handler needs to be able to look at an <code>Exception</code> and <code>Envelope</code>, then determine and return
 an <code>IContinuation</code> object that will be executed against the current message. That interface is shown below:</p>
 <pre><code class="language-csharp">&#xA;public interface IContinuation&#xA;{&#xA;    Task Execute(Envelope envelope, IEnvelopeContext context, DateTime utcNow);&#xA;}&#xA;</code></pre>
 <p>Here's an example of a custom error handler:</p>
-<pre><code class="language-csharp">&#xA;public class CustomErrorHandler : IErrorHandler&#xA;{&#xA;    public IContinuation DetermineContinuation(Envelope envelope, Exception ex)&#xA;    {&#xA;        if (ex.Message.Contains(&quot;timed out&quot;))&#xA;        {&#xA;            return new DelayedRetryContinuation(3.Seconds());&#xA;        }&#xA;&#xA;        // If the handler doesn&#x27;t apply to the exception,&#xA;        // return null to tell Jasper to try the next error handler (if any)&#xA;        return null;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class CustomErrorHandler : IErrorHandler&#xA;{&#xA;    public IContinuation DetermineContinuation(Envelope envelope, Exception ex)&#xA;    {&#xA;        if (ex.Message.Contains(&quot;timed out&quot;))&#xA;        {&#xA;            return new ScheduledRetryContinuation(3.Seconds());&#xA;        }&#xA;&#xA;        // If the handler doesn&#x27;t apply to the exception,&#xA;        // return null to tell Jasper to try the next error handler (if any)&#xA;        return null;&#xA;    }&#xA;}&#xA;</code></pre>
 <p>To register this custom error handler with your application, just add it to the <code>ErrorHandlers</code> collection:</p>
 <pre><code class="language-csharp">&#xA;public class CustomErrorHandlingApp : JasperRegistry&#xA;{&#xA;    public CustomErrorHandlingApp()&#xA;    {&#xA;        Handlers.HandleErrorsWith&lt;CustomErrorHandler&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Note that you can apply custom error handlers either globally or by message type.</p>

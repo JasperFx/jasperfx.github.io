@@ -45,7 +45,7 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation" title="Documentation">Previous</a></li>
 		      	<li><a href="/documentation/bootstrapping" title="Bootstrapping">Next</a></li>
@@ -105,7 +105,7 @@ pipeline within a different framework, or any combination thereof. Jasper can be
 <p>Now, to bootstrap your application, add this code to the entrypoint of your console application:</p>
 <pre><code class="language-csharp">&#xA;&#xA;using Jasper.CommandLine;&#xA;&#xA;namespace MyApp&#xA;{&#xA;    class Program&#xA;    {&#xA;        static int Main(string[] args)&#xA;        {&#xA;            // This bootstraps and runs the Jasper&#xA;            // application as defined by MyAppRegistry&#xA;            // until the executable is stopped&#xA;            return JasperAgent.Run&lt;MyAppRegistry&gt;(args);&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>By itself, this doesn't really do much, so let's add Kestrel as a web server for serving HTTP services and start listening for messages from other applications using Jasper's built in, lightweight transport:</p>
-<pre><code class="language-csharp">&#xA;public class MyAppRegistry : JasperRegistry&#xA;{&#xA;    public MyAppRegistry()&#xA;    {&#xA;        Http.UseKestrel().UseUrls(&quot;http://localhost:3001&quot;);&#xA;&#xA;        Transports.Lightweight.ListenOnPort(2222);&#xA;&#xA;        Publish.Message&lt;Message1&gt;();&#xA;        Publish.Message&lt;Message2&gt;();&#xA;        Publish.Message&lt;Message3&gt;();&#xA;&#xA;        Subscribe.At(&quot;tcp://server1:2222&quot;);&#xA;        Subscribe.To&lt;Message4&gt;();&#xA;        Subscribe.To&lt;Message5&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MyAppRegistry : JasperRegistry&#xA;{&#xA;    public MyAppRegistry()&#xA;    {&#xA;        Http.UseKestrel().UseUrls(&quot;http://localhost:3001&quot;);&#xA;&#xA;        Transports.LightweightListenerAt(2222);&#xA;&#xA;        Publish.Message&lt;Message1&gt;();&#xA;        Publish.Message&lt;Message2&gt;();&#xA;        Publish.Message&lt;Message3&gt;();&#xA;&#xA;        Subscribe.At(&quot;tcp://server1:2222&quot;);&#xA;        Subscribe.To&lt;Message4&gt;();&#xA;        Subscribe.To&lt;Message5&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Now, when you run the console application you should see output like this:</p>
 <pre><code>Hosting environment: Production
 Content root path: /Users/jeremill/code/jasper/src/MyApp/bin/Debug/netcoreapp1.1

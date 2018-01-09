@@ -45,7 +45,7 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/handling/errorhandling" title="Error Handling">Previous</a></li>
 		      	<li><a href="/documentation/messaging/handling/unknown_messages" title="Handling an Unknown Message">Next</a></li>
@@ -139,12 +139,12 @@ be <code>object</code> like this sample shown below:</p>
 <pre><code class="language-csharp">&#xA;public class ConditionalResponseHandler&#xA;{&#xA;    public object Consume(DirectionRequest request)&#xA;    {&#xA;        switch (request.Direction)&#xA;        {&#xA;            case &quot;North&quot;:&#xA;                return new GoNorth();&#xA;            case &quot;South&quot;:&#xA;                return new GoSouth();&#xA;        }&#xA;&#xA;        // This does nothing&#xA;        return null;&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="delayed-messages">Delayed Messages</h2>
 <p>You may want to raise a delayed message by using the <code>DelayedResponse</code> class as shown below:</p>
-<pre><code class="language-csharp">&#xA;public class DelayedResponseHandler&#xA;{&#xA;    public DelayedResponse Consume(DirectionRequest request)&#xA;    {&#xA;        // Process GoWest in 5 minutes from now&#xA;        return new DelayedResponse(new GoWest(), TimeSpan.FromMinutes(5));&#xA;    }&#xA;&#xA;    public DelayedResponse Consume(MyMessage message)&#xA;    {&#xA;        // Process GoEast at 8 PM local time&#xA;        return new DelayedResponse(new GoEast(), DateTime.Today.AddHours(20));&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class ScheduledResponseHandler&#xA;{&#xA;    public ScheduledResponse Consume(DirectionRequest request)&#xA;    {&#xA;        // Process GoWest in 5 minutes from now&#xA;        return new ScheduledResponse(new GoWest(), TimeSpan.FromMinutes(5));&#xA;    }&#xA;&#xA;    public ScheduledResponse Consume(MyMessage message)&#xA;    {&#xA;        // Process GoEast at 8 PM local time&#xA;        return new ScheduledResponse(new GoEast(), DateTime.Today.AddHours(20));&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="multiple-cascading-messages">Multiple Cascading Messages</h2>
 <p>You can also raise any number of cascading messages by returning either any type that can be
 cast to <code>IEnumerable&lt;object&gt;</code>, and Jasper will treat each element as a separate cascading message.
 An empty enumerable is just ignored.</p>
-<pre><code class="language-csharp">&#xA;public class MultipleResponseHandler&#xA;{&#xA;    public IEnumerable&lt;object&gt; Consume(MyMessage message)&#xA;    {&#xA;        // Go North now&#xA;        yield return new GoNorth();&#xA;&#xA;        // Go West in an hour&#xA;        yield return new DelayedResponse(new GoWest(), TimeSpan.FromHours(1));&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MultipleResponseHandler&#xA;{&#xA;    public IEnumerable&lt;object&gt; Consume(MyMessage message)&#xA;    {&#xA;        // Go North now&#xA;        yield return new GoNorth();&#xA;&#xA;        // Go West in an hour&#xA;        yield return new ScheduledResponse(new GoWest(), TimeSpan.FromHours(1));&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="send-message-back-to-the-sender">Send Message Back to the Sender</h2>
 <p>If you want to send a message right back to the original sender node, you can return your message
 wrapped by the <code>RespondToSender</code> type:</p>

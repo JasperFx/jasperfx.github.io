@@ -45,7 +45,7 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/publishing/delayed" title="Delayed Job Processing">Previous</a></li>
 		      	<li><a href="/documentation/messaging/publishing/customizing_envelopes" title="Customizing the Sent Message Envelopes">Next</a></li>
@@ -102,7 +102,7 @@ in the sample below, you can consume and process that message inline with this c
 <pre><code class="language-csharp">&#xA;public Task Enqueue(IServiceBus bus)&#xA;{&#xA;    var @event = new InvoiceCreated&#xA;    {&#xA;        Time = DateTime.UtcNow,&#xA;        Purchaser = &quot;Guy Fieri&quot;,&#xA;        Amount = 112.34,&#xA;        Item = &quot;Cookbook&quot;&#xA;    };&#xA;&#xA;    return bus.Enqueue(@event);&#xA;}&#xA;</code></pre>
 <p>The <code>InvoiceCreated</code> message above will be enqueued locally in the application's default channel. By default, that's one of the <a href="/documentation/messaging/transports/loopback">Local Loopback Transport</a> channels, but you can override that to any channel Uri that supports local enqueuing like so:</p>
 <pre><code class="language-csharp">&#xA;public class SetDefaultChannel : JasperRegistry&#xA;{&#xA;    public SetDefaultChannel()&#xA;    {&#xA;        Transports.DefaultIs(&quot;loopback://default&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
-<p>Today that pretty well means using the loopback transport, but before too long the <a href="/documentation/messaging/transports/durable">Durable Store and Forward Transport</a> will be usable locally as well for persistent queueing in this case. See <a href="https://github.com/JasperFx/jasper/issues/179">this GitHub issue</a> to track the progress.</p>
+<p>Today that pretty well means using the loopback transport, but before too long the <a href="/documentation/messaging/transports/durable">Durable Messaging</a> will be usable locally as well for persistent queueing in this case. See <a href="https://github.com/JasperFx/jasper/issues/179">this GitHub issue</a> to track the progress.</p>
 
 			      	</div>
 

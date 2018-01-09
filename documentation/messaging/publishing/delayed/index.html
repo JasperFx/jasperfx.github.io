@@ -45,7 +45,7 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/publishing/requestreply" title="Request / Reply">Previous</a></li>
 		      	<li><a href="/documentation/messaging/publishing/invoke" title="Invoking or Enqueuing a Message Locally">Next</a></li>
@@ -95,7 +95,7 @@
 			      	<div id="main-pane">
 			      		<!--title:Delayed Job Processing-->
 <p>You can send messages with Jasper, but request that the processing of the message happen at some later time with <code>IServiceBus.DelaySend()</code>:</p>
-<pre><code class="language-csharp">&#xA;public async Task SendDelayedMessage(IServiceBus bus, Guid invoiceId)&#xA;{&#xA;    var message = new ValidateInvoiceIsNotLate&#xA;    {&#xA;        InvoiceId = invoiceId&#xA;    };&#xA;&#xA;    // Schedule the message to be processed in a certain amount&#xA;    // of time&#xA;    await bus.DelaySend(message, 30.Days());&#xA;&#xA;    // Schedule the message to be processed at a certain time&#xA;    await bus.DelaySend(message, DateTime.UtcNow.AddDays(30));&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public async Task SendScheduledMessage(IServiceBus bus, Guid invoiceId)&#xA;{&#xA;    var message = new ValidateInvoiceIsNotLate&#xA;    {&#xA;        InvoiceId = invoiceId&#xA;    };&#xA;&#xA;    // Schedule the message to be processed in a certain amount&#xA;    // of time&#xA;    await bus.ScheduleSend(message, 30.Days());&#xA;&#xA;    // Schedule the message to be processed at a certain time&#xA;    await bus.ScheduleSend(message, DateTime.UtcNow.AddDays(30));&#xA;}&#xA;</code></pre>
 <p>The message itself is sent out immediately, but when the receiving application sees that the message is scheduled to be processed later, the received message will be moved into the &quot;delayed job processor&quot; in the receiving application.</p>
 <p>This functionality is useful for long lived workflows where there are time limits for any part of the process.</p>
 <p>As of today, the only supported option is the default in memory option that we think is sufficient for short lived retries and limited workflow validations. In the longer term, Jasper will support database persisted delayed jobs. Follow <a href="https://github.com/JasperFx/jasper/issues/199">this GitHub issue</a> for any progress on that front.</p>

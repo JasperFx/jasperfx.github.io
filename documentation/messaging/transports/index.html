@@ -45,10 +45,10 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/configuration" title="Configuring the Service Bus">Previous</a></li>
-		      	<li><a href="/documentation/messaging/transports/lightweight" title="Lightweight Fire and Forget Transport">Next</a></li>
+		      	<li><a href="/documentation/messaging/transports/durable" title="Durable Messaging">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -80,7 +80,7 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/transports/lightweight">Lightweight Fire and Forget Transport</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/transports/durable">Durable Messaging</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/configuration">Configuring the Service Bus</a></p>
 
 		        </ul>
@@ -96,25 +96,36 @@
 			      		<!--title:Messaging Transports-->
 <p>A <em>transport</em> is a queueing or communication mechanism that Jasper knows how to use to both deliver and receive messages to
 and from other systems. In usage, you generally supply a <code>Uri</code> to the message routing, subscription, or listening configuration
-that the matching transport can interpret. For example, the <a href="/documentation/messaging/transports/lightweight">lightweight transport</a>
+that the matching transport can interpret. For example, the <a href="/documentation/messaging/transports/tcp">TCP Transport</a>
 accepts <code>Uri's</code> like <em>tcp://remoteserver:2200</em> that is interpreted by Jasper as:</p>
 <ol>
-<li>Using the built in, lightweight fire and forget transport...</li>
+<li>Using the built in, TCP transport...</li>
 <li>Send messages to the DNS entry for <em>remoteserver</em>...</li>
 <li>Using port 2200 at the remote server (or docker image or VM or load balancer or whatever)</li>
 </ol>
 <p>Jasper comes out of the box with these transports:</p>
 <ul>
-<li><a href="/documentation/messaging/transports/lightweight">Lightweight Fire and Forget Transport</a> associated with the &quot;tcp&quot; scheme in Uri definitions</li>
-<li><a href="/documentation/messaging/transports/durable">Durable Store and Forward Transport</a> associated with the &quot;durable&quot; scheme in Uri definitions</li>
+<li><a href="/documentation/messaging/transports/tcp">TCP Transport</a> associated with the &quot;tcp&quot; scheme in Uri definitions</li>
 <li><a href="/documentation/messaging/transports/loopback">Local Loopback Transport</a> associated with the &quot;loopback&quot; scheme in Uri definitions</li>
-<li><a href="/documentation/messaging/transports/http">HTTP Transport</a> - <strong>Forthcoming</strong></li>
+<li><a href="/documentation/messaging/transports/http">HTTP Transport</a> associated with the &quot;http&quot; scheme that just accepts message batches through an ASP.Net Core route</li>
 </ul>
 <p>Transports based on <a href="https://www.rabbitmq.com/">RabbitMQ</a> and/or <a href="https://azure.microsoft.com/en-us/services/service-bus/">Azure Service Bus</a> are part of the Jasper roadmap.</p>
+<p>It is important to note that all of the built in transport types can be used in either a lightweight <a href="http://www.enterpriseintegrationpatterns.com/patterns/conversation/FireAndForget.html">fire and forget</a> with limited retries, or with durable, <a href="https://en.wikipedia.org/wiki/Store_and_forward">store and forward messaging</a> or <a href="http://www.enterpriseintegrationpatterns.com/patterns/messaging/GuaranteedMessaging.html">guaranteed delivery</a>. For durable messaging.</p>
+<p>See <a href="/documentation/messaging/transports/durable">Durable Messaging</a> for more information about durable messaging support in Jasper.</p>
 <h2 id="disable-all-transports">Disable All Transports</h2>
 <p>You might very well want to start up a Jasper application with all of the transports disabled. Maybe it's for testing scenarios
 where the necessary transport infrastructure isn't in place or you want a faster bootstrap time. Regardless, it's simply this syntax:</p>
 <pre><code class="language-csharp">&#xA;public class TransportsAreDisabled : JasperRegistry&#xA;{&#xA;    public TransportsAreDisabled()&#xA;    {&#xA;        Advanced.DisableAllTransports = true;&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="disable-selected-transports">Disable Selected Transports</h2>
+<p>If you want to selectively disable some of the built in transport types, you can use this syntax:</p>
+<pre><code class="language-csharp">&#xA;public class DisableOrEnableTransports : JasperRegistry&#xA;{&#xA;    public DisableOrEnableTransports()&#xA;    {&#xA;        // TCP transport is enabled by default&#xA;        Transports.DisableTransport(&quot;tcp&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>A couple notes first though:</p>
+<ul>
+<li>The tcp transport is enabled by default</li>
+<li>The http transport has to be explicitly enabled</li>
+<li>Disabling a transport prevents Jasper from creating either outgoing
+channels or listeners for that transport</li>
+</ul>
 
 			      	</div>
 
@@ -127,7 +138,7 @@ where the necessary transport infrastructure isn't in place or you want a faster
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging/transports/lightweight">Lightweight Fire and Forget Transport</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/transports/durable">Durable Messaging</a>
 
 				        </span>
 			      	</nav>

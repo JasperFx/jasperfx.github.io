@@ -45,7 +45,7 @@
 		        </li>
 		        <li>
 		        <li>
-<a href="https://gitter.im/JasperFx/https://github.com/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/bootstrapping/configuration" title="Application Configuration and Settings">Previous</a></li>
 		      	<li><a href="/documentation/bootstrapping/aspnetcore" title="Adding Jasper to an ASP.Net Core Application">Next</a></li>
@@ -103,7 +103,7 @@ external <code>Jasper.CommandLine</code> Nuget library as a helper for quickly s
 <p>You can also use the command line arguments to customize how the application runs like this:</p>
 <pre><code class="language-csharp">&#xA;static int Main(string[] args)&#xA;{&#xA;    return JasperAgent.Run&lt;MyAppRegistry&gt;(args, _ =&gt;&#xA;    {&#xA;        if (args.Length == 1)&#xA;        {&#xA;            _.EnvironmentName = args[0];&#xA;        }&#xA;    });&#xA;}&#xA;</code></pre>
 <p>Or like this:</p>
-<pre><code class="language-csharp">&#xA;static int Main(string[] args)&#xA;{&#xA;    // This gives you the ability to programmatically&#xA;    // construct the application based on the command line&#xA;    // arguments&#xA;    var registry = new JasperRegistry();&#xA;&#xA;&#xA;    return JasperAgent.Run(registry);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;static int Main(string[] args)&#xA;{&#xA;    // This gives you the ability to programmatically&#xA;    // construct the application based on the command line&#xA;    // arguments&#xA;    var registry = new JasperRegistry();&#xA;&#xA;&#xA;    return JasperAgent.Run(args, registry);&#xA;}&#xA;</code></pre>
 <p>Let's say that your Jasper application compiles to <code>MyApp.exe</code> and uses the <code>JasperAgent</code> class
 to run the commands. In that case you can run your application simply by typing <code>MyApp</code> at the
 command line with no arguments.</p>
@@ -132,8 +132,7 @@ setting will win out over the command line flag.</p>
 build scripting tool you're using know that the validation failed.</p>
 <h2 id="list-registered-services">List Registered Services</h2>
 <p><strong>This is in flight</strong></p>
-<p>As of right now (Sept 2017), Jasper only supports the <a href="http://structuremap.github.io">StructureMap</a> container, but is likely to transition to just using the built in
-ASP.Net Core IoC container before it hits 1.0. Regardless, we expect this command will live on.</p>
+<p>As of right now (Dec 2017), Jasper only supports the <a href="http://structuremap.github.io">StructureMap</a> container, but is somewhat likely to transition to, um, something else (or a streamlined, faster StructureMap) to be named later before it hits 1.0. Regardless, we expect this command will live on.</p>
 <p>To bootstrap the application and list out all the services registered to the system's IoC container, use this command:</p>
 <pre><code>MyApp services
 </code></pre>
@@ -141,6 +140,17 @@ ASP.Net Core IoC container before it hits 1.0. Regardless, we expect this comman
 <h2 id="subscriptions">Subscriptions</h2>
 <p>See <a href="/documentation/messaging/routing/subscriptions">Dynamic Subscriptions</a> for information about the <code>subscriptions</code> command and related workflow for exporting, updating, or validating dynamic
 subscriptions.</p>
+<h2 id="custom-commands">Custom Commands</h2>
+<p>The Jasper.Console package uses the <a href="http://jasperfx.github.io/oakton">Oakton</a> library for its command line support. You can add custom commands to your Jasper application by simply including <code>OaktonCommand&lt;T&gt;</code> classes in either the main application assembly or in any assembly that is decorated with the <code>[JasperModule]</code> attribute like so:</p>
+<pre><code class="language-csharp">&#xA;[assembly:JasperModule(typeof(DiagnosticsExtension))]&#xA;</code></pre>
+<p>or without any kind of extension like so:</p>
+<pre><code class="language-csharp">&#xA;[assembly:JasperModule]&#xA;</code></pre>
+<p>If you want to write a command that uses the actual Jasper application, use the <code>JasperInput</code> class as either the input to your
+command or as the superclass to your input class:</p>
+<pre><code class="language-csharp">&#xA;public class JasperInput&#xA;{&#xA;    [IgnoreOnCommandLine]&#xA;    public JasperRegistry Registry { get; set; }&#xA;&#xA;    [Description(&quot;Use to override the ASP.Net Environment name&quot;)]&#xA;    public string EnvironmentFlag&#xA;    {&#xA;        set =&gt; JasperEnvironment.Name = value;&#xA;&#xA;    }&#xA;&#xA;    [Description(&quot;Write out much more information at startup and enables console logging&quot;)]&#xA;    public bool VerboseFlag { get; set; }&#xA;&#xA;    public JasperRuntime BuildRuntime()&#xA;    {&#xA;        if (VerboseFlag)&#xA;        {&#xA;            Console.WriteLine(&quot;Verbose flag is on.&quot;);&#xA;            Registry.Logging.UseConsoleLogging = true;&#xA;            Registry.Logging.Verbose = true;&#xA;        }&#xA;&#xA;        return JasperRuntime.For(Registry);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>To make that more concrete, here is how the built in <code>services</code> command uses <code>JasperInput</code> type to build out and use the running system:</p>
+<pre><code class="language-csharp">&#xA;[Description(&quot;Display the known StructureMap service registrations&quot;)]&#xA;public class ServicesCommand : OaktonCommand&lt;JasperInput&gt;&#xA;{&#xA;    public override bool Execute(JasperInput input)&#xA;    {&#xA;        input.Registry.Settings.Alter&lt;BusSettings&gt;(_ =&gt;&#xA;        {&#xA;            _.ThrowOnValidationErrors = false;&#xA;        });&#xA;&#xA;        using (var runtime = input.BuildRuntime())&#xA;        {&#xA;            Console.WriteLine(runtime.Container.WhatDoIHave());&#xA;        }&#xA;&#xA;        return true;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Do note that the command will be responsible for disposing and shutting down the running <code>JasperRuntime</code>.</p>
 
 			      	</div>
 
