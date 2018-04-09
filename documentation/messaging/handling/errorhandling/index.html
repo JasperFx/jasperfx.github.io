@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -149,7 +149,7 @@ the helpers and write your own class that implements the <code>IErrorHandler</co
 <pre><code class="language-csharp">&#xA;public interface IErrorHandler&#xA;{&#xA;    IContinuation DetermineContinuation(Envelope envelope, Exception ex);&#xA;}&#xA;</code></pre>
 <p>Your error handler needs to be able to look at an <code>Exception</code> and <code>Envelope</code>, then determine and return
 an <code>IContinuation</code> object that will be executed against the current message. That interface is shown below:</p>
-<pre><code class="language-csharp">&#xA;public interface IContinuation&#xA;{&#xA;    Task Execute(Envelope envelope, IEnvelopeContext context, DateTime utcNow);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IContinuation&#xA;{&#xA;    Task Execute(IMessageContext context, DateTime utcNow);&#xA;}&#xA;</code></pre>
 <p>Here's an example of a custom error handler:</p>
 <pre><code class="language-csharp">&#xA;public class CustomErrorHandler : IErrorHandler&#xA;{&#xA;    public IContinuation DetermineContinuation(Envelope envelope, Exception ex)&#xA;    {&#xA;        if (ex.Message.Contains(&quot;timed out&quot;))&#xA;        {&#xA;            return new ScheduledRetryContinuation(3.Seconds());&#xA;        }&#xA;&#xA;        // If the handler doesn&#x27;t apply to the exception,&#xA;        // return null to tell Jasper to try the next error handler (if any)&#xA;        return null;&#xA;    }&#xA;}&#xA;</code></pre>
 <p>To register this custom error handler with your application, just add it to the <code>ErrorHandlers</code> collection:</p>

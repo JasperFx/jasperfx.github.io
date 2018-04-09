@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -108,11 +108,11 @@ a console application. See <a href="/documentation/bootstrapping/console">Jasper
 <pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For(new JasperRegistry()))&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
 <p>This option might be enough to do some useful things with Jasper as a command executor at the least, but more likely you'll want to add other elements to your system like additional services to the <a href="/documentation/ioc">underlying IoC container</a>, <a href="/documentation/messaging/configuration">the messaging configuration</a>, or <a href="/documentation/bootstrapping/aspnetcore">ASP.Net Core middleware</a>.</p>
 <p>All configuration and set up of Jasper starts with the <code>JasperRegistry</code> class. Typically you would subclass <code>JasperRegistry</code>, but if you have only minimal configuration needs, you might bootstrap like this:</p>
-<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For(_ =&gt;&#xA;{&#xA;    _.Transports.ListenForMessagesFrom(&quot;tcp://localhost:2001&quot;);&#xA;}))&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For(_ =&gt;&#xA;{&#xA;    _.Transports.ListenForMessagesFrom(&quot;tcp://localhost:2001&quot;);&#xA;}))&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;</code></pre>
 <p>More likely though is that you will opt to define your application with a custom <code>JasperRegistry</code>:</p>
 <pre><code class="language-csharp">&#xA;public class MyJasperApp : JasperRegistry&#xA;{&#xA;    public MyJasperApp()&#xA;    {&#xA;        ServiceName = &quot;My Jasper App&quot;;&#xA;&#xA;        Configuration.AddEnvironmentVariables();&#xA;&#xA;        Transports.ListenForMessagesFrom(&quot;durable://localhost:2111/incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>And then use that to bootstrap your application:</p>
-<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For&lt;MyJasperApp&gt;())&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;// or&#xA;&#xA;using (var runtime = JasperRuntime.For(new MyJasperApp()))&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For&lt;MyJasperApp&gt;())&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;// or&#xA;&#xA;using (var runtime = JasperRuntime.For(new MyJasperApp()))&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;</code></pre>
 <p>See also:</p>
 <ul class="table-of-contents"><li><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a></li><li><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a></li><li><a href="/documentation/bootstrapping/console">Jasper in Console Applications</a></li><li><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a></li><li><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a></li></ul>
 

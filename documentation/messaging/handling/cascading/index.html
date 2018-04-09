@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -97,7 +97,7 @@
 <p>Many times during the processing of a message you will need to create and send out other messages. Maybe you need to respond back to the original sender with a reply,
 maybe you need to trigger a subsequent action, or send out additional messages to start some kind of background processing. You can do that by just having
 your handler class use the <code>IServiceBus</code> interface as shown in this sample:</p>
-<pre><code class="language-csharp">&#xA;public class NoCascadingHandler&#xA;{&#xA;    private readonly IServiceBus _bus;&#xA;&#xA;    public NoCascadingHandler(IServiceBus bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    public void Consume(MyMessage message)&#xA;    {&#xA;        // do whatever work you need to for MyMessage,&#xA;        // then send out a new MyResponse&#xA;        _bus.Send(new MyResponse());&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class NoCascadingHandler&#xA;{&#xA;    private readonly IMessageContext _bus;&#xA;&#xA;    public NoCascadingHandler(IMessageContext bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    public void Consume(MyMessage message)&#xA;    {&#xA;        // do whatever work you need to for MyMessage,&#xA;        // then send out a new MyResponse&#xA;        _bus.Send(new MyResponse());&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The code above certainly works and this is consistent with most of the competing service bus tools. However, Jasper supports the concept of <em>cascading messages</em>
 that allow you to automatically send out objects returned from your handler methods without having to use <code>IServiceBus</code> as shown below:</p>
 <pre><code class="language-csharp">&#xA;public class CascadingHandler&#xA;{&#xA;    public MyResponse Consume(MyMessage message)&#xA;    {&#xA;        return new MyResponse();&#xA;    }&#xA;}&#xA;</code></pre>
@@ -121,7 +121,7 @@ If you're examining the <code>Envelope</code> objects for the message, you'll se
 is &quot;MyResponse.&quot;</p>
 <p>Let's say that we have two running service bus nodes named &quot;Sender&quot; and &quot;Receiver.&quot; If this code below
 is called from the &quot;Sender&quot; node:</p>
-<pre><code class="language-csharp">&#xA;public class Requester&#xA;{&#xA;    private readonly IServiceBus _bus;&#xA;&#xA;    public Requester(IServiceBus bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    public Task&lt;MyResponse&gt; GatherResponse()&#xA;    {&#xA;        return _bus.Request&lt;MyResponse&gt;(new MyMessage());&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class Requester&#xA;{&#xA;    private readonly IMessageContext _bus;&#xA;&#xA;    public Requester(IMessageContext bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    public Task&lt;MyResponse&gt; GatherResponse()&#xA;    {&#xA;        return _bus.Request&lt;MyResponse&gt;(new MyMessage());&#xA;    }&#xA;}&#xA;</code></pre>
 <p>and inside Receiver we have this code:</p>
 <pre><code class="language-csharp">&#xA;public class CascadingHandler&#xA;{&#xA;    public MyResponse Consume(MyMessage message)&#xA;    {&#xA;        return new MyResponse();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Assuming that <code>MyMessage</code> is configured to be sent to &quot;Receiver,&quot; the following steps take place:</p>
@@ -156,7 +156,7 @@ normal subscription routing, you can use the <code>SendDirectlyTo</code> wrapper
 <h2 id="fluent-interface-for-controlling-responses">Fluent Interface for Controlling Responses</h2>
 <p>Jasper also supports a limited fluent interface to more exactly control how the cascading message
 should be handled:</p>
-<pre><code class="language-csharp">&#xA;public class RespondsHandler&#xA;{&#xA;    public Respond Consume(MyMessage message)&#xA;    {&#xA;        return Respond&#xA;            // The actual message being send back out&#xA;            .With(new GoEast())&#xA;&#xA;            // Delay the processing by a timespan&#xA;            .DelayedBy(TimeSpan.FromDays(1))&#xA;&#xA;            // Delay the processing until a given time&#xA;            .DelayedUntil(DateTime.Today.AddDays(3))&#xA;&#xA;            // Send this message directly to the originator&#xA;            // of the original MyMessage&#xA;            .ToSender()&#xA;&#xA;            // Finally, directly modify the Envelope for&#xA;            // the outgoing message for rarely used options&#xA;            .Altered(envelope =&gt;&#xA;            {&#xA;                // Do any alterations you&#x27;d want to the outgoing message&#xA;&#xA;                // Override the serialization maybe?&#xA;                envelope.ContentType = &quot;application/json&quot;;&#xA;&#xA;                envelope.Destination&#xA;                    = new Uri(&quot;lq.tcp://localhost:2201/system&quot;);&#xA;            });&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class RespondsHandler&#xA;{&#xA;    public Response Consume(MyMessage message)&#xA;    {&#xA;        return Respond&#xA;            // The actual message being send back out&#xA;            .With(new GoEast())&#xA;&#xA;            // Delay the processing by a timespan&#xA;            .DelayedBy(TimeSpan.FromDays(1))&#xA;&#xA;            // Delay the processing until a given time&#xA;            .DelayedUntil(DateTime.Today.AddDays(3))&#xA;&#xA;            // Send this message directly to the originator&#xA;            // of the original MyMessage&#xA;            .ToSender()&#xA;&#xA;            // Finally, directly modify the Envelope for&#xA;            // the outgoing message for rarely used options&#xA;            .Altered(envelope =&gt;&#xA;            {&#xA;                // Do any alterations you&#x27;d want to the outgoing message&#xA;&#xA;                // Override the serialization maybe?&#xA;                envelope.ContentType = &quot;application/json&quot;;&#xA;&#xA;                envelope.Destination&#xA;                    = new Uri(&quot;lq.tcp://localhost:2201/system&quot;);&#xA;            });&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="custom-cascading-message-behavior">Custom Cascading Message Behavior</h2>
 <p>Finally, you can create your own custom response behavior by creating your own implementation of
 <code>ISendMyself</code> and returning that wrapper object from your handler methods:</p>

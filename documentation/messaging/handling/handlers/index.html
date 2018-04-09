@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -104,7 +104,7 @@ between the rest of the world and your application code. When a Jasper applicati
 <h2 id="how-jasper-consumes-your-message-handlers">How Jasper Consumes Your Message Handlers</h2>
 <p>If you're worried about the performance implications of Jasper calling into your code without any interfaces or base classes, nothing to worry about because Jasper <strong>does not use Reflection at runtime</strong> to call your actions. Instead, Jasper uses <a href="https://jeremydmiller.com/2015/11/11/using-roslyn-for-runtime-code-generation-in-marten/">runtime
 code generation with Roslyn</a> to write the &quot;glue&quot; code around your actions. Internally, Jasper is generating a subclass of <code>MessageHandler</code> for each known message type:</p>
-<pre><code class="language-csharp">&#xA;public abstract class MessageHandler&#xA;{&#xA;    public HandlerChain Chain { get; set; }&#xA;&#xA;    // This method actually processes the incoming Envelope&#xA;    public abstract Task Handle(IInvocationContext input);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public abstract class MessageHandler&#xA;{&#xA;    public HandlerChain Chain { get; set; }&#xA;&#xA;    // This method actually processes the incoming Envelope&#xA;    public abstract Task Handle(IMessageContext context);&#xA;}&#xA;</code></pre>
 <p>See <a href="/documentation/messaging/handling/handlers">Message Handlers</a> for information on how Jasper generates the <code>MessageHandler</code> code
 and how to customize that code.</p>
 <h2 id="naming-conventions">Naming Conventions</h2>

@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -116,23 +116,23 @@ using this syntax in your <code>JasperRegistry</code>:</p>
 <h2 id="explicitly-ignoring-methods">Explicitly Ignoring Methods</h2>
 <p>You can force Jasper to disregard a candidate message handler action at either the class or method
 level by using the <code>[JasperIgnore]</code> attribute like this:</p>
-<pre><code class="language-csharp">&#xA;public class NetflixHandler : IMovieSink&#xA;{&#xA;    public void Record(IMovieEvent @event)&#xA;    {&#xA;&#xA;    }&#xA;&#xA;    public void Record2(MovieEvent @event)&#xA;    {&#xA;&#xA;    }&#xA;&#xA;    public void Handle(MovieAdded added)&#xA;    {&#xA;    }&#xA;&#xA;    // Only this method will be ignored as&#xA;    // a handler method&#xA;    [JasperIgnore]&#xA;    public void Handle2(MovieAdded added)&#xA;    {&#xA;    }&#xA;&#xA;    public void Handle3(MovieAdded message, IInvocationContext context)&#xA;    {&#xA;    }&#xA;&#xA;    public static Task HandleAsync(MovieRemoved removed)&#xA;    {&#xA;        return Task.CompletedTask;&#xA;    }&#xA;&#xA;    public void Listen(MovieAdded added)&#xA;    {&#xA;    }&#xA;}&#xA;&#xA;// All methods on this class will be ignored&#xA;// as handler methods even though the class&#xA;// name matches the discovery naming conventions&#xA;[JasperIgnore]&#xA;public class BlockbusterHandler&#xA;{&#xA;    public void Handle(MovieAdded added)&#xA;    {&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class NetflixHandler : IMovieSink&#xA;{&#xA;    public void Listen(MovieAdded added)&#xA;    {&#xA;    }&#xA;&#xA;    public void Handles(IMovieEvent @event)&#xA;    {&#xA;    }&#xA;&#xA;    public void Handles(MovieEvent @event)&#xA;    {&#xA;    }&#xA;&#xA;    public void Consume(MovieAdded added)&#xA;    {&#xA;    }&#xA;&#xA;    // Only this method will be ignored as&#xA;    // a handler method&#xA;    [JasperIgnore]&#xA;    public void Handles(MovieAdded added)&#xA;    {&#xA;    }&#xA;&#xA;    public void Handle(MovieAdded message, IMessageContext context)&#xA;    {&#xA;    }&#xA;&#xA;    public static Task Handle(MovieRemoved removed)&#xA;    {&#xA;        return Task.CompletedTask;&#xA;    }&#xA;}&#xA;&#xA;// All methods on this class will be ignored&#xA;// as handler methods even though the class&#xA;// name matches the discovery naming conventions&#xA;[JasperIgnore]&#xA;public class BlockbusterHandler&#xA;{&#xA;    public void Handle(MovieAdded added)&#xA;    {&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="customizing-conventional-discovery">Customizing Conventional Discovery</h2>
 <div class="alert alert-warning">Do note that handler finding conventions are additive, meaning that adding additional criteria does
 not disable the built in handler discovery</div>
 <p>The easiest way to use the Jasper messaging functionality is to just code against the default conventions. However, if you wish to deviate
 from those naming conventions you can either supplement the handler discovery or replace it completely with your own conventions.</p>
 <p>At a minimum, you can disable the built in discovery, add additional type filtering criteria, or register specific handler classes with the code below:</p>
-<pre><code class="language-csharp">&#xA;public class CustomHandlerApp : JasperRegistry&#xA;{&#xA;    public CustomHandlerApp()&#xA;    {&#xA;        // Turn off the default handler conventions&#xA;        // altogether&#xA;        Handlers.DisableConventionalDiscovery();&#xA;&#xA;&#xA;        // Include candidate actions by a user supplied&#xA;        // type filter&#xA;        Handlers.IncludeTypes(t =&gt; t.IsInNamespace(&quot;MyApp.Handlers&quot;) );&#xA;&#xA;        // Include candidate classes by suffix&#xA;        Handlers.IncludeClassesSuffixedWith(&quot;Listener&quot;);&#xA;&#xA;        // Include a specific handler class with a generic argument&#xA;        Handlers.IncludeType&lt;SimpleHandler&gt;();&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class CustomHandlerApp : JasperRegistry&#xA;{&#xA;    public CustomHandlerApp()&#xA;    {&#xA;        Handlers.Discovery(x =&gt;&#xA;        {&#xA;            // Turn off the default handler conventions&#xA;            // altogether&#xA;            x.DisableConventionalDiscovery();&#xA;&#xA;            // Include candidate actions by a user supplied&#xA;            // type filter&#xA;            x.IncludeTypes(t =&gt; t.IsInNamespace(&quot;MyApp.Handlers&quot;));&#xA;&#xA;            // Include candidate classes by suffix&#xA;            x.IncludeClassesSuffixedWith(&quot;Listener&quot;);&#xA;&#xA;            // Include a specific handler class with a generic argument&#xA;            x.IncludeType&lt;SimpleHandler&gt;();&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <h2 id="subclass-or-interface-handlers">Subclass or Interface Handlers</h2>
 <p>Jasper will allow you to use handler methods that work against interfaces or abstract types to apply or reuse
 generic functionality across messages. Let's say that some subset of your messages implement some kind of
 <code>IMessage</code> interface like this one and an implentation of it below:</p>
-<pre><code class="language-csharp">&#xA;public interface IMessage { }&#xA;&#xA;public class MessageOne : IMessage { }&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IMessage&#xA;{&#xA;}&#xA;&#xA;public class MessageOne : IMessage&#xA;{&#xA;}&#xA;</code></pre>
 <p>You can handle the <code>MessageOne</code> specifically with a handler action like this:</p>
-<pre><code class="language-csharp">&#xA;public class SpecificMessageHandler&#xA;{&#xA;    public void Consume(MessageOne message)&#xA;    {&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class SpecificMessageHandler&#xA;{&#xA;    public void Consume(MessageOne message)&#xA;    {&#xA;    }&#xA;}&#xA;</code></pre>
 <p>You can also create a handler for <code>IMessage</code> like this one:</p>
-<pre><code class="language-csharp">&#xA;public class GenericMessageHandler&#xA;{&#xA;    private readonly Envelope _envelope;&#xA;&#xA;    public GenericMessageHandler(Envelope envelope)&#xA;    {&#xA;        _envelope = envelope;&#xA;    }&#xA;&#xA;    public void Consume(IMessage message)&#xA;    {&#xA;        Console.WriteLine($&quot;Got a message from {_envelope.Source}&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class GenericMessageHandler&#xA;{&#xA;    public void Consume(IMessage messagem, Envelope envelope)&#xA;    {&#xA;        Console.WriteLine($&quot;Got a message from {envelope.Source}&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>When Jasper handles the <code>MessageOne</code> message, it first calls all the specific handlers for that message type,
 then will call any handlers that handle a more generic message type (interface or abstract class most likely) where
 the specific type can be cast to the generic type. You can clearly see this behavior by examining the <a href="/documentation/diagnostics">handler chain diagnostics</a>.</p>

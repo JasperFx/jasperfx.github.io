@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -98,7 +98,7 @@
 that you want to verify in your automated tests. The tricky part is how to invoke the original message, but then waiting for the cascading operations to complete before letting the test harness proceed to verifying the system state. Using <code>Thread.Sleep()</code> is <em>one</em> alternative, but usually results in either unnecessarily slow or horrendously unreliable automated
 tests.</p>
 <p>To at least amerliorate the issues around timing, Jasper comes with the &quot;Message Tracking&quot; feature that can be used as a helper in automated testing. To enable that in your applications, just include the extension as shown below:</p>
-<pre><code class="language-csharp">&#xA;public class AppUsingMessageTracking : JasperRegistry&#xA;{&#xA;    public AppUsingMessageTracking()&#xA;    {&#xA;        if (EnvironmentName == &quot;Development&quot; || EnvironmentName == &quot;Testing&quot;)&#xA;        {&#xA;            // Don&#x27;t use this in production because it&#x27;d&#xA;            // cause a memory leak issue&#xA;            Include&lt;MessageTrackingExtension&gt;();&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppUsingMessageTracking : JasperRegistry&#xA;{&#xA;    public AppUsingMessageTracking()&#xA;    {&#xA;        // TODO -- need to change this when GH-346 is done&#xA;        Hosting.ConfigureAppConfiguration((context, config) =&gt;&#xA;        {&#xA;            var environment = context.HostingEnvironment.EnvironmentName;&#xA;&#xA;            if (environment == &quot;Development&quot; || environment == &quot;Testing&quot;)&#xA;            {&#xA;                // Don&#x27;t use this in production because it&#x27;d&#xA;                // cause a memory leak issue&#xA;                Include&lt;MessageTrackingExtension&gt;();&#xA;            }&#xA;        });&#xA;&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Now, in testing you can use extension methods off of <code>JasperRuntime</code> that will execute an action with the service bus and
 wait until all the work started (messages sent should be received, cascading messages should be completed, etc.) has completed --
 or it times out in a reasonable time.</p>

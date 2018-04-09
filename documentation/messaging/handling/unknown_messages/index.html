@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -97,12 +97,12 @@
 <p>In the case where your system receives a message with a message type that you cannot handle,
 Jasper gives you the ability to write your own policy about how to deal with that message with the
 <code>IMissingHandler</code> interface shown below:</p>
-<pre><code class="language-csharp">&#xA;public interface IMissingHandler&#xA;{&#xA;    Task Handle(Envelope envelope, IEnvelopeContext context);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IMissingHandler&#xA;{&#xA;    Task Handle(Envelope envelope, IMessageContext context);&#xA;}&#xA;</code></pre>
 <p>To create your own policy or fall through handler, implement your own version of that
 interface like this sample shown below:</p>
-<pre><code class="language-csharp">&#xA;public class MyMissingHandler : IMissingHandler&#xA;{&#xA;    public Task Handle(Envelope envelope, IEnvelopeContext context)&#xA;    {&#xA;        return context&#xA;            .SendFailureAcknowledgement(envelope, &quot;I don&#x27;t know how to process this message&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MyMissingHandler : IMissingHandler&#xA;{&#xA;    public Task Handle(Envelope envelope, IMessageContext context)&#xA;    {&#xA;        return context&#xA;            .Advanced&#xA;            .SendFailureAcknowledgement(&quot;I don&#x27;t know how to process this message&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Lastly, to register your own policy, just add it to the application IoC container like so:</p>
-<pre><code class="language-csharp">&#xA;public class ConfigureMissingHandler : JasperRegistry&#xA;{&#xA;    public ConfigureMissingHandler()&#xA;    {&#xA;        // Just add your type to the IoC container&#xA;        Services.AddSingleton&lt;IMissingHandler, MyMissingHandler&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class ConfigureMissingHandlerApp : JasperRegistry&#xA;{&#xA;    public ConfigureMissingHandlerApp()&#xA;    {&#xA;        // Just add your type to the IoC container&#xA;        Services.AddSingleton&lt;IMissingHandler, MyMissingHandler&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Do note that you can add multiple <code>IMissingHandler</code>'s in a single application and all of them will
 be executed.</p>
 

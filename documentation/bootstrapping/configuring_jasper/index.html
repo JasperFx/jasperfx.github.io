@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -105,22 +105,22 @@ discussions of setting up Jasper applications:</p>
 <h2 id="service-name">Service Name</h2>
 <p>By default, Jasper derives a descriptive <em>ServiceName</em> for your application by taking the class name of your <code>JasperRegistry</code> and stripping off
 any &quot;JasperRegistry&quot; or &quot;Registry&quot; suffix. For diagnostic purposes and for the <a href="/documentation/messaging/routing/subscriptions">dynamic subscriptions and service discovery</a>, you may want to override the service name like so:</p>
-<pre><code class="language-csharp">&#xA;public class CustomServiceRegistry : JasperRegistry&#xA;{&#xA;    public CustomServiceRegistry()&#xA;    {&#xA;        // The derived default would be &quot;CustomService&quot;&#xA;        ServiceName = &quot;My Custom Service&quot;;&#xA;&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class CustomServiceRegistry : JasperRegistry&#xA;{&#xA;    public CustomServiceRegistry()&#xA;    {&#xA;        // The derived default would be &quot;CustomService&quot;&#xA;        ServiceName = &quot;My Custom Service&quot;;&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="environment-name">Environment Name</h2>
 <p>Jasper exposes the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments">ASP.Net Core Environment name</a> with this usage:</p>
-<pre><code class="language-csharp">&#xA;public class EnvironmentNameRegistry : JasperRegistry&#xA;{&#xA;    public EnvironmentNameRegistry()&#xA;    {&#xA;        // By default, this is delegating to ASP.Net Core&#xA;        if (EnvironmentName == &quot;Development&quot;)&#xA;        {&#xA;            Features.Include&lt;DiagnosticServer&gt;();&#xA;        }&#xA;&#xA;        // Override the Environment&#xA;        EnvironmentName = &quot;Production&quot;;&#xA;&#xA;        // which is just a shortcut for:&#xA;        Http.UseEnvironment(&quot;Production&quot;);&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class EnvironmentNameRegistry : JasperRegistry&#xA;{&#xA;    public EnvironmentNameRegistry()&#xA;    {&#xA;        // which is just a shortcut for:&#xA;        Hosting.UseEnvironment(&quot;Production&quot;);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>You can use the <code>EnvironmentName</code> property within the constructor function of your <code>JasperRegistry</code> to do conditional configuration based on environment.</p>
 <h2 id="service-registrations">Service Registrations</h2>
 <div class="alert alert-info"><b>Note!</b> Jasper was conceived and designed in no small part to reduce the role of an IoC container at runtime, but "much, much less" is still more than "none." </div>
 <p>Like most application frameworks in .Net, Jasper uses an IoC container to do basic composition within its runtime pipeline. You can add your own registrations to the application container directly in your <code>JasperRegistry</code>:</p>
-<pre><code class="language-csharp">&#xA;public class MyJasperApp : JasperRegistry&#xA;{&#xA;    public MyJasperApp()&#xA;    {&#xA;        // Adding services to the underlying container via&#xA;        // the ASP.Net Core DI abstractions&#xA;        Services.AddTransient&lt;ISecurityService, MySecurityService&gt;();&#xA;&#xA;        // or via idiomatic StructureMap&#xA;        Services.For&lt;ISecurityService&gt;().Use&lt;MySecurityService&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MyJasperApp : JasperRegistry&#xA;{&#xA;    public MyJasperApp()&#xA;    {&#xA;        // Adding services to the underlying container via&#xA;        // the ASP.Net Core DI abstractions&#xA;        Services.AddTransient&lt;ISecurityService, MySecurityService&gt;();&#xA;&#xA;        // or via idiomatic StructureMap&#xA;        Services.For&lt;ISecurityService&gt;().Use&lt;MySecurityService&gt;();&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>See <a href="/documentation/ioc">IoC Container Integration</a> for a lot more information about how Jasper uses an IoC container.</p>
 <h2 id="adding-extensions">Adding Extensions</h2>
 <p>Jasper comes with its own extensibility model based on an interface called <code>IJasperExtension</code>. A custom extension
 might look something like this:</p>
-<pre><code class="language-csharp">&#xA;public class CustomJasperExtension : IJasperExtension&#xA;{&#xA;    public void Configure(JasperRegistry registry)&#xA;    {&#xA;        // apply alterations&#xA;    }&#xA;&#xA;    public int Threshold { get; set; } = 10;&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class CustomJasperExtension : IJasperExtension&#xA;{&#xA;    public int Threshold { get; set; } = 10;&#xA;&#xA;    public void Configure(JasperRegistry registry)&#xA;    {&#xA;        // apply alterations&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The syntax in <code>JasperRegistry</code> to apply that extension is shown below:</p>
-<pre><code class="language-csharp">&#xA;public class AppWithExtensions : JasperRegistry&#xA;{&#xA;    public AppWithExtensions()&#xA;    {&#xA;        // as is&#xA;        Include&lt;CustomJasperExtension&gt;();&#xA;&#xA;        // or&#xA;        Include(new CustomJasperExtension());&#xA;&#xA;        // or use the extension with customizations&#xA;        Include&lt;CustomJasperExtension&gt;(_ =&gt;&#xA;        {&#xA;            _.Threshold = 20;&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppWithExtensions : JasperRegistry&#xA;{&#xA;    public AppWithExtensions()&#xA;    {&#xA;        // as is&#xA;        Include&lt;CustomJasperExtension&gt;();&#xA;&#xA;        // or&#xA;        Include(new CustomJasperExtension());&#xA;&#xA;        // or use the extension with customizations&#xA;        Include&lt;CustomJasperExtension&gt;(_ =&gt; { _.Threshold = 20; });&#xA;    }&#xA;}&#xA;</code></pre>
 <p>See <a href="/documentation/extensions">Extensions</a> for more information on building, using, and auto-discovering Jasper extensions.</p>
 
 			      	</div>

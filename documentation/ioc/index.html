@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -94,17 +94,13 @@
 
 			      	<div id="main-pane">
 			      		<!--title:IoC Container Integration-->
-<p>This is heavily in flight. It's StructureMap only <em>today</em>, but all the service registrations
-are done with the ASP.Net Core DI abstractions, including a type scanning stolen out of
-StructureMap. One of three things is going to happen before 1.0:</p>
-<ul>
-<li>We retain StructureMap, but only if StructureMap gets an overhaul for performance (there's
-overlap between the Jasper &amp; StructureMap teams). Other option is that we effectively remove
-the IoC container from runtime message or HTTP processing in most cases so that the performance
-does not matter all that much</li>
-<li>We switch to using the built in ASP.Net DI container. So far, our experimentation on this one
-has not been positive</li>
-</ul>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+This is still a little bit in flight as BlueMilk itself is somewhat likely to be changed and possibly renamed.</p>
+</div>
+<p>Jasper <strong>only</strong> supports the <a href="http://github.com/jasperfx/bluemilk">BlueMilk</a> IoC container.</p>
+<p>See <a href="https://jeremydmiller.com/2018/01/16/introducing-bluemilk-structuremaps-replacement-jaspers-special-sauce/">Introducing BlueMilk: StructureMap’s Replacement &amp; Jasper’s Special Sauce</a> for more information on exactly how the Jasper + BlueMilk combination works.</p>
+<p>To register services in a Jasper application, use the <code>JasperRegistry.Services</code> root like this:</p>
+<pre><code class="language-csharp">&#xA;public class JasperAppWithServices : JasperRegistry&#xA;{&#xA;    public JasperAppWithServices()&#xA;    {&#xA;        // Add service registrations with the ASP.Net Core&#xA;        // DI abstractions&#xA;        Services.AddLogging();&#xA;        Services.AddSingleton(new MessageTracker());&#xA;&#xA;        // or mix and match with StructureMap style&#xA;        // registrations&#xA;        Services.For(typeof(ILogger)).Use(typeof(Logger&lt;&gt;));&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 

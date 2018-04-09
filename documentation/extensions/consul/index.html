@@ -48,7 +48,7 @@
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/extensions" title="Extensions">Previous</a></li>
-		      	<li><a href="/documentation/extensions/lightningdb" title="Jasper.LightningDb">Next</a></li>
+		      	<li><a href="/documentation/extensions/marten" title="Jasper.Marten">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -73,14 +73,14 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/lightningdb">Jasper.LightningDb</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten">Jasper.Marten</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions">Extensions</a></p>
 
 		        </ul>
@@ -108,7 +108,7 @@ by applying the <code>ConsulBackedSubscriptions</code> extension as shown below:
 <p>The subscriptions are stored in Consul's key/value store using the pattern <code>jasper/subscription/[message-type]/[url encoded destination]</code>, and the value is a Json document reflecting the valid message representations for the subscriber.</p>
 <h2 id="customizing-consul-setup">Customizing Consul Setup</h2>
 <p>By default, Jasper.Consul will connect to Consul at port 8500, but you can completely configure how the underlying ConsulDotNet <code>ConsulClient</code> will be built out like this:</p>
-<pre><code class="language-csharp">&#xA;public class AppUsingConsul : JasperRegistry&#xA;{&#xA;    public AppUsingConsul()&#xA;    {&#xA;        // In this case, we&#x27;re expecting an environment&#xA;        // variable called &quot;Consul.Port&quot;&#xA;        Configuration.AddEnvironmentVariables();&#xA;&#xA;        Settings.Alter&lt;ConsulSettings&gt;(ConfigureConsul);&#xA;    }&#xA;&#xA;    public void ConfigureConsul(IConfigurationRoot config, ConsulSettings settings)&#xA;    {&#xA;        // Shorthand to use the default Consul setup, but with a different port&#xA;        // number retrieved from the application configuration&#xA;        settings.Port = config.GetValue&lt;int&gt;(&quot;Consul.Port&quot;);&#xA;&#xA;        // Configure the underlying ConsulClientConfiguration object&#xA;        settings.Configure = _ =&gt;&#xA;        {&#xA;            // This line is an equivalent to &quot;settings.Port = #&quot; as shown above&#xA;            _.Address = $&quot;http://localhost:{config[&quot;Consul.Port&quot;]}&quot;.ToUri();&#xA;&#xA;            _.Token = config[&quot;Consul.Token&quot;];&#xA;        };&#xA;&#xA;        // ConsulDotNet allows you to further configure the HttpClient&#xA;        // that it uses internallly to talk to Consul&#xA;        settings.ClientOverride = httpClient =&gt;&#xA;        {&#xA;            httpClient.Timeout = 1.Seconds();&#xA;        };&#xA;&#xA;        // ConsulDotNet also allows you to configure the HttpClientHandler&#xA;        // that it uses internally to talk to Consul&#xA;        settings.HandlerOverride = httpClientHandler =&gt;&#xA;        {&#xA;            httpClientHandler.AutomaticDecompression = DecompressionMethods.None;&#xA;        };&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppUsingConsul : JasperRegistry&#xA;{&#xA;    public AppUsingConsul()&#xA;    {&#xA;        // In this case, we&#x27;re expecting an environment&#xA;        // variable called &quot;Consul.Port&quot;&#xA;        Configuration.AddEnvironmentVariables();&#xA;&#xA;        Settings.Alter&lt;ConsulSettings&gt;(ConfigureConsul);&#xA;    }&#xA;&#xA;    public void ConfigureConsul(WebHostBuilderContext context, ConsulSettings settings)&#xA;    {&#xA;        var config = context.Configuration;&#xA;&#xA;        // Shorthand to use the default Consul setup, but with a different port&#xA;        // number retrieved from the application configuration&#xA;        settings.Port = config.GetValue&lt;int&gt;(&quot;Consul.Port&quot;);&#xA;&#xA;        // Configure the underlying ConsulClientConfiguration object&#xA;        settings.Configure = _ =&gt;&#xA;        {&#xA;            // This line is an equivalent to &quot;settings.Port = #&quot; as shown above&#xA;            _.Address = $&quot;http://localhost:{config[&quot;Consul.Port&quot;]}&quot;.ToUri();&#xA;&#xA;            _.Token = config[&quot;Consul.Token&quot;];&#xA;        };&#xA;&#xA;        // ConsulDotNet allows you to further configure the HttpClient&#xA;        // that it uses internallly to talk to Consul&#xA;        settings.ClientOverride = httpClient =&gt;&#xA;        {&#xA;            httpClient.Timeout = 1.Seconds();&#xA;        };&#xA;&#xA;        // ConsulDotNet also allows you to configure the HttpClientHandler&#xA;        // that it uses internally to talk to Consul&#xA;        settings.HandlerOverride = httpClientHandler =&gt;&#xA;        {&#xA;            httpClientHandler.AutomaticDecompression = DecompressionMethods.None;&#xA;        };&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -121,7 +121,7 @@ by applying the <code>ConsulBackedSubscriptions</code> extension as shown below:
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/extensions/lightningdb">Jasper.LightningDb</a>
+				        	<strong>Next: </strong><a href="/documentation/extensions/marten">Jasper.Marten</a>
 
 				        </span>
 			      	</nav>

@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -145,7 +145,7 @@ If instead you'd like to enforce versions on all messages being sent or received
 <p>You can create custom message deserializers for a message by providing your own implementation of the <code>IMessageDeserializer</code> interface from Jasper:</p>
 <pre><code class="language-csharp">&#xA;public interface IMessageDeserializer&#xA;{&#xA;    string MessageType { get; }&#xA;    Type DotNetType { get; }&#xA;&#xA;    string ContentType { get; }&#xA;    object ReadFromData(byte[] data);&#xA;    Task&lt;T&gt; ReadFromRequest&lt;T&gt;(HttpRequest request);&#xA;}&#xA;</code></pre>
 <p>The easiest way to do this is to just subclass the base <code>MessageDeserializerBase&lt;T&gt;</code> class as shown below:</p>
-<pre><code class="language-csharp">&#xA;public class BlueTextReader : MessageDeserializerBase&lt;BlueMessage&gt;&#xA;{&#xA;    public BlueTextReader() : base(&quot;text/plain&quot;)&#xA;    {&#xA;    }&#xA;&#xA;    public override BlueMessage ReadData(byte[] data)&#xA;    {&#xA;        var name = Encoding.UTF8.GetString(data);&#xA;        return new BlueMessage {Name = name};&#xA;    }&#xA;&#xA;    protected override async Task&lt;BlueMessage&gt; ReadData(Stream stream)&#xA;    {&#xA;        var name = await stream.ReadAllTextAsync();&#xA;        return new BlueMessage{Name = name};&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class BlueTextReader : MessageDeserializerBase&lt;BlueMessage&gt;&#xA;{&#xA;    public BlueTextReader() : base(&quot;text/plain&quot;)&#xA;    {&#xA;    }&#xA;&#xA;    public override BlueMessage ReadData(byte[] data)&#xA;    {&#xA;        var name = Encoding.UTF8.GetString(data);&#xA;        return new BlueMessage {Name = name};&#xA;    }&#xA;&#xA;    protected override async Task&lt;BlueMessage&gt; ReadData(Stream stream)&#xA;    {&#xA;        var name = await stream.ReadAllTextAsync();&#xA;        return new BlueMessage {Name = name};&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Likewise, to provide a custom message serializer for a message type, you need to implement the <code>IMessageSerializer</code> interface shown below:</p>
 <pre><code class="language-csharp">&#xA;public interface IMessageSerializer&#xA;{&#xA;    Type DotNetType { get; }&#xA;&#xA;    string ContentType { get; }&#xA;    byte[] Write(object model);&#xA;    Task WriteToStream(object model, HttpResponse response);&#xA;}&#xA;</code></pre>
 <p>Again, the easiest way to implement this interface is to subclass the <code>MessageSerializerBase&lt;T&gt;</code> class as shown below:</p>
@@ -172,7 +172,7 @@ message, and on the receiving end, Jasper would know to deserialize the Json dat
 <h2 id="customizing-json-serialization">Customizing Json Serialization</h2>
 <p>Just in case the default Json serialization isn't quite what you need, you can customize the Json serialization inside
 of your <code>JasperRegistry</code> class like so:</p>
-<pre><code class="language-csharp">&#xA;public class CustomizingJsonSerialization : JasperRegistry&#xA;{&#xA;    public CustomizingJsonSerialization()&#xA;    {&#xA;        Settings.Alter&lt;BusSettings&gt;(_ =&gt;&#xA;        {&#xA;            // Edit the JsonSerializerSettings used by the messaging serialization&#xA;            _.JsonSerialization.ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor;&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class CustomizingJsonSerialization : JasperRegistry&#xA;{&#xA;    public CustomizingJsonSerialization()&#xA;    {&#xA;        Settings.Alter&lt;MessagingSettings&gt;(_ =&gt;&#xA;        {&#xA;            // Edit the JsonSerializerSettings used by the messaging serialization&#xA;            _.JsonSerialization.ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor;&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 

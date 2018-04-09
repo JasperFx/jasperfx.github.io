@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -95,7 +95,7 @@
 			      	<div id="main-pane">
 			      		<!--title:Customizing the Sent Message Envelopes-->
 <p>The <code>IServiceBus.Send(message, Action&lt;Envelope&gt;)</code> method allows you to override how a Jasper message is sent and even processed by directly altering the <code>Envelope</code>:</p>
-<pre><code class="language-csharp">&#xA;public Task CustomizingEnvelope(IServiceBus bus)&#xA;{&#xA;    return bus.Send(new SomeMessage(), e =&gt;&#xA;    {&#xA;        // Override the message routing&#xA;        e.Destination = new Uri(&quot;tcp://server1:2000&quot;);&#xA;&#xA;        // Force Jasper to send the message serialized&#xA;        // with a certain content-type&#xA;        e.ContentType = &quot;application/xml&quot;;&#xA;&#xA;&#xA;        // Make this a scheduled job&#xA;        e.ExecutionTime = DateTime.UtcNow.AddDays(1);&#xA;&#xA;&#xA;        // Direct the receiver that the sender is interested in any response&#xA;        // with this message type&#xA;        e.ReplyRequested = &quot;other-message-type&quot;;&#xA;&#xA;        // Probably easier to use this extension method though&#xA;        e.ReplyRequested = typeof(Message2).ToMessageAlias();&#xA;    });&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public Task CustomizingEnvelope(IMessageContext bus)&#xA;{&#xA;    return bus.Send(new SomeMessage(), e =&gt;&#xA;    {&#xA;        // Override the message routing&#xA;        e.Destination = new Uri(&quot;tcp://server1:2000&quot;);&#xA;&#xA;        // Force Jasper to send the message serialized&#xA;        // with a certain content-type&#xA;        e.ContentType = &quot;application/xml&quot;;&#xA;&#xA;&#xA;        // Make this a scheduled job&#xA;        e.ExecutionTime = DateTime.UtcNow.AddDays(1);&#xA;&#xA;&#xA;        // Direct the receiver that the sender is interested in any response&#xA;        // with this message type&#xA;        e.ReplyRequested = &quot;other-message-type&quot;;&#xA;&#xA;        // Probably easier to use this extension method though&#xA;        e.ReplyRequested = typeof(Message2).ToMessageAlias();&#xA;    });&#xA;</code></pre>
 
 			      	</div>
 

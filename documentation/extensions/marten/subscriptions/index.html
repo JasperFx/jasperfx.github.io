@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -99,7 +99,7 @@
 <p>By default, this subscription persistence is expecting the database connection string to be in
 the <em>marten_subscription_database</em> environment variable, but you can override that or anything
 in the Marten configuration for <strong>only the subscription storage</strong> like this:</p>
-<pre><code class="language-csharp">&#xA;public class AppUsingMartenSubscriptions : JasperRegistry&#xA;{&#xA;    public AppUsingMartenSubscriptions()&#xA;    {&#xA;        Include&lt;MartenBackedSubscriptions&gt;();&#xA;&#xA;        Settings.Alter&lt;MartenSubscriptionSettings&gt;((config, settings) =&gt;&#xA;        {&#xA;            settings.StoreOptions.Connection(config.GetConnectionString(&quot;subscriptions&quot;));&#xA;            settings.StoreOptions.DatabaseSchemaName = &quot;subscriptions&quot;;&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppUsingMartenSubscriptions : JasperRegistry&#xA;{&#xA;    public AppUsingMartenSubscriptions()&#xA;    {&#xA;        Include&lt;MartenBackedSubscriptions&gt;();&#xA;&#xA;        Settings.Alter&lt;MartenSubscriptionSettings&gt;((context, settings) =&gt;&#xA;        {&#xA;            settings.StoreOptions.Connection(context.Configuration.GetConnectionString(&quot;subscriptions&quot;));&#xA;            settings.StoreOptions.DatabaseSchemaName = &quot;subscriptions&quot;;&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 <p>See <a href="/documentation/messaging/routing/subscriptions">Dynamic Subscriptions</a> for more information.</p>
 
 			      	</div>

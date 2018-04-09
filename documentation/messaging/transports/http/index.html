@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.5.0</h3>
+		      	<h3>JasperFx 0.7.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -94,7 +94,7 @@
 
 			      	<div id="main-pane">
 			      		<!--title:HTTP Transport-->
-<pre><code class="language-csharp">&#xA;public class AppUsingHttpTransport : JasperRegistry&#xA;{&#xA;    public AppUsingHttpTransport()&#xA;    {&#xA;        // While *sending* by the HTTP transport is enabled by default,&#xA;        // you have to explicitly enable the HTTP transport listening&#xA;        Transports.Http.EnableListening(true)&#xA;&#xA;            // The default is 10 seconds&#xA;            .ConnectionTimeout(2.Seconds())&#xA;&#xA;            // Override the releative Url of the message&#xA;            // listening routes. The default is _messages&#xA;            .RelativeUrl(&quot;_jasper&quot;);&#xA;&#xA;        // You&#x27;ll have to have Kestrel or some other&#xA;        // web server for this to function&#xA;        Http&#xA;            .UseUrls(&quot;http://*:5000&quot;)&#xA;            .UseKestrel();&#xA;&#xA;&#xA;&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppUsingHttpTransport : JasperRegistry&#xA;{&#xA;    public AppUsingHttpTransport()&#xA;    {&#xA;        // While *sending* by the HTTP transport is enabled by default,&#xA;        // you have to explicitly enable the HTTP transport listening&#xA;        Transports.Http.EnableListening(true)&#xA;&#xA;            // The default is 10 seconds&#xA;            .ConnectionTimeout(2.Seconds())&#xA;&#xA;            // Override the releative Url of the message&#xA;            // listening routes. The default is _messages&#xA;            .RelativeUrl(&quot;_jasper&quot;);&#xA;&#xA;        // You&#x27;ll have to have Kestrel or some other&#xA;        // web server for this to function&#xA;        Hosting&#xA;            .UseUrls(&quot;http://*:5000&quot;)&#xA;            .UseKestrel();&#xA;&#xA;&#xA;&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
 <ul>
 <li>durable</li>
 <li>not durable</li>
