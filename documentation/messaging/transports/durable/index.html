@@ -105,11 +105,14 @@ after too many failures.</p>
 storage and processed when the system is restarted. Jasper does not include any kind of persistence in the core Jasper library, so you'll have to use
 an extension library to add that behavior. Today the options are:</p>
 <ol>
-<li>A <a href="https://github.com/CoreyKaylor/Lightning.NET">LightningDb</a> backed local persistence mechanism. See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/extensions/lightningdb'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information on using this addon.</li>
-<li><strong>Forthcoming</strong> - we're looking into adding a database-backed message persistence mechanism. Follow <a href="https://github.com/JasperFx/jasper/issues/204">that discussion on GitHub here</a>.</li>
+<li><p>A <a href="/documentation/extensions/marten/persistence">Marten/Postgresql backed option</a></p>
+</li>
+<li><p>Sql Server-backed message persistence is also planned, with specific &quot;outbox&quot; usage patterns for <a href="http://dapper-tutorial.net/dapper">Dapper</a> and probably later
+<a href="https://docs.microsoft.com/en-us/ef/core/">Entity Framework Core</a>. Follow the <a href="https://github.com/JasperFx/jasper/issues/259">discussion on this planned feature on GitHub</a>.</p>
+</li>
 </ol>
 <p>To use the durable transport, here are examples of all the common use cases:</p>
-<pre><code class="language-csharp">&#xA;public class DurableTransportApp : JasperRegistry&#xA;{&#xA;    public DurableTransportApp()&#xA;    {&#xA;        // Set up a listener (this is optional)&#xA;        Transports.DurableListenerAt(2200);&#xA;&#xA;        // Or, alternatively set up durable listening by Uri&#xA;        Transports.ListenForMessagesFrom(&quot;tcp://localhost:2200/durable&quot;);&#xA;&#xA;        // Or, alternatively set up durable listening by Uri&#xA;        Transports.ListenForMessagesFrom(&quot;durable://localhost:2200&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class DurableTransportApp : JasperRegistry&#xA;{&#xA;    public DurableTransportApp()&#xA;    {&#xA;        // Set up a listener (this is optional)&#xA;        Transports.DurableListenerAt(2200);&#xA;&#xA;        // Or, alternatively set up durable listening by Uri&#xA;        Transports.ListenForMessagesFrom(&quot;tcp://localhost:2200/durable&quot;);&#xA;&#xA;        // Or, alternatively set up durable listening by Uri&#xA;        Transports.ListenForMessagesFrom(&quot;durable://localhost:2200&quot;);&#xA;&#xA;        // With the RabbitMQ transport&#xA;        Transports.ListenForMessagesFrom(&quot;rabbitmq://server1/durable/queue1&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 

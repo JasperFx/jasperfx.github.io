@@ -109,8 +109,10 @@ accepts <code>Uri's</code> like <em>tcp://remoteserver:2200</em> that is interpr
 <li><a href="/documentation/messaging/transports/loopback">Local Loopback Transport</a> associated with the &quot;loopback&quot; scheme in Uri definitions</li>
 <li><a href="/documentation/messaging/transports/http">HTTP Transport</a> associated with the &quot;http&quot; scheme that just accepts message batches through an ASP.Net Core route</li>
 </ul>
-<p>Transports based on <a href="https://www.rabbitmq.com/">RabbitMQ</a> and/or <a href="https://azure.microsoft.com/en-us/services/service-bus/">Azure Service Bus</a> are part of the Jasper roadmap.</p>
-<p>It is important to note that all of the built in transport types can be used in either a lightweight <a href="http://www.enterpriseintegrationpatterns.com/patterns/conversation/FireAndForget.html">fire and forget</a> with limited retries, or with durable, <a href="https://en.wikipedia.org/wiki/Store_and_forward">store and forward messaging</a> or <a href="http://www.enterpriseintegrationpatterns.com/patterns/messaging/GuaranteedMessaging.html">guaranteed delivery</a>. For durable messaging.</p>
+<p>There is also an addon for a <a href="/documentation/messaging/transports/rabbitmq">RabbitMQ Transport</a> based on <a href="https://www.rabbitmq.com/">RabbitMQ</a>.</p>
+<p>Additional transports based on <a href="https://azure.microsoft.com/en-us/services/service-bus/">Azure Service Bus</a>
+and possibly <a href="https://kafka.apache.org/">Kafka</a> are part of the Jasper roadmap.</p>
+<p>It is important to note that all of the transport types can be used in either a lightweight <a href="http://www.enterpriseintegrationpatterns.com/patterns/conversation/FireAndForget.html">fire and forget</a> with limited retries, or with durable, <a href="https://en.wikipedia.org/wiki/Store_and_forward">store and forward messaging</a> or <a href="http://www.enterpriseintegrationpatterns.com/patterns/messaging/GuaranteedMessaging.html">guaranteed delivery</a>. For durable messaging.</p>
 <p>See <a href="/documentation/messaging/transports/durable">Durable Messaging</a> for more information about durable messaging support in Jasper.</p>
 <h2 id="disable-all-transports">Disable All Transports</h2>
 <p>You might very well want to start up a Jasper application with all of the transports disabled. Maybe it's for testing scenarios

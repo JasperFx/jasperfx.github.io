@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>JasperFx - RabbitMQ Transport</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">JasperFx</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+		        <li>
+		          <a href="/documentation/getting_started">Getting Started</a>
+		        </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+		        <li>
+		        <li>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/documentation/messaging/transports/http" title="HTTP Transport">Previous</a></li>
+		      	<li><a href="/documentation/messaging/messages" title="Reading, Writing, and Versioning Messages">Next</a></li>
+		      </ul>
+		      <div class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input id="search" type="search" class="form-control" placeholder="Search">
+		        </div>
+		      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/transports">Messaging Transports</a></li><li class="active">RabbitMQ Transport</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>JasperFx 0.7.0</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/messages">Reading, Writing, and Versioning Messages</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/transports/http">HTTP Transport</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>RabbitMQ Transport<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/transports/rabbitmq.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--title:RabbitMQ Transport-->
+<p>To use <a href="http://www.rabbitmq.com/">RabbitMQ</a> as a transport with Jasper, first install the <code>Jasper.RabbitMQ</code> library via nuget to your project. Behind the scenes, this package uses the <a href="https://www.rabbitmq.com/dotnet.html">RabbitMQ C# Client</a> to both send and receive
+messages from RabbitMQ.</p>
+<p>To listen for messages from RabbitMQ - assuming that another Jasper application is the original publisher - you simply specify that
+Jasper should listen to a specific RabbitMQ queue with a Uri like this:</p>
+<pre><code class="language-csharp">&#xA;public class AppListeningToRabbitMQ : JasperRegistry&#xA;{&#xA;    public AppListeningToRabbitMQ()&#xA;    {&#xA;        // Port is optional if you&#x27;re using the default RabbitMQ&#xA;        // port of 5672, but shown here for completeness&#xA;        Transports.ListenForMessagesFrom(&quot;rabbitmq://rabbitserver:5672/messages&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Likewise, to publish messages to RabbitMQ, use syntax like this:</p>
+<pre><code class="language-csharp">&#xA;public class AppPublishingToRabbitMQ : JasperRegistry&#xA;{&#xA;    public AppPublishingToRabbitMQ()&#xA;    {&#xA;        Publish.AllMessagesTo(&quot;rabbitmq://rabbitserver:5672/messages&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>As with other transport types, the actual Uri values can be <a href="/documentation/bootstrapping/configuration">resolved from configuration</a>. By moving the Uri values to configuration, it also becomes possible to use one of Jasper's built in transports
+like the <a href="/documentation/messaging/transports/tcp">TCP Transport</a> when developing locally to debug interatiions between applications without
+having to have RabbitMQ running locally, but still use RabbitMQ in production without changing any of the application code.</p>
+<h2 id="uri-structure">Uri Structure</h2>
+<p>The Uri structure to identify a RabbitMQ queue to Jasper should follow this structure:</p>
+<p><code>rabbitmq://[host]:[port]/[durable]/[exchange type]/[exchange name]/[queue name]</code></p>
+<ul>
+<li><code>host</code> -- the name RabbitMQ host or possibly a load balancer name</li>
+<li><code>port</code> -- Optional. If specified, this will simply override the port number from the default 5672</li>
+<li><code>durable</code> -- Optional, but if the first segment is &quot;durable,&quot; this directs Jasper to use the <a href="/documentation/messaging/transports/durable">durable message persistence</a></li>
+<li><code>exchange type</code> -- Optional, but if it exists, this would specify the type of exchange to create or bind to, with the value options
+<em>direct</em>, <em>fanout</em>, <em>topic</em>, or <em>headers</em>. See the <a href="http://www.rabbitmq.com/tutorials/tutorial-four-dotnet.html">RabbitMQ C# Client documentation</a> for more information on these exchange types.</li>
+<li><code>exchange name</code> -- Optional, but must be present if you are specifying the exchange type</li>
+<li><code>queue name</code> -- The name of the RabbitMQ queue to bind to and send to. If there are additional segments, the queue name is
+determined by doing a join of the segments with the '/' character.</li>
+</ul>
+<p>Here are some examples:</p>
+<ul>
+<li><code>rabbitmq://localhost/messages</code> -- bind to your local machine at the default port to queue &quot;messages&quot;</li>
+<li><code>rabbitmq://rabbitserver1:5673/durable/messages</code> -- bind to a RabbitMQ instance on server &quot;rabbitserver1&quot; at port 5673
+to a queue named &quot;messages&quot; with durable, store and forward messaging applied.</li>
+<li><code>rabbitmq://rabbitserver1:5673/fanout/exchange1/messages</code> -- bind to a RabbitMQ instance on server &quot;rabbitserver1&quot; at port 5673
+to a queue named &quot;messages&quot; without durable messages, and using a &quot;fanout&quot; exchange named &quot;exchange1&quot;</li>
+<li><code>rabbitmq://rabbitserver1:5673/durable/fanout/exchange1/messages</code> -- same as above, but this time with the durable messaging
+applied to all incoming or outgoing messages</li>
+</ul>
+<h2 id="customizing-the-rabbitmq-behavior">Customizing the RabbitMQ Behavior</h2>
+<p>Definitely see the <a href="http://www.rabbitmq.com/tutorials/tutorial-one-dotnet.html">documentation for the RabbitMQ C# client</a> for
+much more information about all the possible configuration items, but just know that all of the client configuration is
+surfaced in Jasper through its <a href="/documentation/bootstrapping/configuration">&quot;Settings&quot; model</a> with the <code>RabbitMQSettings</code>
+object as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class CustomizedRabbitMQApp : JasperRegistry&#xA;{&#xA;    public CustomizedRabbitMQApp()&#xA;    {&#xA;        Settings.Alter&lt;RabbitMQSettings&gt;(settings =&gt;&#xA;        {&#xA;            // Retrieve the Jasper &quot;agent&quot; by the full Uri:&#xA;            var agent = settings.For(&quot;rabbitmq://server1/queue1&quot;);&#xA;&#xA;            // Customize the underlying ConnectionFactory for security mechanisms,&#xA;            // timeouts, and many other settings&#xA;            agent.ConnectionFactory.ContinuationTimeout = TimeSpan.FromSeconds(5);&#xA;&#xA;&#xA;            // Customize how Jasper creates the connection from the connection factory&#xA;            agent.ConnectionActivator = factory =&gt; factory.CreateConnection(&quot;MyClientProvidedName&quot;);&#xA;&#xA;&#xA;            // Customize or change how Jasper maps Envelopes to and from&#xA;            // the RabbitMQ properties&#xA;            agent.EnvelopeMapping = new CustomEnvelopeMapping();&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;public class CustomEnvelopeMapping : DefaultEnvelopeMapper&#xA;{&#xA;    public override Envelope ReadEnvelope(byte[] data, IBasicProperties props)&#xA;    {&#xA;        // Customize the mappings from RabbitMQ headers to&#xA;        // Jasper&#x27;s Envelope values&#xA;        return base.ReadEnvelope(data, props);&#xA;    }&#xA;&#xA;    public override void WriteFromEnvelope(Envelope envelope, IBasicProperties properties)&#xA;    {&#xA;        // Customize how Jasper Envelope objects are mapped to&#xA;        // the outgoing RabbitMQ message structure&#xA;        base.WriteFromEnvelope(envelope, properties);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>If you need to integrate with a non-Jasper application using the RabbitMQ transport, you can use a custom <code>IEnvelopeMapper</code> and apply
+it to map a different RabbitMQ header structure or to translate message types so that Jasper can successfully handle the message. That interface looks like this:</p>
+<pre><code class="language-csharp">&#xA;public interface IEnvelopeMapper&#xA;{&#xA;    void WriteFromEnvelope(Envelope envelope, IBasicProperties properties);&#xA;    Envelope ReadEnvelope(byte[] body, IBasicProperties properties);&#xA;}&#xA;</code></pre>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/transports/http">HTTP Transport</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/messaging/messages">Reading, Writing, and Versioning Messages</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
+</html>

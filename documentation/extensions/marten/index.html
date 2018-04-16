@@ -48,7 +48,7 @@
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/extensions/consul" title="Jasper.Consul">Previous</a></li>
-		      	<li><a href="/documentation/extensions/marten/subscriptions" title="Marten Backed Subscription Storage">Next</a></li>
+		      	<li><a href="/documentation/extensions/marten/persistence" title="Marten Backed Message Persistence">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -80,7 +80,7 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten/subscriptions">Marten Backed Subscription Storage</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten/persistence">Marten Backed Message Persistence</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/consul">Jasper.Consul</a></p>
 
 		        </ul>
@@ -111,7 +111,7 @@ arguments or method parameters in message or HTTP handlers:</p>
 <p>As an example:</p>
 <pre><code class="language-csharp">&#xA;public class UsingDocumentSessionHandler&#xA;{&#xA;    // Take in IDocumentStore as a constructor argument&#xA;    public UsingDocumentSessionHandler(IDocumentStore store)&#xA;    {&#xA;    }&#xA;&#xA;    // Take in IDocumentSession as an argument&#xA;    public void Handle(Message1 message, IDocumentSession session)&#xA;    {&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
 <p>On top of the auto-discovered Marten service integration, the Jasper.Marten extension also has:</p>
-<ul class="table-of-contents"><li><a href="/documentation/extensions/marten/subscriptions">Marten Backed Subscription Storage</a></li><li><a href="/documentation/extensions/marten/middleware">Transactional Middleware</a></li></ul>
+<ul class="table-of-contents"><li><a href="/documentation/extensions/marten/persistence">Marten Backed Message Persistence</a></li><li><a href="/documentation/extensions/marten/subscriptions">Marten Backed Subscription Storage</a></li><li><a href="/documentation/extensions/marten/middleware">Transactional Middleware</a></li></ul>
 
 			      	</div>
 
@@ -124,7 +124,7 @@ arguments or method parameters in message or HTTP handlers:</p>
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/extensions/marten/subscriptions">Marten Backed Subscription Storage</a>
+				        	<strong>Next: </strong><a href="/documentation/extensions/marten/persistence">Marten Backed Message Persistence</a>
 
 				        </span>
 			      	</nav>
