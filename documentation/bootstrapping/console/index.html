@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -124,6 +124,11 @@ setting will win out over the command line flag.</p>
 <p>or</p>
 <pre><code>MyApp run -v
 </code></pre>
+<p>The <code>-v / --verbose</code> flags add console and debug logging to your system. It's the equivalent to calling:</p>
+<h2 id="overriding-the-loglevel">Overriding the LogLevel</h2>
+<p>You can also override the log level of your application to any valid value of the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel?view=aspnetcore-2.0">LogLevel enumeration</a> like this:</p>
+<pre><code>MyApp run --log-level Information
+</code></pre>
 <h2 id="validating-the-configured-application">Validating the Configured Application</h2>
 <p>You may want to simply try to bootstrap the application and run all the <a href="/documentation/bootstrapping/environment_tests">environment tests</a> and report out the results. That syntax is:</p>
 <pre><code>MyApp validate
@@ -131,15 +136,31 @@ setting will win out over the command line flag.</p>
 <p>which also respects the same <code>--environment</code> and <code>--verbose</code> flags as the run command. This command will bootstrap the application, run all the environment tests and start up validations, report on the success or failure, and shut down the application. Do note that if any environment tests fail, this command will return a non-zero return code that should be sufficient to let any
 build scripting tool you're using know that the validation failed.</p>
 <h2 id="list-registered-services">List Registered Services</h2>
-<p><strong>This is in flight</strong></p>
-<p>As of right now (Dec 2017), Jasper only supports the <a href="http://structuremap.github.io">StructureMap</a> container, but is somewhat likely to transition to, um, something else (or a streamlined, faster StructureMap) to be named later before it hits 1.0. Regardless, we expect this command will live on.</p>
-<p>To bootstrap the application and list out all the services registered to the system's IoC container, use this command:</p>
+<p>Jasper only supports the <a href="https://github.com/jasperfx/lamar">Lamar container</a> (the replacement for the venerable <a href="http://structuremap.github.io">StructureMap</a> container). To query the current state of service registrations, use this command:</p>
 <pre><code>MyApp services
 </code></pre>
 <p>And again, this command respects both the <code>--environment</code> and <code>--verbose</code> flags</p>
 <h2 id="subscriptions">Subscriptions</h2>
 <p>See <a href="/documentation/messaging/routing/subscriptions">Dynamic Subscriptions</a> for information about the <code>subscriptions</code> command and related workflow for exporting, updating, or validating dynamic
 subscriptions.</p>
+<h2 id="preview-generated-code">Preview Generated Code</h2>
+<p>One of the easiest ways to debug message or HTTP handlers -- or just to understand their behavior -- is to read the generated code
+that Jasper is using to actually handle a specific message type or HTTP route. You can preview that code by using this command:</p>
+<pre><code>dotnet run -- code
+</code></pre>
+<p>Or to only see the code for message handlers:</p>
+<pre><code>dotnet run -- code messages
+</code></pre>
+<p>Or to only see the code for any HTTP handlers:</p>
+<pre><code>dotnet run -- code routes
+</code></pre>
+<p>Finally, to dump the results to a file, use the <code>--file</code> flag like this:</p>
+<pre><code>dotnet run -- code --file generated.cs
+</code></pre>
+<p>or</p>
+<pre><code>dotnet run -- code -f generated.cs
+</code></pre>
+<p>As usual, this command also respects both the <code>--environment</code> and <code>--verbose</code> flags</p>
 <h2 id="custom-commands">Custom Commands</h2>
 <p>The Jasper.Console package uses the <a href="http://jasperfx.github.io/oakton">Oakton</a> library for its command line support. You can add custom commands to your Jasper application by simply including <code>OaktonCommand&lt;T&gt;</code> classes in either the main application assembly or in any assembly that is decorated with the <code>[JasperModule]</code> attribute like so:</p>
 <pre><code class="language-csharp">&#xA;[assembly:JasperModule(typeof(DiagnosticsExtension))]&#xA;</code></pre>
@@ -147,7 +168,7 @@ subscriptions.</p>
 <pre><code class="language-csharp">&#xA;[assembly:JasperModule]&#xA;</code></pre>
 <p>If you want to write a command that uses the actual Jasper application, use the <code>JasperInput</code> class as either the input to your
 command or as the superclass to your input class:</p>
-<pre><code class="language-csharp">&#xA;public class JasperInput&#xA;{&#xA;    [IgnoreOnCommandLine]&#xA;    public JasperRegistry Registry { get; set; }&#xA;&#xA;    [Description(&quot;Use to override the ASP.Net Environment name&quot;)]&#xA;    public string EnvironmentFlag { get; set; }&#xA;&#xA;    [Description(&quot;Write out much more information at startup and enables console logging&quot;)]&#xA;    public bool VerboseFlag { get; set; }&#xA;&#xA;    [Description(&quot;Override the log level&quot;)]&#xA;    public LogLevel? LogLevelFlag { get; set; }&#xA;&#xA;    public JasperRuntime BuildRuntime()&#xA;    {&#xA;        if (LogLevelFlag.HasValue)&#xA;        {&#xA;            Registry.ConfigureLogging(x =&gt; x.SetMinimumLevel(LogLevelFlag.Value));&#xA;        }&#xA;&#xA;        if (VerboseFlag)&#xA;        {&#xA;            Console.WriteLine(&quot;Verbose flag is on.&quot;);&#xA;&#xA;            Registry.ConfigureLogging(x =&gt;&#xA;            {&#xA;                x.SetMinimumLevel(LogLevel.Debug);&#xA;&#xA;                x.AddConsole();&#xA;                x.AddDebug();&#xA;            });&#xA;        }&#xA;&#xA;        if (EnvironmentFlag.IsNotEmpty())&#xA;        {&#xA;            Registry.UseEnvironment(EnvironmentFlag);&#xA;        }&#xA;&#xA;        return JasperRuntime.For(Registry);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class JasperInput&#xA;{&#xA;    [IgnoreOnCommandLine]&#xA;    public JasperRegistry Registry { get; set; }&#xA;&#xA;    [Description(&quot;Use to override the ASP.Net Environment name&quot;)]&#xA;    public string EnvironmentFlag { get; set; }&#xA;&#xA;    [Description(&quot;Write out much more information at startup and enables console logging&quot;)]&#xA;    public bool VerboseFlag { get; set; }&#xA;&#xA;    [Description(&quot;Override the log level&quot;)]&#xA;    public LogLevel? LogLevelFlag { get; set; }&#xA;&#xA;    public JasperRuntime BuildRuntime()&#xA;    {&#xA;        // SAMPLE: what-the-cli-is-doing&#xA;&#xA;        // The --log-level flag value overrides your application&#x27;s&#xA;        // LogLevel&#xA;        if (LogLevelFlag.HasValue)&#xA;        {&#xA;            Registry.ConfigureLogging(x =&gt; x.SetMinimumLevel(LogLevelFlag.Value));&#xA;        }&#xA;&#xA;        if (VerboseFlag)&#xA;        {&#xA;            Console.WriteLine(&quot;Verbose flag is on.&quot;);&#xA;&#xA;            // The --verbose flag adds console and&#xA;            // debug logging, as well as setting&#xA;            // the minimum logging level down to debug&#xA;            Registry.ConfigureLogging(x =&gt;&#xA;            {&#xA;                x.SetMinimumLevel(LogLevel.Debug);&#xA;&#xA;                x.AddConsole();&#xA;                x.AddDebug();&#xA;            });&#xA;        }&#xA;&#xA;        // The --environment flag is used to set the environment&#xA;        // property on the IHostedEnvironment within your system&#xA;        if (EnvironmentFlag.IsNotEmpty())&#xA;        {&#xA;            Registry.UseEnvironment(EnvironmentFlag);&#xA;        }&#xA;</code></pre>
 <p>To make that more concrete, here is how the built in <code>services</code> command uses <code>JasperInput</code> type to build out and use the running system:</p>
 <pre><code class="language-csharp">&#xA;[Description(&quot;Display the known StructureMap service registrations&quot;)]&#xA;public class ServicesCommand : OaktonCommand&lt;JasperInput&gt;&#xA;{&#xA;    public override bool Execute(JasperInput input)&#xA;    {&#xA;        input.Registry.Settings.Alter&lt;MessagingSettings&gt;(_ =&gt;&#xA;        {&#xA;            _.ThrowOnValidationErrors = false;&#xA;        });&#xA;&#xA;        using (var runtime = input.BuildRuntime())&#xA;        {&#xA;            Console.WriteLine(runtime.Container.WhatDoIHave());&#xA;        }&#xA;&#xA;        return true;&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Do note that the command will be responsible for disposing and shutting down the running <code>JasperRuntime</code>.</p>

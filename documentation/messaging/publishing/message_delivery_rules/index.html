@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>JasperFx - Message Type Specific Delivery Rules</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">JasperFx</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+		        <li>
+		          <a href="/documentation/getting_started">Getting Started</a>
+		        </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+		        <li>
+		        <li>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/documentation/messaging/publishing/customizing_envelopes" title="Customizing the Sent Message Envelopes">Previous</a></li>
+		      	<li><a href="/documentation/messaging/routing" title="Routing Messages">Next</a></li>
+		      </ul>
+		      <div class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input id="search" type="search" class="form-control" placeholder="Search">
+		        </div>
+		      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/publishing">Publishing Messages</a></li><li class="active">Message Type Specific Delivery Rules</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>JasperFx 0.8.2</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/routing">Routing Messages</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/publishing/customizing_envelopes">Customizing the Sent Message Envelopes</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Message Type Specific Delivery Rules<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/publishing/message_delivery_rules.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--title:Message Type Specific Delivery Rules-->
+<p>You may want to enforce some specific rules about how Jasper publishes messages on a message type by message
+type basis. The most common example is shown below:</p>
+<pre><code class="language-csharp">&#xA;// Any message of this type should be successfully&#xA;// delivered within 10 seconds or discarded&#xA;[DeliverWithin(10)]&#xA;public class StatusMessage{}&#xA;</code></pre>
+<h2 id="using-the-jasperregistry-fluent-interface">Using the JasperRegistry Fluent Interface</h2>
+<p>If you don't care for attributes or don't own the message type, there's also an equivalent mechanism
+in the <code>JasperRegistry</code> fluent interface to define the same kind of <code>Envelope</code> customizations:</p>
+<pre><code class="language-csharp">&#xA;public class StatusMessageSendingApp : JasperRegistry&#xA;{&#xA;    public StatusMessageSendingApp()&#xA;    {&#xA;        // Any time StatusMessage is published,&#xA;        // set the deliver within limit on the outgoing Envelope&#xA;        Publish.Message&lt;StatusMessage&gt;()&#xA;            .Customize(envelope =&gt; envelope.DeliverWithin(10.Seconds()));&#xA;&#xA;        // Use a criteria against the message type to say&#xA;        // that all messages contained in the &quot;MyApp.Status&quot; namespace&#xA;        // would be published with the deliver within rule&#xA;        Publish.MessagesFromNamespace(&quot;MyApp.Status&quot;)&#xA;            .Customize(envelope =&gt; envelope.DeliverWithin(10.Seconds()));&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<h2 id="custom-attributes">Custom Attributes</h2>
+<p>If you really want to, you can write your own custom attribute to modify how Jasper sends out a message
+by subclassing the <code>[ModifyEnvelope]</code> attribute. The attribute shown in the previous sample is itself
+implemented like that:</p>
+<pre><code class="language-csharp">&#xA;public class DeliverWithinAttribute : ModifyEnvelopeAttribute&#xA;{&#xA;    private readonly int _seconds;&#xA;&#xA;    public DeliverWithinAttribute(int seconds)&#xA;    {&#xA;        _seconds = seconds;&#xA;    }&#xA;&#xA;    public override void Modify(Envelope envelope)&#xA;    {&#xA;        envelope.DeliverBy = DateTimeOffset.UtcNow.AddSeconds(_seconds);&#xA;    }&#xA;}&#xA;</code></pre>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/messaging/publishing/customizing_envelopes">Customizing the Sent Message Envelopes</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/messaging/routing">Routing Messages</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
+</html>

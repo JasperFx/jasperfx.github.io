@@ -48,7 +48,7 @@
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/routing/static_routing" title="Static Publishing Rules">Previous</a></li>
-		      	<li><a href="/documentation/messaging/logging" title="Customizing Message Logging">Next</a></li>
+		      	<li><a href="/documentation/messaging/nodes" title="Node Registration and Discovery">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -73,14 +73,14 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/logging">Customizing Message Logging</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/nodes">Node Registration and Discovery</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a></p>
 
 		        </ul>
@@ -93,7 +93,7 @@
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--Title:Dynamic Subscriptions-->
+			      		<p>eli<!--Title:Dynamic Subscriptions--></p>
 <!--Url:subscriptions-->
 <p>In more advanced usages of the Jasper service bus, you may want your application to be able to
 subscribe to messages produced by a separate application without having to first configure
@@ -109,8 +109,39 @@ to directly couple your Jasper applications to each other.</p>
 <li><em>Optional</em> <a href="/documentation/bootstrapping/console">command line tooling</a> to publish, list, or validate the known subscriptions</li>
 </ol>
 <h2 id="subscription-storage">Subscription Storage</h2>
-<p>The default subscription storage is just an in memory model, so you'll almost certainly want to replace that with some sort of
-durable storage mechanism if you're going to use subscriptions. To use a different subscription storage, you need an implementation
+<p>The default subscription storage is to look in the application configuration in the <em>subscriptions</em> key. The JSON data should follow this
+format:</p>
+<pre><code>{
+    &quot;subscriptions&quot;: [
+      {
+        &quot;destination&quot;: &quot;tcp://localhost:2001&quot;,
+        &quot;messageType&quot;: &quot;Message1&quot;,
+        &quot;serviceName&quot;: null,
+        &quot;accept&quot;: [
+          &quot;application/json&quot;
+        ]
+      },
+      {
+        &quot;destination&quot;: &quot;tcp://localhost:2002&quot;,
+        &quot;messageType&quot;: &quot;Message2&quot;,
+        &quot;serviceName&quot;: null,
+        &quot;accept&quot;: [
+          &quot;application/json&quot;
+        ]
+      },
+      {
+        &quot;destination&quot;: &quot;tcp://localhost:2003&quot;,
+        &quot;messageType&quot;: &quot;Message3&quot;,
+        &quot;serviceName&quot;: null,
+        &quot;accept&quot;: [
+          &quot;application/json&quot;
+        ]
+      }
+    ]
+}
+</code></pre>
+<p>That functionality depends on you editing and deploying the subscription information for other applications in your own application, so you might want to replace that with some sort of
+durable, shared storage mechanism if you're going to use subscriptions. To use a different subscription storage, you need an implementation
 of the <code>ISubscriptionsRepository</code> interface that you can plug into the application services like so:</p>
 <pre><code class="language-csharp">&#xA;public class SubscriptionStorageApp : JasperRegistry&#xA;{&#xA;    public SubscriptionStorageApp()&#xA;    {&#xA;        // Plug in subscription storage backed by Marten&#xA;        Services.AddSingleton&lt;ISubscriptionsRepository, MartenSubscriptionRepository&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>You can see a <a href="https://github.com/JasperFx/jasper/blob/master/src/Jasper.Marten/Subscriptions/MartenSubscriptionRepository.cs">sample implementation for Marten here</a>.</p>
@@ -183,7 +214,7 @@ having no compatible message representations or matching transports</li>
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging/logging">Customizing Message Logging</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/nodes">Node Registration and Discovery</a>
 
 				        </span>
 			      	</nav>

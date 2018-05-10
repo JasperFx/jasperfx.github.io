@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -101,6 +101,10 @@ Jasper only targets Netstandard 2.0 and higher at this time.</p>
 pipeline within a different framework, or any combination thereof. Jasper can be used as either your main application framework that handles all the configuration and bootstrapping, or as an add on to ASP.Net Core applications.</p>
 <p>To create a new Jasper application, start by building a new console application:</p>
 <pre>dotnet new console -n MyApp</pre>
+<p>Then, go get Jasper from Nuget:</p>
+<p>PM&gt; Install-Package Jasper
+Or, using paket:</p>
+<p>paket add nuget Jasper</p>
 <p>While this isn't expressly necessary, you probably want to create a new <code>JasperRegistry</code> that will define the active options and configuration for your application:</p>
 <pre><code class="language-csharp">&#xA;public class MyAppRegistry : JasperRegistry&#xA;{&#xA;    public MyAppRegistry()&#xA;    {&#xA;        // Configure or select options in this constructor function&#xA;    }&#xA;}&#xA;</code></pre>
 <p>See <a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a> for more information about using the <code>JasperRegistry</code> class.</p>

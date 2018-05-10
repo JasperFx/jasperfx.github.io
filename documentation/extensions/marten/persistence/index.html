@@ -48,7 +48,7 @@
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/extensions/marten" title="Jasper.Marten">Previous</a></li>
-		      	<li><a href="/documentation/extensions/marten/subscriptions" title="Marten Backed Subscription Storage">Next</a></li>
+		      	<li><a href="/documentation/extensions/marten/middleware" title="Transactional Middleware">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -73,14 +73,14 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten/subscriptions">Marten Backed Subscription Storage</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten/middleware">Transactional Middleware</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/marten">Jasper.Marten</a></p>
 
 		        </ul>
@@ -100,7 +100,9 @@
 <li>Install the <code>Jasper.Marten</code> library via Nuget</li>
 <li>Import the <code>MartenBackedPersistence</code> extension in your <code>JasperRegistry</code> as shown in the code below</li>
 </ol>
-<pre><code class="language-csharp">&#xA;public class AppUsingMartenMessagePersistence : JasperRegistry&#xA;{&#xA;    public AppUsingMartenMessagePersistence()&#xA;    {&#xA;        // Use this line to activate the Marten-backed&#xA;        // message persistence for durable, store and forward&#xA;        // messaging&#xA;        Include&lt;MartenBackedPersistence&gt;();&#xA;&#xA;        // &quot;config&quot; is the ASP.Net Core IConfiguration for the application&#xA;        // &quot;options&quot; is the Marten StoreOptions configuration object&#xA;        Settings.ConfigureMarten((config, options) =&gt;&#xA;        {&#xA;            options.Connection(config[&quot;marten_database&quot;]);&#xA;&#xA;            // Other Marten configuration&#xA;        });&#xA;&#xA;        // Use a &quot;durable&quot; TCP listener at port&#xA;        // 2222 where the incoming messages will be&#xA;        // persisted with Marten upon receipt and&#xA;        // deleted only when the message is successfully&#xA;        // processed&#xA;        Transports.DurableListenerAt(2222);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppUsingMartenMessagePersistence : JasperRegistry&#xA;{&#xA;    public AppUsingMartenMessagePersistence()&#xA;    {&#xA;        // Use this line to activate the Marten-backed&#xA;        // message persistence for durable, store and forward&#xA;        // messaging&#xA;        Include&lt;MartenBackedPersistence&gt;();&#xA;&#xA;        // &quot;config&quot; is the ASP.Net Core IConfiguration for the application&#xA;        // &quot;options&quot; is the Marten StoreOptions configuration object&#xA;        Settings.ConfigureMarten((context, options) =&gt;&#xA;        {&#xA;            options.Connection(context.Configuration[&quot;marten_database&quot;]);&#xA;&#xA;            // Other Marten configuration&#xA;        });&#xA;&#xA;        // Use a &quot;durable&quot; TCP listener at port&#xA;        // 2222 where the incoming messages will be&#xA;        // persisted with Marten upon receipt and&#xA;        // deleted only when the message is successfully&#xA;        // processed&#xA;        Transports.DurableListenerAt(2222);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<p>There's also a shorthand method now that does the equivalent:</p>
+<pre><code class="language-csharp">&#xA;public class MartenUsingApp : JasperRegistry&#xA;{&#xA;    public MartenUsingApp()&#xA;    {&#xA;        // This registers the message persistence as well as&#xA;        // configuring Marten inside your application&#xA;        Settings.PersistMessagesWithMarten((context, options) =&gt;&#xA;        {&#xA;            // Configure the Marten StoreOptions&#xA;            options.Connection(context.Configuration.GetConnectionString(&quot;database&quot;));&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="outbox-pattern-usage">&quot;Outbox&quot; Pattern Usage</h2>
 <p>Using the Marten-backed persistence, you can take advantage of Jasper's implementation of the <a href="http://gistlabs.com/2014/05/the-outbox/">&quot;outbox&quot; pattern</a> where outgoing messages are persisted as part of a native database transaction
 before being sent to the outgoing transports. The purpose of this pattern is to achieve guaranteed messaging and consistency
@@ -137,7 +139,7 @@ message context into the current Marten <code>IDocumentSession</code>, and the o
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/extensions/marten/subscriptions">Marten Backed Subscription Storage</a>
+				        	<strong>Next: </strong><a href="/documentation/extensions/marten/middleware">Transactional Middleware</a>
 
 				        </span>
 			      	</nav>

@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -103,9 +103,9 @@ tests.</p>
 wait until all the work started (messages sent should be received, cascading messages should be completed, etc.) has completed --
 or it times out in a reasonable time.</p>
 <p>To use the message tracking, consider this skeleton of a test:</p>
-<pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task invoke_a_message()&#xA;{&#xA;    using (var runtime = JasperRuntime.For&lt;AppUsingMessageTracking&gt;())&#xA;    {&#xA;        await runtime.InvokeMessageAndWait(new Message1());&#xA;&#xA;        // check the change in system state after the original&#xA;        // message and all of its cascading messages&#xA;        // finish&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public async Task invoke_a_message()&#xA;{&#xA;    using (var runtime = JasperRuntime.For&lt;AppUsingMessageTracking&gt;())&#xA;    {&#xA;        await runtime.InvokeMessageAndWait(new Message1());&#xA;&#xA;        // check the change in system state after the original&#xA;        // message and all of its cascading messages&#xA;        // finish&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The other usages of message tracking are shown below:</p>
-<pre><code class="language-csharp">&#xA;public async Task other_usages()&#xA;{&#xA;    using (var runtime = JasperRuntime.For&lt;AppUsingMessageTracking&gt;())&#xA;    {&#xA;        // Call IServiceBus.Invoke() and wait for all activity to finish&#xA;        await runtime.InvokeMessageAndWait(new Message1());&#xA;&#xA;        // More general usage&#xA;        await runtime.ExecuteAndWait(() =&gt;&#xA;        {&#xA;            return runtime.Bus.Send(new Message1());&#xA;        });&#xA;&#xA;        // More general usage, but synchronously&#xA;        await runtime.ExecuteAndWait(() =&gt;&#xA;        {&#xA;            runtime.Bus.Send(new Message1());&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public async Task other_usages()&#xA;{&#xA;    using (var runtime = JasperRuntime.For&lt;AppUsingMessageTracking&gt;())&#xA;    {&#xA;        // Call IMessageContext.Invoke() and wait for all activity to finish&#xA;        await runtime.InvokeMessageAndWait(new Message1());&#xA;&#xA;        // Configurable timeouts&#xA;        await runtime.InvokeMessageAndWait(new Message1(),&#xA;            timeoutInMilliseconds:10000);&#xA;&#xA;        // More general usage&#xA;        await runtime.ExecuteAndWait(() =&gt;&#xA;        {&#xA;            return runtime.Messaging.Send(new Message1());&#xA;        });&#xA;&#xA;        // More general usage, but synchronously&#xA;        await runtime.ExecuteAndWait(() =&gt;&#xA;        {&#xA;            runtime.Messaging.Send(new Message1());&#xA;        });&#xA;&#xA;        // Using an isolated message context&#xA;        await runtime.ExecuteAndWait(c =&gt; c.Send(new Message1()));&#xA;&#xA;        // Assert that there were no exceptions during the processing&#xA;        // If there are, this will throw an AggregateException of&#xA;        // all encountered exceptions in the message processing&#xA;        await runtime.ExecuteAndWait(c =&gt; c.Send(new Message1()),&#xA;            assertNoExceptions:true);&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 

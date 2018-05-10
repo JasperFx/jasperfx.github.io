@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -98,17 +98,30 @@
 or the ability to explicitly add handler types. The conventional discovery can
 be disabled or customized as well.</p>
 <h2 id="default-conventional-discovery">Default Conventional Discovery</h2>
-<p>Jasper uses <a href="http://structuremap.github.io/registration/auto-registration-and-conventions/">StructureMap 4.0's type scanning support</a> to find
+<p>Jasper uses Lamar's type scanning (based on <a href="http://structuremap.github.io/registration/auto-registration-and-conventions/">StructureMap 4.0's type scanning support</a>) to find
 handler classes and candidate methods from known assemblies based on naming conventions.</p>
 <p>By default, Jasper is looking for public classes in the main application assembly with names matching these rules:</p>
 <ul>
 <li>Type name ends with &quot;Handler&quot;</li>
 <li>Type name ends with &quot;Consumer&quot;</li>
 </ul>
-<p>From the types, FubuMVC looks for any public instance method that either accepts a single parameter that is assumed to be the message type, or <strong>one</strong> parameter with one of these names: <em>message</em>, <em>input</em>, <em>command</em>, or <em>@event</em>. In addition,
+<p>From the types, Jasper looks for any public instance method that either accepts a single parameter that is assumed to be the message type, or <strong>one</strong> parameter with one of these names: <em>message</em>, <em>input</em>, <em>command</em>, or <em>@event</em>. In addition,
 Jasper will also pick the first parameter as the input type regardless of parameter name if it is concrete, not a &quot;simple&quot; type like a string, date, or number, and not a &quot;Settings&quot; type.</p>
 <p>To make that concrete, here are some valid handler method signatures:</p>
 <pre><code class="language-csharp">&#xA;public class ValidMessageHandlers&#xA;{&#xA;    // There&#x27;s only one argument, so we&#x27;ll assume that&#xA;    // argument is the message&#xA;    public void Handle(Message1 something)&#xA;    {&#xA;&#xA;    }&#xA;&#xA;    // The parameter named &quot;message&quot; is assumed to be the message type&#xA;    public void Consume(Message1 message, IDocumentSession session)&#xA;    {&#xA;&#xA;    }&#xA;&#xA;    // It&#x27;s perfectly valid to have multiple handler methods&#xA;    // for a given message type. Each will be called in sequence&#xA;    public void SendEmail(Message1 input, IEmailService emails)&#xA;    {&#xA;&#xA;    }&#xA;&#xA;    public interface IEvent&#xA;    {&#xA;        string CustomerId { get; }&#xA;        Guid Id { get; }&#xA;    }&#xA;&#xA;    // It&#x27;s also legal to handle a message by an abstract&#xA;    // base class or an implemented interface.&#xA;    public void PostProcessEvent(IEvent @event)&#xA;    {&#xA;&#xA;    }&#xA;&#xA;    // In this case, we assume that the first type is the message type&#xA;    // because it&#x27;s concrete, not &quot;simple&quot;, and isn&#x27;t suffixed with&#xA;    // &quot;Settings&quot;&#xA;    public void Consume(Message3 weirdName, IEmailService service)&#xA;    {&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>The valid method names are:</p>
+<ol>
+<li>Handle</li>
+<li>Handles</li>
+<li>Consume</li>
+<li>Consumes</li>
+<li>Start</li>
+<li>Starts</li>
+<li>Orchestrate</li>
+<li>Orchestrates</li>
+</ol>
+<p>With the last two options being horrendously awkward to type, but backwards compatible with the naming
+conventions in the older FubuMVC messaging that Jasper replaces.</p>
 <h2 id="disabling-conventional-discovery">Disabling Conventional Discovery</h2>
 <p>You can completely turn off any automatic discovery of message handlers through type scanning by
 using this syntax in your <code>JasperRegistry</code>:</p>

@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -106,10 +106,12 @@ discussions of setting up Jasper applications:</p>
 <p>By default, Jasper derives a descriptive <em>ServiceName</em> for your application by taking the class name of your <code>JasperRegistry</code> and stripping off
 any &quot;JasperRegistry&quot; or &quot;Registry&quot; suffix. For diagnostic purposes and for the <a href="/documentation/messaging/routing/subscriptions">dynamic subscriptions and service discovery</a>, you may want to override the service name like so:</p>
 <pre><code class="language-csharp">&#xA;public class CustomServiceRegistry : JasperRegistry&#xA;{&#xA;    public CustomServiceRegistry()&#xA;    {&#xA;        // The derived default would be &quot;CustomService&quot;&#xA;        ServiceName = &quot;My Custom Service&quot;;&#xA;    }&#xA;}&#xA;</code></pre>
-<h2 id="environment-name">Environment Name</h2>
+<h2 id="hosting-environment">Hosting Environment</h2>
 <p>Jasper exposes the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments">ASP.Net Core Environment name</a> with this usage:</p>
 <pre><code class="language-csharp">&#xA;public class EnvironmentNameRegistry : JasperRegistry&#xA;{&#xA;    public EnvironmentNameRegistry()&#xA;    {&#xA;        // which is just a shortcut for:&#xA;        Hosting.UseEnvironment(&quot;Production&quot;);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
-<p>You can use the <code>EnvironmentName</code> property within the constructor function of your <code>JasperRegistry</code> to do conditional configuration based on environment.</p>
+<p>You can use the <code>EnvironmentName</code> property within the constructor function of your <code>JasperRegistry</code> to do conditional configuration based on environment just like you would in an ASP.Net Core application:</p>
+<pre><code class="language-csharp">&#xA;public class UsingEnvironmentName : JasperRegistry&#xA;{&#xA;    public UsingEnvironmentName()&#xA;    {&#xA;        // Idiomatic Jasper way&#xA;        Settings.Configure(context =&gt;&#xA;        {&#xA;            if (context.HostingEnvironment.IsDevelopment())&#xA;            {&#xA;                // If in development, I want to replace some kind&#xA;                // of problematic 3rd party service wrapper with&#xA;                // a nicely behaved stub&#xA;                Services.AddSingleton&lt;IThirdPartyService, StubThirdPartyService&gt;();&#xA;            }&#xA;        });&#xA;&#xA;        // ASP.Net Core idiomatic way&#xA;        Hosting.ConfigureServices((context, services) =&gt;&#xA;        {&#xA;            if (context.HostingEnvironment.IsDevelopment())&#xA;            {&#xA;                // If in development, I want to replace some kind&#xA;                // of problematic 3rd party service wrapper with&#xA;                // a nicely behaved stub&#xA;                services.AddSingleton&lt;IThirdPartyService, StubThirdPartyService&gt;();&#xA;            }&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<p>You can also access the current application directory and other information from the <code>IHostedEnvironment</code> property on the context object in both signatures.</p>
 <h2 id="service-registrations">Service Registrations</h2>
 <div class="alert alert-info"><b>Note!</b> Jasper was conceived and designed in no small part to reduce the role of an IoC container at runtime, but "much, much less" is still more than "none." </div>
 <p>Like most application frameworks in .Net, Jasper uses an IoC container to do basic composition within its runtime pipeline. You can add your own registrations to the application container directly in your <code>JasperRegistry</code>:</p>

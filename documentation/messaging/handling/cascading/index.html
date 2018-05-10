@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -162,6 +162,16 @@ should be handled:</p>
 <code>ISendMyself</code> and returning that wrapper object from your handler methods:</p>
 <pre><code class="language-csharp">&#xA;public class SpecialGoWest : ISendMyself&#xA;{&#xA;    public Envelope CreateEnvelope(Envelope original)&#xA;    {&#xA;        return new Envelope&#xA;        {&#xA;            Message = new GoWest(),&#xA;            Destination = original.ReplyUri,&#xA;            ContentType = &quot;text/xml&quot;&#xA;        };&#xA;    }&#xA;}&#xA;</code></pre>
 <p><code>DelayedResponse</code>, <code>RespondToSender</code>, and <code>SendDirectlyTo</code> are implementations of <code>ISendMyself</code>.</p>
+<h2 id="using-c-tuples-as-return-values">Using C# Tuples as Return Values</h2>
+<p>Sometimes you may well need to return multiple cascading messages from your original message action. In FubuMVC, Jasper's forebear, you had to return either <code>object[]</code> or <code>IEnumerable&lt;object&gt;</code> as the return type of your action -- which had the unfortunate side effect of partially obfuscating your code by making it less clear what message types were being cascaded from your handler without carefully
+reading the message body. In Jasper, we still support the &quot;mystery meat&quot; <code>object</code> return value signatures, but now you can also use
+C# tuples to better denote the cascading message types.</p>
+<p>This handler cascading a pair of messages:</p>
+<pre><code class="language-csharp">&#xA;public class MultipleResponseHandler&#xA;{&#xA;    public IEnumerable&lt;object&gt; Consume(MyMessage message)&#xA;    {&#xA;        // Go North now&#xA;        yield return new GoNorth();&#xA;&#xA;        // Go West in an hour&#xA;        yield return new ScheduledResponse(new GoWest(), TimeSpan.FromHours(1));&#xA;    }&#xA;}&#xA;</code></pre>
+<p>can be rewritten with C# 7 tuples to:</p>
+<pre><code class="language-csharp">&#xA;public class TupleResponseHandler&#xA;{&#xA;    public (GoNorth, ScheduledResponse) Consume(MyMessage message)&#xA;    {&#xA;        return (new GoNorth(), new ScheduledResponse(new GoWest(), TimeSpan.FromHours(1)));&#xA;    }&#xA;}&#xA;</code></pre>
+<p>The sample above still treats both <code>GoNorth</code> and the <code>ScheduledResponse</code> as cascading messages. The Jasper team thinks that the
+tuple-ized signature makes the code more self-documenting and easier to unit test.</p>
 
 			      	</div>
 

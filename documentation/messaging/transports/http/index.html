@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -94,13 +94,42 @@
 
 			      	<div id="main-pane">
 			      		<!--title:HTTP Transport-->
-<pre><code class="language-csharp">&#xA;public class AppUsingHttpTransport : JasperRegistry&#xA;{&#xA;    public AppUsingHttpTransport()&#xA;    {&#xA;        // While *sending* by the HTTP transport is enabled by default,&#xA;        // you have to explicitly enable the HTTP transport listening&#xA;        Transports.Http.EnableListening(true)&#xA;&#xA;            // The default is 10 seconds&#xA;            .ConnectionTimeout(2.Seconds())&#xA;&#xA;            // Override the releative Url of the message&#xA;            // listening routes. The default is _messages&#xA;            .RelativeUrl(&quot;_jasper&quot;);&#xA;&#xA;        // You&#x27;ll have to have Kestrel or some other&#xA;        // web server for this to function&#xA;        Hosting&#xA;            .UseUrls(&quot;http://*:5000&quot;)&#xA;            .UseKestrel();&#xA;&#xA;&#xA;&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>With the ASP.Net team putting so much effort into making <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/?view=aspnetcore-2.1&amp;tabs=aspnetcore2x">Kestrel</a> performant and robust, it seemed to make perfect sense
+to support an alternative transport based on Kestrel that can be used to send messages between Jasper applications.</p>
+<p>Why not just use HTTP services if you're going to use the HTTP transport described here? Because the transport adds all the support for
+retries, <a href="https://www.reactivemanifesto.org/glossary#Back-Pressure">back pressure</a>, durability, and error handling you expect with a
+service bus that you would have to at least partially build in yourself if you were only using HTTP services for integration.</p>
+<p>There's a couple things to note about the HTTP transport option:</p>
 <ul>
-<li>durable</li>
-<li>not durable</li>
-<li>connection timeout</li>
-<li>customizing the url</li>
+<li><em>Sending</em> messages through the HTTP transport is enabled by default in any Jasper application</li>
+<li><em>Receiving</em> messages through the HTTP transport requires you to explicitly enable HTTP message listening as shown in the code sample below. You will also need to explicitly add Kestrel hosting through your application bootstrapping as you normally do in ASP.Net Core
+applications.</li>
+<li>Enabling the HTTP transport listening adds a pair of new HTTP endpoints to your Jasper application</li>
+<li>The messages sent are batched similar to the <a href="/documentation/messaging/transports/tcp">TCP Transport</a></li>
+<li>Likewise, the <a href="/documentation/messaging/transports/durable">message persistence</a> can be combined with the HTTP transport</li>
+<li>Jasper itself adds the additional routes from Jasper's own HTTP router. See <a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a> for
+more information on ordering Jasper's middleware within your larger ASP.Net Core application</li>
 </ul>
+<h2 id="configuring-the-http-transport">Configuring the HTTP Transport</h2>
+<p>You can enable the HTTP transport listening, the relative url of the message endpoint, and the connection timeout
+for sending message batches with the code shown below:</p>
+<pre><code class="language-csharp">&#xA;public class AppUsingHttpTransport : JasperRegistry&#xA;{&#xA;    public AppUsingHttpTransport()&#xA;    {&#xA;        // While *sending* by the HTTP transport is enabled by default,&#xA;        // you have to explicitly enable the HTTP transport listening&#xA;        Transports.Http.EnableListening(true)&#xA;&#xA;            // The default is 10 seconds&#xA;            .ConnectionTimeout(2.Seconds())&#xA;&#xA;            // Override the releative Url of the message&#xA;            // listening routes. The default is _messages&#xA;            .RelativeUrl(&quot;_jasper&quot;);&#xA;&#xA;        // You&#x27;ll have to have Kestrel or some other&#xA;        // web server for this to function&#xA;        Hosting&#xA;            .UseUrls(&quot;http://*:5000&quot;)&#xA;            .UseKestrel();&#xA;&#xA;&#xA;&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>By default, the messages are received on a pair of routes in your system:</p>
+<ol>
+<li>PUT: /messages -- receives message batches in a non-durable manner</li>
+<li>PUT: /messages/durable -- receives message batches and uses the <a href="/documentation/messaging/transports/durable">Durable Messaging</a></li>
+</ol>
+<p>As shown above, you can replace the &quot;messages&quot; segment for the base Url of the messaging receiver.</p>
+<h2 id="publishing-to-the-http-transport">Publishing to the HTTP Transport</h2>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+Using HTTPS is a little bit of a work in progress. Follow our <a href="https://github.com/JasperFx/jasper/issues/397">GitHub issue</a> for progress on this.</p>
+</div>
+<p>To configure messages to be published or received through the HTTP transport, you use the Url to the <code>/messages</code> or <code>/messages/durable</code> endpoint
+of the downstream system like this:</p>
+<pre><code class="language-csharp">&#xA;public class HttpTransportUsingApp : JasperRegistry&#xA;{&#xA;    public HttpTransportUsingApp()&#xA;    {&#xA;        Publish.AllMessagesTo(&quot;http://server1/messages&quot;);&#xA;&#xA;        // Or&#xA;&#xA;        Publish.AllMessagesTo(&quot;http://server1/messages/durable&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>See <a href="/documentation/messaging/routing">Routing Messages</a> for more information on configuring publishing rules and subscriptions.</p>
+<h2 id="configuring-authentication-with-the-http-transport">Configuring Authentication with the HTTP Transport</h2>
+<p>Yeah, this one is a <a href="https://github.com/JasperFx/jasper/issues/398">work in progress</a>.</p>
 
 			      	</div>
 

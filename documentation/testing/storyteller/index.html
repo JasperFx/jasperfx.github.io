@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.7.0</h3>
+		      	<h3>JasperFx 0.8.2</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -115,6 +115,16 @@ related to the message being sent has completed.</p>
 specification results that presents information about the message activity that will
 look like this:</p>
 <p><h5><strong>content/storyteller-messaging-log.png</strong></h5><img src="/content/storyteller-messaging-log.png" style="max-width:100%" /></p>
+<h2 id="external-nodes">External Nodes</h2>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+This isn't super duper mature yet. We had a similar feature in FubuMVC that we'd like to have back, so look for more here later.</p>
+</div>
+<p>It's not for the feint of heart, but it's also possible to write automated tests using Storyteller against additional
+systems for true integration testing.</p>
+<p>To bootstrap an additional Jasper application in the same Storyteller host, use the &quot;external nodes&quot; feature like this:</p>
+<pre><code class="language-csharp">&#xA;var host = new JasperStorytellerHost&lt;MyJasperAppRegistry&gt;();&#xA;host.AddNode(new OtherApp());&#xA;&#xA;return StorytellerAgent.Run(args, host);&#xA;</code></pre>
+<p>If you're using <code>MessagingFixture</code>, you'll have access to the external nodes as shown in this fixture:</p>
+<pre><code class="language-csharp">&#xA;public class IncrementFixture : MessagingFixture&#xA;{&#xA;&#xA;    [FormatAs(&quot;Send increment message from the other application&quot;)]&#xA;    public Task SendIncrementMessage()&#xA;    {&#xA;        // Just to show the functionality, you can get at the JasperRuntime&#xA;        // -- and therefore everything about the other app -- by&#xA;        // using the NodeFor() method as shown below:&#xA;        var node = NodeFor(&quot;other&quot;);&#xA;        var otherRuntime = node.Runtime;&#xA;&#xA;&#xA;        // This sends a message from the external node named &quot;Other&quot;&#xA;        return SendMessageAndWaitForCompletion(&quot;Other&quot;, new Increment());&#xA;    }&#xA;&#xA;    [FormatAs(&quot;The current count should be {count}&quot;)]&#xA;    public int TheIncrementCountShouldBe()&#xA;    {&#xA;        var counter = Context.Service&lt;IncrementCounter&gt;();&#xA;        return counter.Count;&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
