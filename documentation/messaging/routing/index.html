@@ -48,7 +48,7 @@
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/messaging/publishing" title="Publishing Messages">Previous</a></li>
-		      	<li><a href="/documentation/messaging/routing/static_routing" title="Static Publishing Rules">Next</a></li>
+		      	<li><a href="/documentation/messaging/scheduled" title="Scheduled Message Execution">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -73,14 +73,14 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/scheduled">Scheduled Message Execution</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/publishing">Publishing Messages</a></p>
 
 		        </ul>
@@ -88,17 +88,23 @@
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Routing Messages<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/routing/index.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Routing Messages<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/routing.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
 			      		<!--title:Routing Messages-->
-<p>When a message is published without any explicit destination, Jasper evaluates its own routing rules to determine
-where the message should be delivered and with what representation according to the receiving application's capabilities.</p>
-<p>The routing can be done simply by using <a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a> that require your application
-to know where the messages should go, or by using <a href="/documentation/messaging/routing/subscriptions">Dynamic Subscriptions</a> where your application
-will determine subscribers for any message type.</p>
+<p>When you publish a message using <code>IServiceBus</code> without explicitly setting the Uri of the desired
+destination, Jasper has to invoke the known message routing rules and dynamic subscriptions to
+figure out which locations should receive the message. Consider this code that publishes a
+<code>PingMessage</code>:</p>
+<pre><code class="language-csharp">&#xA;public class SendingExample&#xA;{&#xA;    public async Task SendPingsAndPongs(IMessageContext bus)&#xA;    {&#xA;        // Publish a message&#xA;        await bus.Send(new PingMessage());&#xA;    }&#xA;}&#xA;</code></pre>
+<p>To route <code>PingMessage</code> to a channel, we can apply static message routing rules by using one of the
+<em>SendMessage****</em> methods as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class StaticRoutingApp : JasperRegistry&#xA;{&#xA;    public StaticRoutingApp(AppSettings settings)&#xA;    {&#xA;        // Explicitly add a single message type&#xA;        Publish.Message&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the assembly&#xA;        // to this channel, by supplying a type contained&#xA;        // within that assembly&#xA;        Publish.MessagesFromAssemblyContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the named&#xA;        // assembly to this channel&#xA;        Publish.MessagesFromAssembly(Assembly.Load(new AssemblyName(&quot;MyMessageLibrary&quot;)))&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the&#xA;        // namespace given to this channel&#xA;        Publish.MessagesFromNamespace(&quot;MyMessageLibrary&quot;)&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the namespace&#xA;        // of the type to this channel&#xA;        Publish.MessagesFromNamespaceContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Do note that doing the message type filtering by namespace will also include child namespaces. In
+our own usage we try to rely on either namespace rules or by using shared message assemblies.</p>
+<p>See also the <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/routing/subscriptions'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p></p>
 
 			      	</div>
 
@@ -111,7 +117,7 @@ will determine subscribers for any message type.</p>
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging/routing/static_routing">Static Publishing Rules</a>
+				        	<strong>Next: </strong><a href="/documentation/messaging/scheduled">Scheduled Message Execution</a>
 
 				        </span>
 			      	</nav>

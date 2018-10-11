@@ -48,7 +48,7 @@
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/extensions/marten/persistence" title="Marten Backed Message Persistence">Previous</a></li>
-		      	<li><a href="/documentation/extensions/marten/outbox" title="Outbox Pattern with Marten">Next</a></li>
+		      	<li><a href="/documentation/extensions/marten/sagas" title="Marten Backed Saga Persistence">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -63,7 +63,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/extensions">Extensions</a></li><li><a href="/documentation/extensions/marten">Jasper.Marten</a></li><li class="active">Transactional Middleware</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/extensions">Extensions</a></li><li><a href="/documentation/extensions/marten">Jasper.Persistence.Marten</a></li><li class="active">Transactional Middleware</li></ol>
 		  	</nav>
 		  </div>
 
@@ -73,14 +73,14 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten/outbox">Outbox Pattern with Marten</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten/sagas">Marten Backed Saga Persistence</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/marten/persistence">Marten Backed Message Persistence</a></p>
 
 		        </ul>
@@ -94,25 +94,25 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Transactional Middleware-->
-<p>You can explicitly apply transactional middleware to a message or HTTP handler action with the
-<code>[MartenTransaction]</code> attribute as shown below:</p>
-<pre><code class="language-csharp">&#xA;public class CreateDocCommandHandler&#xA;{&#xA;    [MartenTransaction]&#xA;    public void Handle(CreateDocCommand message, IDocumentSession session)&#xA;    {&#xA;        session.Store(new FakeDoc{Id = message.Id});&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Assuming that the Jasper.Persistence.Marten Nuget is referenced by your project, you can explicitly apply transactional middleware to a message or HTTP handler action with the
+<code>[Transactional]</code> attribute as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class CreateDocCommandHandler&#xA;{&#xA;    [Transactional]&#xA;    public void Handle(CreateDocCommand message, IDocumentSession session)&#xA;    {&#xA;        session.Store(new FakeDoc {Id = message.Id});&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Doing this will simply insert a call to <code>IDocumentSession.SaveChangesAsync()</code> after the last handler action is called within the generated <code>MessageHandler</code>. This effectively makes a unit of work out of all the actions that might be called to process a single message.</p>
 <p>This attribute can appear on either the handler class that will apply to all the actions on that class, or on a specific action method.</p>
 <p>If so desired, you <em>can</em> also use a policy to apply the Marten transaction semantics with a policy. As an example, let's say that you want every message handler where the message type
 name ends with &quot;Command&quot; to use the Marten transaction middleware. You could accomplish that
 with a handler policy like this:</p>
-<pre><code class="language-csharp">&#xA;public class CommandsAreTransactional : IHandlerPolicy&#xA;{&#xA;    public void Apply(HandlerGraph graph)&#xA;    {&#xA;        // Important! Create a brand new TransactionalFrame&#xA;        // for each chain&#xA;        graph&#xA;            .Chains&#xA;            .Where(x =&gt; x.MessageType.Name.EndsWith(&quot;Command&quot;))&#xA;            .Each(x =&gt; x.Middleware.Add(new TransactionalFrame()));&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class CommandsAreTransactional : IHandlerPolicy&#xA;{&#xA;    public void Apply(HandlerGraph graph, JasperGenerationRules rules)&#xA;    {&#xA;        // Important! Create a brand new TransactionalFrame&#xA;        // for each chain&#xA;        graph&#xA;            .Chains&#xA;            .Where(x =&gt; x.MessageType.Name.EndsWith(&quot;Command&quot;))&#xA;            .Each(x =&gt; x.Middleware.Add(new TransactionalFrame()));&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Then add the policy to your application like this:</p>
-<pre><code class="language-csharp">&#xA;public class CommandsAreTransactionalApp : JasperRegistry&#xA;{&#xA;    public CommandsAreTransactionalApp()&#xA;    {&#xA;        // And actually use the policy&#xA;        Handlers.GlobalPolicy&lt;CommandsAreTransactional&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class CommandsAreTransactionalApp : JasperRegistry&#xA;{&#xA;    public CommandsAreTransactionalApp()&#xA;    {&#xA;        // And actually use the policy&#xA;        Handlers.GlobalPolicy&lt;CommandsAreTransactional&gt;();&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <h2 id="customizing-how-the-session-is-created">Customizing How the Session is Created</h2>
-<p>By default, using <code>[MartenTransaction]</code> or just injecting an <code>IDocumentSession</code> with the Marten integration will create a lightweight session in Marten using the <code>IDocumentStore.LightweightSession()</code>
+<p>By default, using <code>[Transactional]</code> or just injecting an <code>IDocumentSession</code> with the Marten integration will create a lightweight session in Marten using the <code>IDocumentStore.LightweightSession()</code>
 call. However, <a href="http://jasperfx.github.io/marten">Marten</a> has many other options to create sessions
 with different transaction levels, heavier identity map behavior, or by attaching custom listeners. To allow you to use the full range of Marten behavior, you can choose to override the mechanics of how
 a session is opened for any given message handler by just placing a method called <code>OpenSession()</code> on
 your handler class that returns an <code>IDocumentSession</code>. If Jasper sees that method exists, it will call that method to create your session.</p>
 <p>Here's an example from the tests:</p>
-<pre><code class="language-csharp">&#xA;public class SessionUsingBlock2&#xA;{&#xA;    // This method will be used to create the IDocumentSession&#xA;    // that will be used by the two Consume() methods below&#xA;    public IDocumentSession OpenSession(IDocumentStore store)&#xA;    {&#xA;        // Here I&#x27;m opting to use the heavier,&#xA;        // automatic dirty state checking&#xA;        return store.DirtyTrackedSession();&#xA;    }&#xA;&#xA;&#xA;    public void Consume(Message1 message, IDocumentSession session)&#xA;    {&#xA;&#xA;    }&#xA;&#xA;    [MartenTransaction]&#xA;    public void Consume(Message2 message, IDocumentSession session)&#xA;    {&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class SessionUsingBlock2&#xA;{&#xA;    // This method will be used to create the IDocumentSession&#xA;    // that will be used by the two Consume() methods below&#xA;    public IDocumentSession OpenSession(IDocumentStore store)&#xA;    {&#xA;        // Here I&#x27;m opting to use the heavier,&#xA;        // automatic dirty state checking&#xA;        return store.DirtyTrackedSession();&#xA;    }&#xA;&#xA;&#xA;    public void Consume(Message1 message, IDocumentSession session)&#xA;    {&#xA;    }&#xA;&#xA;    [Transactional]&#xA;    public void Consume(Message2 message, IDocumentSession session)&#xA;    {&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 
 			      	</div>
 
@@ -125,7 +125,7 @@ your handler class that returns an <code>IDocumentSession</code>. If Jasper sees
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/extensions/marten/outbox">Outbox Pattern with Marten</a>
+				        	<strong>Next: </strong><a href="/documentation/extensions/marten/sagas">Marten Backed Saga Persistence</a>
 
 				        </span>
 			      	</nav>

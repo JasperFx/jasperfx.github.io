@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -98,11 +98,11 @@
 <ul>
 <li><code>JasperRegistry.Handlers</code> - Configure policies about how message handlers are discovered, middleware is applied, and error handling policies. See <a href="/documentation/messaging/handling">Handling Received Messages</a> for more information.</li>
 <li><code>JasperRegistry.Publish</code> - Optionally declare what messages or events are published by the Jasper system and any static publishing rules. See <a href="/documentation/messaging/routing">Routing Messages</a> for more information.</li>
-<li><code>JasperRegistry.Subscribe</code> - Register as a subscriber for messages from other systems. See <a href="/documentation/messaging/routing/subscriptions">Dynamic Subscriptions</a> for more information.</li>
+<li><code>JasperRegistry.Subscribe</code> - Register as a subscriber for messages from other systems. See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/routing/subscriptions'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information.</li>
 <li><code>JasperRegistry.Transports</code> - Configure or disable the built in transports in Jasper. See <a href="/documentation/messaging/transports">Messaging Transports</a> for more information.</li>
 </ul>
 <p>Sample usages of each of these sections are shown below:</p>
-<pre><code class="language-csharp">&#xA;public class MyMessagingApp : JasperRegistry&#xA;{&#xA;    public MyMessagingApp()&#xA;    {&#xA;        // Configure handler policies&#xA;        Handlers.DefaultMaximumAttempts = 3;&#xA;        Handlers.OnException&lt;SqlException&gt;().RetryLater(3.Seconds());&#xA;&#xA;        // Declare published messages&#xA;        Publish.Message&lt;Message1&gt;().To(&quot;tcp://server1:2222&quot;);&#xA;&#xA;        // Register to receive messages&#xA;        Subscribe.At(&quot;tcp://loadbalancer1:2233&quot;);&#xA;        Subscribe.To&lt;Message2&gt;();&#xA;        Subscribe.To(type =&gt; type.IsInNamespace(&quot;MyMessagingApp.Incoming&quot;));&#xA;&#xA;        // Configure the built in transports&#xA;        Transports.LightweightListenerAt(2233);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MyMessagingApp : JasperRegistry&#xA;{&#xA;    public MyMessagingApp()&#xA;    {&#xA;        // Configure handler policies&#xA;        Handlers.DefaultMaximumAttempts = 3;&#xA;        Handlers.OnException&lt;SqlException&gt;().RetryLater(3.Seconds());&#xA;&#xA;        // Declare published messages&#xA;        Publish.Message&lt;Message1&gt;().To(&quot;tcp://server1:2222&quot;);&#xA;&#xA;        // Configure the built in transports&#xA;        Transports.LightweightListenerAt(2233);&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="listen-for-messages">Listen for Messages</h2>
 <p>You can direct Jasper to listen for incoming messages with the built in transports by just declaring
 the incoming port for the transport or by providing a <code>Uri</code> that expresses both the transport type and
@@ -121,7 +121,7 @@ Jasper framework will pull the real values from the underlying <code>IConfigurat
 <pre><code class="language-csharp">&#xA;public class MyAppUsingUriLookups : JasperRegistry&#xA;{&#xA;    public MyAppUsingUriLookups()&#xA;    {&#xA;        Configuration&#xA;            .AddInMemoryCollection(new Dictionary&lt;string, string&gt;{{&quot;incoming&quot;, &quot;tcp://server3:2000&quot;}});&#xA;&#xA;        // This usage assumes that there is a value in the configuration&#xA;        // with the key &quot;incoming&quot; that corresponds to a Uri&#xA;        Transports.ListenForMessagesFrom(&quot;config://incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Behind the scenes, the value for <em>config://incoming</em> is interpreted by Jasper as the Uri string stored in configuration with the key &quot;incoming,&quot;
 or in code terms, <code>IConfigurationRoot.GetValue&lt;string&gt;(&quot;incoming&quot;)</code></p>
-<p>There is also an addon Uri lookup that uses Consul. See <a href="/documentation/extensions/consul">Jasper.Consul</a> for more information.</p>
+<p>There is also an addon Uri lookup that uses Consul. See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/extensions/consul'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information.</p>
 <p>The Uri aliases are respected anywhere where <code>Uri's</code> are accepted as arguments in <code>JasperRegistry</code> or when explicitly specifying the destination
 of a message being sent through the messaging.</p>
 

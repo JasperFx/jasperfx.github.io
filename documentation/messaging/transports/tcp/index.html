@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -98,7 +98,7 @@
 <h2 id="lightweight-fire-and-forget">Lightweight, fire and forget</h2>
 <p>The TCP transport without durability is meant for scenarios where message delivery speed and throughput is important <strong>and</strong> guaranteed delivery is not required. We originally conceived this option as a .Net equivalent to <a href="http://zeromq.org/">ZeroMQ</a>.</p>
 <p>To set up a Jasper application to listen for incoming and outgoing messages through the TCP transport in the lightweight mode, see this example:</p>
-<pre><code class="language-csharp">&#xA;public class LightweightTransportApp : JasperRegistry&#xA;{&#xA;    public LightweightTransportApp()&#xA;    {&#xA;        // Set up a listener (this is optional)&#xA;        Transports.LightweightListenerAt(4000);&#xA;&#xA;        // Or do the exact same thing by supplying a Uri&#xA;        Transports.ListenForMessagesFrom(&quot;tcp://localhost:4000&quot;);&#xA;&#xA;&#xA;        // Registering a subscription to Message1 that should be&#xA;        // delivered to a load balancer Uri at port 2200 and the &quot;important&quot;&#xA;        // queue&#xA;        Subscribe.To&lt;Message1&gt;().At(&quot;tcp://loadbalancer:2200/important&quot;);&#xA;&#xA;        // Publish the message Message2 to the DNS entry &quot;remoteserver&quot;&#xA;        Publish.Message&lt;Message2&gt;().To(&quot;tcp://remoteserver:2201&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class LightweightTransportApp : JasperRegistry&#xA;{&#xA;    public LightweightTransportApp()&#xA;    {&#xA;        // Set up a listener (this is optional)&#xA;        Transports.LightweightListenerAt(4000);&#xA;&#xA;        // Or do the exact same thing by supplying a Uri&#xA;        Transports.ListenForMessagesFrom(&quot;tcp://localhost:4000&quot;);&#xA;&#xA;        // Publish the message Message2 to the DNS entry &quot;remoteserver&quot;&#xA;        Publish.Message&lt;Message2&gt;().To(&quot;tcp://remoteserver:2201&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>In the case of a failure to send a message, the lightweight transport will retry to send the message a few times (3 is the default), but the message will
 be permanently discarded in about 10 seconds if it is unsuccessful. The lightweight transport is useful for control messages or messages that have
 a very limited value in terms of time. My shop uses this transport for frequent status update messages that are very quickly obsolete.</p>

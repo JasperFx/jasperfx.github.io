@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -100,8 +100,7 @@ in the sample below, you can consume and process that message inline with this c
 <p>The <code>Invoke()</code> method will <strong>not</strong> apply any error policies to retry the message if it fails and you will see exceptions bubble up on failures. This mechanism will process <a href="/documentation/messaging/handling/cascading">Cascading Messages</a> if the message succeeds.</p>
 <p>As an alternative, you can enqueue a message to a local queue to be handled later by the currently running node with <code>IServiceBus.Enqueue()</code>:</p>
 <pre><code class="language-csharp">&#xA;public Task Enqueue(IMessageContext bus)&#xA;{&#xA;    var @event = new InvoiceCreated&#xA;    {&#xA;        Time = DateTime.UtcNow,&#xA;        Purchaser = &quot;Guy Fieri&quot;,&#xA;        Amount = 112.34,&#xA;        Item = &quot;Cookbook&quot;&#xA;    };&#xA;&#xA;    return bus.Enqueue(@event);&#xA;}&#xA;</code></pre>
-<p>The <code>InvoiceCreated</code> message above will be enqueued locally in the application's default channel. By default, that's one of the <a href="/documentation/messaging/transports/loopback">Local Loopback Transport</a> channels, but you can override that to any channel Uri that supports local enqueuing like so:</p>
-<pre><code class="language-csharp">&#xA;public class SetDefaultChannel : JasperRegistry&#xA;{&#xA;    public SetDefaultChannel()&#xA;    {&#xA;        Transports.DefaultIs(&quot;loopback://default&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>The <code>InvoiceCreated</code> message above will be enqueued locally using the application's rules for worker queue routing and durability. See <a href="/documentation/messaging/handling/workerqueues">Worker Queues and Message Priority</a> for information about how to control these factors to give certain message types more or less priority and to tell Jasper which message types should be durable.</p>
 <p>Today that pretty well means using the loopback transport, but before too long the <a href="/documentation/messaging/transports/durable">Durable Messaging</a> will be usable locally as well for persistent queueing in this case. See <a href="https://github.com/JasperFx/jasper/issues/179">this GitHub issue</a> to track the progress.</p>
 <h2 id="enqueue-to-a-specific-worker-queue">Enqueue to a Specific Worker Queue</h2>
 <p>If you want to enqueue a message locally to a specific worker queue, you can use this syntax:</p>

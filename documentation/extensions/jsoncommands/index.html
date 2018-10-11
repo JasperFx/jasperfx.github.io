@@ -47,8 +47,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/extensions/consul" title="Jasper.Consul">Previous</a></li>
-		      	<li><a href="/documentation/extensions/marten" title="Jasper.Marten">Next</a></li>
+		      	<li><a href="/documentation/extensions/application_insights" title="Jasper.ApplicationInsights">Previous</a></li>
+		      	<li><a href="/documentation/extensions/marten" title="Jasper.Persistence.Marten">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -73,15 +73,15 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten">Jasper.Marten</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/consul">Jasper.Consul</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten">Jasper.Persistence.Marten</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/application_insights">Jasper.ApplicationInsights</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -103,11 +103,12 @@ problematic (or you just don't want to do that).</p>
 <li><code>generate-message-types</code> - Generate C# classes from Json schema files exported by Jasper</li>
 </ol>
 <h2 id="exporting-json-schema">Exporting Json Schema</h2>
-<p>Assuming that you are using <code>Jasper.CommandLine</code> as a harness for your Jasper appliction, you can use this command to export JSON schema files for all the known message types that your system handles:</p>
+<p>Assuming that you are using the <code>JasperAgent</code> class as a harness for your Jasper application, you can use this command to export JSON schema files for all the known message types that your system handles:</p>
 <pre><code>dotnet run -- export-json-schema /schemafiles
 </code></pre>
 <p>That will loop through all the known messages handled in the system, and generate a JSON schema file
 using the <a href="https://github.com/RSuter/NJsonSchema">NJsonSchema</a> library that will be named following the pattern <em><a href="/documentation/messaging/messages">message type identity</a></em>-<em>version</em>.json. The argument &quot;/schemafiles&quot; just tells the command where to save the files.</p>
+<p>See <a href="/documentation/bootstrapping/console">Jasper in Console Applications</a> for more information on Jasper in command line applications.</p>
 <h2 id="generating-c-dto-class-files-from-json-schema-documents">Generating C# DTO Class Files from JSON Schema Documents</h2>
 <p>To generate C# DTO class files from the JSON Schema documents, the <code>generate-message-types</code> command
 has this usage:</p>
@@ -139,12 +140,12 @@ the <code>[MessageAlias]</code> attribute to each type such that it matches the 
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/extensions/consul">Jasper.Consul</a>
+				        	<strong>Previous: </strong><a href="/documentation/extensions/application_insights">Jasper.ApplicationInsights</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/extensions/marten">Jasper.Marten</a>
+				        	<strong>Next: </strong><a href="/documentation/extensions/marten">Jasper.Persistence.Marten</a>
 
 				        </span>
 			      	</nav>

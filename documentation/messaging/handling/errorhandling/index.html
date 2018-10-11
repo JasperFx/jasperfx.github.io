@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -94,7 +94,7 @@
 
 			      	<div id="main-pane">
 			      		<!--title: Error Handling-->
-<p>The sad truth is that JasperBus will not unfrequently hit exceptions as it processes messages. In all cases, JasperBus will first log the exception using the <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/logging'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p>. After that, it walks through the configured error handling policies to
+<p>The sad truth is that Jasper will not unfrequently hit exceptions as it processes messages. In all cases, Jasper will first log the exception using the standard ASP.Net Core <code>ILogger</code> abstraction. After that, it walks through the configured error handling policies to
 determine what to do next with the message. In the absence of any confugured error handling policies,
 JasperBus will move any message that causes an exception into the error queue for the
 transport that the message arrived from on the first attempt.</p>
@@ -126,7 +126,7 @@ message type chain separately.</p>
 <h2 id="configuring-through-policies">Configuring through Policies</h2>
 <p>If you want to apply error handling to chains via some kind of policy, you can use an <code>IHandlerPolicy</code>
 like the one shown below:</p>
-<pre><code class="language-csharp">&#xA;public class ErrorHandlingPolicy : IHandlerPolicy&#xA;{&#xA;    public void Apply(HandlerGraph graph)&#xA;    {&#xA;        var matchingChains = graph.Chains.Where(x =&gt; x.MessageType.IsInNamespace(&quot;MyApp.Messages&quot;));&#xA;&#xA;        foreach (var chain in matchingChains)&#xA;        {&#xA;            chain.MaximumAttempts = 2;&#xA;            chain.OnException&lt;SqlException&gt;()&#xA;                .Requeue();&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class ErrorHandlingPolicy : IHandlerPolicy&#xA;{&#xA;    public void Apply(HandlerGraph graph, JasperGenerationRules rules)&#xA;    {&#xA;        var matchingChains = graph.Chains.Where(x =&gt; x.MessageType.IsInNamespace(&quot;MyApp.Messages&quot;));&#xA;&#xA;        foreach (var chain in matchingChains)&#xA;        {&#xA;            chain.MaximumAttempts = 2;&#xA;            chain.OnException&lt;SqlException&gt;()&#xA;                .Requeue();&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>To apply this policy, use this syntax in your <code>JasperBusRegistry</code>:</p>
 <pre><code class="language-csharp">&#xA;public class MyApp : JasperRegistry&#xA;{&#xA;    public MyApp()&#xA;    {&#xA;        Handlers.GlobalPolicy&lt;ErrorHandlingPolicy&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="filtering-on-exceptions">Filtering on Exceptions</h2>

@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -121,7 +121,7 @@ If you're examining the <code>Envelope</code> objects for the message, you'll se
 is &quot;MyResponse.&quot;</p>
 <p>Let's say that we have two running service bus nodes named &quot;Sender&quot; and &quot;Receiver.&quot; If this code below
 is called from the &quot;Sender&quot; node:</p>
-<pre><code class="language-csharp">&#xA;public class Requester&#xA;{&#xA;    private readonly IMessageContext _bus;&#xA;&#xA;    public Requester(IMessageContext bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    public Task&lt;MyResponse&gt; GatherResponse()&#xA;    {&#xA;        return _bus.Request&lt;MyResponse&gt;(new MyMessage());&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class Requester&#xA;{&#xA;    private readonly IMessageContext _bus;&#xA;&#xA;    public Requester(IMessageContext bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    public Task GatherResponse()&#xA;    {&#xA;        return _bus.SendAndExpectResponseFor&lt;MyResponse&gt;(new MyMessage());&#xA;    }&#xA;}&#xA;</code></pre>
 <p>and inside Receiver we have this code:</p>
 <pre><code class="language-csharp">&#xA;public class CascadingHandler&#xA;{&#xA;    public MyResponse Consume(MyMessage message)&#xA;    {&#xA;        return new MyResponse();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Assuming that <code>MyMessage</code> is configured to be sent to &quot;Receiver,&quot; the following steps take place:</p>

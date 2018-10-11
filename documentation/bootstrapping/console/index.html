@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -95,8 +95,7 @@
 			      	<div id="main-pane">
 			      		<!--title:Jasper in Console Applications-->
 <p>At this time, the Jasper team is focused on hosting applications either in IIS (or nginx) or as a console application that would be suitable for
-running in a Docker container. To that end, we've added the <code>JasperAgent</code> static class in the
-external <code>Jasper.CommandLine</code> Nuget library as a helper for quickly standing up Jasper applications in a console application.</p>
+running in a Docker container. To that end, we've added the <code>JasperAgent</code> static class as a helper for standing up Jasper in a console application.</p>
 <p>The sample usage from the <a href="/documentation/getting_started">getting started</a> topic would look like this:</p>
 <pre><code class="language-csharp">&#xA;&#xA;using Jasper.CommandLine;&#xA;&#xA;namespace MyApp&#xA;{&#xA;    class Program&#xA;    {&#xA;        static int Main(string[] args)&#xA;        {&#xA;            // This bootstraps and runs the Jasper&#xA;            // application as defined by MyAppRegistry&#xA;            // until the executable is stopped&#xA;            return JasperAgent.Run&lt;MyAppRegistry&gt;(args);&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>At runtime, <code>JasperAgent</code> uses the <code>JasperRegistry</code> you hand it to <a href="/documentation/bootstrapping">bootstrap a JasperRuntime</a> and run the application until the console process is stopped.</p>
@@ -107,7 +106,6 @@ external <code>Jasper.CommandLine</code> Nuget library as a helper for quickly s
 <p>Let's say that your Jasper application compiles to <code>MyApp.exe</code> and uses the <code>JasperAgent</code> class
 to run the commands. In that case you can run your application simply by typing <code>MyApp</code> at the
 command line with no arguments.</p>
-<p>However, the <code>Jasper.CommandLine</code> library adds some additional commands for running, validating, or describing the running application.</p>
 <h2 id="overriding-the-environment-name">Overriding the Environment Name</h2>
 <p>For example, you can also use this syntax to run your application in &quot;Development&quot; mode:</p>
 <pre><code>MyApp run --environment Development
@@ -141,7 +139,7 @@ build scripting tool you're using know that the validation failed.</p>
 </code></pre>
 <p>And again, this command respects both the <code>--environment</code> and <code>--verbose</code> flags</p>
 <h2 id="subscriptions">Subscriptions</h2>
-<p>See <a href="/documentation/messaging/routing/subscriptions">Dynamic Subscriptions</a> for information about the <code>subscriptions</code> command and related workflow for exporting, updating, or validating dynamic
+<p>See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/routing/subscriptions'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for information about the <code>subscriptions</code> command and related workflow for exporting, updating, or validating dynamic
 subscriptions.</p>
 <h2 id="preview-generated-code">Preview Generated Code</h2>
 <p>One of the easiest ways to debug message or HTTP handlers -- or just to understand their behavior -- is to read the generated code
@@ -165,7 +163,7 @@ that Jasper is using to actually handle a specific message type or HTTP route. Y
 <p>The Jasper.Console package uses the <a href="http://jasperfx.github.io/oakton">Oakton</a> library for its command line support. You can add custom commands to your Jasper application by simply including <code>OaktonCommand&lt;T&gt;</code> classes in either the main application assembly or in any assembly that is decorated with the <code>[JasperModule]</code> attribute like so:</p>
 <pre><code class="language-csharp">&#xA;[assembly:JasperModule(typeof(DiagnosticsExtension))]&#xA;</code></pre>
 <p>or without any kind of extension like so:</p>
-<pre><code class="language-csharp">&#xA;[assembly:JasperModule]&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppWithExtensions : JasperRegistry&#xA;{&#xA;    public AppWithExtensions()&#xA;    {&#xA;        // as is&#xA;        Include&lt;CustomJasperExtension&gt;();&#xA;&#xA;        // or&#xA;        Include(new CustomJasperExtension());&#xA;&#xA;        // or use the extension with customizations&#xA;        Include&lt;CustomJasperExtension&gt;(_ =&gt; { _.Threshold = 20; });&#xA;    }&#xA;}&#xA;</code></pre>
 <p>If you want to write a command that uses the actual Jasper application, use the <code>JasperInput</code> class as either the input to your
 command or as the superclass to your input class:</p>
 <pre><code class="language-csharp">&#xA;public class JasperInput&#xA;{&#xA;    [IgnoreOnCommandLine]&#xA;    public JasperRegistry Registry { get; set; }&#xA;&#xA;    [Description(&quot;Use to override the ASP.Net Environment name&quot;)]&#xA;    public string EnvironmentFlag { get; set; }&#xA;&#xA;    [Description(&quot;Write out much more information at startup and enables console logging&quot;)]&#xA;    public bool VerboseFlag { get; set; }&#xA;&#xA;    [Description(&quot;Override the log level&quot;)]&#xA;    public LogLevel? LogLevelFlag { get; set; }&#xA;&#xA;    public JasperRuntime BuildRuntime()&#xA;    {&#xA;        // SAMPLE: what-the-cli-is-doing&#xA;&#xA;        // The --log-level flag value overrides your application&#x27;s&#xA;        // LogLevel&#xA;        if (LogLevelFlag.HasValue)&#xA;        {&#xA;            Registry.ConfigureLogging(x =&gt; x.SetMinimumLevel(LogLevelFlag.Value));&#xA;        }&#xA;&#xA;        if (VerboseFlag)&#xA;        {&#xA;            Console.WriteLine(&quot;Verbose flag is on.&quot;);&#xA;&#xA;            // The --verbose flag adds console and&#xA;            // debug logging, as well as setting&#xA;            // the minimum logging level down to debug&#xA;            Registry.ConfigureLogging(x =&gt;&#xA;            {&#xA;                x.SetMinimumLevel(LogLevel.Debug);&#xA;&#xA;                x.AddConsole();&#xA;                x.AddDebug();&#xA;            });&#xA;        }&#xA;&#xA;        // The --environment flag is used to set the environment&#xA;        // property on the IHostedEnvironment within your system&#xA;        if (EnvironmentFlag.IsNotEmpty())&#xA;        {&#xA;            Registry.UseEnvironment(EnvironmentFlag);&#xA;        }&#xA;</code></pre>

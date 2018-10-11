@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -111,7 +111,7 @@ Or, using paket:</p>
 <p>Now, to bootstrap your application, add this code to the entrypoint of your console application:</p>
 <pre><code class="language-csharp">&#xA;&#xA;using Jasper.CommandLine;&#xA;&#xA;namespace MyApp&#xA;{&#xA;    class Program&#xA;    {&#xA;        static int Main(string[] args)&#xA;        {&#xA;            // This bootstraps and runs the Jasper&#xA;            // application as defined by MyAppRegistry&#xA;            // until the executable is stopped&#xA;            return JasperAgent.Run&lt;MyAppRegistry&gt;(args);&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>By itself, this doesn't really do much, so let's start listening for messages from other applications using Jasper's built in, lightweight transport.</p>
-<pre><code class="language-csharp">&#xA;public class MyAppRegistry : JasperRegistry&#xA;{&#xA;    public MyAppRegistry()&#xA;    {&#xA;        Transports.LightweightListenerAt(2222);&#xA;&#xA;        Publish.Message&lt;Message1&gt;();&#xA;        Publish.Message&lt;Message2&gt;();&#xA;        Publish.Message&lt;Message3&gt;();&#xA;&#xA;        Subscribe.At(&quot;tcp://server1:2222&quot;);&#xA;        Subscribe.To&lt;Message4&gt;();&#xA;        Subscribe.To&lt;Message5&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MyAppRegistry : JasperRegistry&#xA;{&#xA;    public MyAppRegistry()&#xA;    {&#xA;        Transports.LightweightListenerAt(2222);&#xA;&#xA;        Publish.Message&lt;Message1&gt;();&#xA;        Publish.Message&lt;Message2&gt;();&#xA;        Publish.Message&lt;Message3&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Now, when you run the console application you should see output like this:</p>
 <pre><code>Hosting environment: Production
 Content root path: /Users/jeremill/code/jasper/src/MyApp/bin/Debug/netcoreapp2.0

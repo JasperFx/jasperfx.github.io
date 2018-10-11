@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -97,10 +97,6 @@
 <p>You may want to enforce some specific rules about how Jasper publishes messages on a message type by message
 type basis. The most common example is shown below:</p>
 <pre><code class="language-csharp">&#xA;// Any message of this type should be successfully&#xA;// delivered within 10 seconds or discarded&#xA;[DeliverWithin(10)]&#xA;public class StatusMessage{}&#xA;</code></pre>
-<h2 id="using-the-jasperregistry-fluent-interface">Using the JasperRegistry Fluent Interface</h2>
-<p>If you don't care for attributes or don't own the message type, there's also an equivalent mechanism
-in the <code>JasperRegistry</code> fluent interface to define the same kind of <code>Envelope</code> customizations:</p>
-<pre><code class="language-csharp">&#xA;public class StatusMessageSendingApp : JasperRegistry&#xA;{&#xA;    public StatusMessageSendingApp()&#xA;    {&#xA;        // Any time StatusMessage is published,&#xA;        // set the deliver within limit on the outgoing Envelope&#xA;        Publish.Message&lt;StatusMessage&gt;()&#xA;            .Customize(envelope =&gt; envelope.DeliverWithin(10.Seconds()));&#xA;&#xA;        // Use a criteria against the message type to say&#xA;        // that all messages contained in the &quot;MyApp.Status&quot; namespace&#xA;        // would be published with the deliver within rule&#xA;        Publish.MessagesFromNamespace(&quot;MyApp.Status&quot;)&#xA;            .Customize(envelope =&gt; envelope.DeliverWithin(10.Seconds()));&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <h2 id="custom-attributes">Custom Attributes</h2>
 <p>If you really want to, you can write your own custom attribute to modify how Jasper sends out a message
 by subclassing the <code>[ModifyEnvelope]</code> attribute. The attribute shown in the previous sample is itself

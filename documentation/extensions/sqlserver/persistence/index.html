@@ -47,7 +47,7 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/extensions/sqlserver" title="Jasper.SqlServer">Previous</a></li>
+		      	<li><a href="/documentation/extensions/sqlserver" title="Jasper.Persistence.SqlServer">Previous</a></li>
 		      	<li><a href="/documentation/extensions/sqlserver/transactions" title="Sql Server Transaction Middleware">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
@@ -63,7 +63,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/extensions">Extensions</a></li><li><a href="/documentation/extensions/sqlserver">Jasper.SqlServer</a></li><li class="active">Message Persistence</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/extensions">Extensions</a></li><li><a href="/documentation/extensions/sqlserver">Jasper.Persistence.SqlServer</a></li><li class="active">Message Persistence</li></ol>
 		  	</nav>
 		  </div>
 
@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -81,7 +81,7 @@
 		        </ul>
 
 		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/sqlserver/transactions">Sql Server Transaction Middleware</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/sqlserver">Jasper.SqlServer</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/sqlserver">Jasper.Persistence.SqlServer</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -112,7 +112,7 @@
 </ol>
 <h2 id="managing-the-sql-server-schema">Managing the Sql Server Schema</h2>
 <p>In testing, you can build -- or rebuild -- the message storage in your system with this syntax:</p>
-<pre><code class="language-csharp">&#xA;theRuntime = JasperRuntime.For(_ =&gt;&#xA;{&#xA;    _.Settings.PersistMessagesWithSqlServer(ConnectionSource.ConnectionString);&#xA;});&#xA;&#xA;theRuntime.RebuildMessageStorage();&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;theRuntime = JasperRuntime.For(_ =&gt;&#xA;{&#xA;    _.Settings.PersistMessagesWithSqlServer(Servers.SqlServerConnectionString);&#xA;});&#xA;&#xA;theRuntime.RebuildMessageStorage();&#xA;</code></pre>
 <p>See <a href="https://github.com/JasperFx/jasper/issues/372">this GitHub issue</a> for some utilities to better manage the database objects.</p>
 
 			      	</div>
@@ -121,7 +121,7 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/extensions/sqlserver">Jasper.SqlServer</a>
+				        	<strong>Previous: </strong><a href="/documentation/extensions/sqlserver">Jasper.Persistence.SqlServer</a>
 
 				        </span>
 				        <span class="pull-right">

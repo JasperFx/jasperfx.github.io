@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -148,7 +148,7 @@ generic functionality across messages. Let's say that some subset of your messag
 <pre><code class="language-csharp">&#xA;public class GenericMessageHandler&#xA;{&#xA;    public void Consume(IMessage messagem, Envelope envelope)&#xA;    {&#xA;        Console.WriteLine($&quot;Got a message from {envelope.Source}&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>When Jasper handles the <code>MessageOne</code> message, it first calls all the specific handlers for that message type,
 then will call any handlers that handle a more generic message type (interface or abstract class most likely) where
-the specific type can be cast to the generic type. You can clearly see this behavior by examining the <a href="/documentation/diagnostics">handler chain diagnostics</a>.</p>
+the specific type can be cast to the generic type. You can clearly see this behavior by examining the <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/diagnostics'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p>.</p>
 
 			      	</div>
 

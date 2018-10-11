@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -104,12 +104,12 @@ can be altered by an <code>IJasperExtension</code>. Here's a contrived example:<
 <code>JasperRegistry</code>. What this means in effect is just that the application configuration takes precedence over extensions.</p>
 <p>Now, on to how you would consume extensions in your projects:</p>
 <h2 id="explicitly-loading-extensions">Explicitly Loading Extensions</h2>
-<p>In the <a href="/documentation/extensions/marten">Jasper.Marten</a> library there's an extension to opt into <a href="/documentation/extensions/marten/subscriptions">Marten-backed subscriptions</a> that can be applied using the <code>JasperRegistry.Include()</code> method shown below:</p>
-<pre><code class="language-csharp">&#xA;public class AppWithMartenBackedSubscriptions : JasperRegistry&#xA;{&#xA;    public AppWithMartenBackedSubscriptions()&#xA;    {&#xA;        // Use the Include() method so that Jasper can&#xA;        // get the order of precedence right between&#xA;        // an extension and the application settings&#xA;        Include&lt;MartenBackedSubscriptions&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>You can also explicitly create and consume <code>IJasperExtension</code> classes that are not automatically loaded through the <code>[JasperModule]</code> attribute that are be applied using the <code>JasperRegistry.Include()</code> method shown below:</p>
+<pre><code class="language-csharp">&#xA;var registry = new JasperRegistry();&#xA;registry.Include&lt;OptionalExtension&gt;();&#xA;</code></pre>
 <h2 id="auto-discovery-of-extensions">Auto Discovery of Extensions</h2>
 <p>When you build an extension, you also have the option to make a single extension be auto-discoverable from an external assembly. To make that concrete, here's an auto-discovered
 extension in the Jasper.Marten library that wires up integration with a <a href="https://jasperfx.github.io/marten">Marten</a> database:</p>
-<pre><code class="language-csharp">&#xA;[assembly:JasperModule(typeof(MartenExtension))]&#xA;&#xA;namespace Jasper.Marten&#xA;{&#xA;    public class MartenExtension : IJasperExtension&#xA;    {&#xA;        public void Configure(JasperRegistry registry)&#xA;        {&#xA;            registry.Settings.Alter&lt;StoreOptions&gt;(x =&gt;&#xA;            {&#xA;                x.Schema.For&lt;ServiceCapabilities&gt;().Identity(_ =&gt; _.ServiceName);&#xA;            });&#xA;&#xA;            registry.Services.AddSingleton&lt;IDocumentStore&gt;(x =&gt;&#xA;            {&#xA;                var storeOptions = x.GetService&lt;StoreOptions&gt;();&#xA;                var documentStore = new DocumentStore(storeOptions);&#xA;                return documentStore;&#xA;            });&#xA;&#xA;            registry.Handlers.GlobalPolicy&lt;FineGrainedSessionCreationPolicy&gt;();&#xA;&#xA;&#xA;            registry.Services.AddScoped(c =&gt; c.GetService&lt;IDocumentStore&gt;().OpenSession());&#xA;            registry.Services.AddScoped(c =&gt; c.GetService&lt;IDocumentStore&gt;().QuerySession());&#xA;&#xA;            registry.CodeGeneration.Sources.Add(new SessionVariableSource());&#xA;&#xA;        }&#xA;    }&#xA;&#xA;&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[assembly:JasperModule(typeof(MartenExtension))]&#xA;&#xA;namespace Jasper.Persistence.Marten&#xA;{&#xA;    public class MartenExtension : IJasperExtension&#xA;    {&#xA;        public void Configure(JasperRegistry registry)&#xA;        {&#xA;            registry.Services.AddSingleton&lt;IDocumentStore&gt;(x =&gt;&#xA;            {&#xA;                var storeOptions = x.GetService&lt;StoreOptions&gt;();&#xA;                var documentStore = new DocumentStore(storeOptions);&#xA;                return documentStore;&#xA;            });&#xA;&#xA;            registry.Handlers.GlobalPolicy&lt;FineGrainedSessionCreationPolicy&gt;();&#xA;&#xA;&#xA;            registry.Services.AddScoped(c =&gt; c.GetService&lt;IDocumentStore&gt;().OpenSession());&#xA;            registry.Services.AddScoped(c =&gt; c.GetService&lt;IDocumentStore&gt;().QuerySession());&#xA;&#xA;            registry.CodeGeneration.Sources.Add(new SessionVariableSource());&#xA;&#xA;        }&#xA;    }&#xA;&#xA;&#xA;}&#xA;</code></pre>
 <p>When a Jasper application is being bootstrapped, it looks for any assemblies in the application's bin directory that are marked with the <code>[JasperModule]</code> attribute to determine the extension types that should be automatically applied to the application. In the case above, the
 Marten extension would be discovered at bootstrapping time and the <code>MartenExtension</code> would be
 applied to the application.</p>

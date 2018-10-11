@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -114,7 +114,7 @@ bootstrapped, and will throw a single aggregate exception with any failures.</p>
 <h2 id="ignoring-startup-issues">Ignoring Startup Issues</h2>
 <p>If you so choose, you can allow a Jasper application to successfully start up even with detected
 environment test failures with this configuration:</p>
-<pre><code class="language-csharp">&#xA;public class IgnoreValidationErrors : JasperRegistry&#xA;{&#xA;    public IgnoreValidationErrors()&#xA;    {&#xA;        Advanced.ThrowOnValidationErrors = false;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class IgnoreValidationErrors : JasperRegistry&#xA;{&#xA;    public IgnoreValidationErrors()&#xA;    {&#xA;        Settings.Messaging(_ =&gt; _.ThrowOnValidationErrors = false);&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 

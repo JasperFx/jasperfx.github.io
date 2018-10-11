@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Jasper.SqlServer</title>
+		<title>JasperFx - Jasper.Persistence.SqlServer</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -47,7 +47,7 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/extensions/marten" title="Jasper.Marten">Previous</a></li>
+		      	<li><a href="/documentation/extensions/marten" title="Jasper.Persistence.Marten">Previous</a></li>
 		      	<li><a href="/documentation/extensions/sqlserver/persistence" title="Message Persistence">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
@@ -63,7 +63,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/extensions">Extensions</a></li><li class="active">Jasper.SqlServer</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/extensions">Extensions</a></li><li class="active">Jasper.Persistence.SqlServer</li></ol>
 		  	</nav>
 		  </div>
 
@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.8.2</h3>
+		      	<h3>JasperFx 0.9.0</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -81,21 +81,21 @@
 		        </ul>
 
 		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/sqlserver/persistence">Message Persistence</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/marten">Jasper.Marten</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/marten">Jasper.Persistence.Marten</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Jasper.SqlServer<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/extensions/sqlserver/index.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Jasper.Persistence.SqlServer<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/extensions/sqlserver/index.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title:Jasper.SqlServer-->
-<p>The Jasper.SqlServer Nuget library provides Jasper users with a quick way to integrate Sql Server-backed persistence into their
-Jasper applications. To get started, just add the <em>Jasper.SqlServer</em> Nuget to your project, and enable the persistence like this:</p>
+			      		<!--title:Jasper.Persistence.SqlServer-->
+<p>The Jasper.Persistence.SqlServer Nuget library provides Jasper users with a quick way to integrate Sql Server-backed persistence into their
+Jasper applications. To get started, just add the <em>Jasper.Persistence.SqlServer</em> Nuget to your project, and enable the persistence like this:</p>
 <pre><code class="language-csharp">&#xA;public class AppUsingSqlServer : JasperRegistry&#xA;{&#xA;    public AppUsingSqlServer()&#xA;    {&#xA;        // If you know the connection string&#xA;        Settings.PersistMessagesWithSqlServer(&quot;your connection string&quot;, schema:&quot;my_app_schema&quot;);&#xA;&#xA;        // Or using application configuration&#xA;        Settings.PersistMessagesWithSqlServer((context, settings) =&gt;&#xA;        {&#xA;            if (context.HostingEnvironment.IsDevelopment())&#xA;            {&#xA;                // if so desired, the context argument gives you&#xA;                // access to both the IConfiguration and IHostingEnvironment&#xA;                // of the running application, so you could do&#xA;                // environment specific configuration here&#xA;            }&#xA;&#xA;            settings.ConnectionString = context.Configuration[&quot;sqlserver&quot;];&#xA;&#xA;            // If your application uses a schema besides &quot;dbo&quot;&#xA;            settings.SchemaName = &quot;my_app_schema&quot;;&#xA;&#xA;            // If you&#x27;re using a database principal that is NOT &quot;dbo&quot;:&#xA;            settings.DatabasePrincipal = &quot;not_dbo&quot;;&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Enabling this configuration adds a couple things to your system:</p>
 <ul>
@@ -111,7 +111,7 @@ Jasper applications. To get started, just add the <em>Jasper.SqlServer</em> Nuge
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/extensions/marten">Jasper.Marten</a>
+				        	<strong>Previous: </strong><a href="/documentation/extensions/marten">Jasper.Persistence.Marten</a>
 
 				        </span>
 				        <span class="pull-right">
