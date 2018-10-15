@@ -104,7 +104,7 @@ discussions of setting up Jasper applications:</p>
 </ul>
 <h2 id="service-name">Service Name</h2>
 <p>By default, Jasper derives a descriptive <em>ServiceName</em> for your application by taking the class name of your <code>JasperRegistry</code> and stripping off
-any &quot;JasperRegistry&quot; or &quot;Registry&quot; suffix. For diagnostic purposes and for the <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/routing/subscriptions'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p>, you may want to override the service name like so:</p>
+any &quot;JasperRegistry&quot; or &quot;Registry&quot; suffix. For diagnostic purposes you may want to override the service name like so:</p>
 <pre><code class="language-csharp">&#xA;public class CustomServiceRegistry : JasperRegistry&#xA;{&#xA;    public CustomServiceRegistry()&#xA;    {&#xA;        // The derived default would be &quot;CustomService&quot;&#xA;        ServiceName = &quot;My Custom Service&quot;;&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="hosting-environment">Hosting Environment</h2>
 <p>Jasper exposes the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments">ASP.Net Core Environment name</a> with this usage:</p>
