@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -97,18 +97,18 @@
 <div class="alert-info alert"><p><strong>Note!</strong>
 Jasper only targets Netstandard 2.0 at this time.</p>
 </div>
-<p>Jasper is a framework for command processing inside of .Net Core services. The command execution pipeline can be used as:</p>
+<p>Jasper is a framework for building services on .Net Core. The killer feature of Jasper (we think) is its very efficient command execution
+pipeline that can be used as:</p>
 <ol>
-<li>A &quot;mediator&quot; type pipeline or an in memory messaging bus within a different framework like ASP.Net Core</li>
-<li>Used as a service bus in conjunction with topic-based queues like <a href="https://www.rabbitmq.com/">RabbitMQ</a> for asynchronous messaging between services</li>
-<li>A lightweight service bus using its own transport mechanism</li>
 <li>An alternative for building HTTP services with ASP.Net Core</li>
+<li>A &quot;mediator&quot; type pipeline or an in memory messaging bus within a different framework like ASP.Net Core</li>
+<li>When used in conjunction with low level messaging infrastructure tools like <a href="https://www.rabbitmq.com/">RabbitMQ</a>, a full fledged asynchronous messaging platform for robust communication and interaction between services</li>
+<li>A lightweight service bus using its own transport mechanism</li>
 <li>Any combination of the above</li>
 </ol>
-<p>Jasper can either be in charge of your service's lifecycle as the primary application framework, or be added to an existing ASP.Net Core application.
-Jasper tries very hard to be a good citizen within the greater ASP.Net Core ecosystem.</p>
+<p>Jasper tries very hard to be a good citizen within the greater ASP.Net Core ecosystem and even when used in &quot;headless&quot; services, uses many elements of ASP.Net Core (logging, configuration, bootstrapping, hosted services) rather than try to reinvent something new.</p>
 <h2 id="standalone-jasper-application">Standalone Jasper Application</h2>
-<p>To create a standalone Jasper service, the quickest thing to do is to use a <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new?tabs=netcore21">dotnet new</a> template. First, install the latest <code>JasperTemplates</code> with this command:</p>
+<p>To create a standalone, headless Jasper service with no exposed HTTP endpoints, the quickest thing to do is to use a <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new?tabs=netcore21">dotnet new</a> template. First, install the latest <code>JasperTemplates</code> with this command:</p>
 <pre><code>dotnet new --install JasperTemplates
 </code></pre>
 <p>Next, build a new application using the <code>jasper</code> template in this case called &quot;JasperApp&quot; with this command:</p>
@@ -132,27 +132,24 @@ Active sending agent to loopback://retries/
 
 Application started. Press Ctrl+C to shut down.
 </code></pre>
-<p>Your new Jasper service isn't actually <em>doing</em> anything useful, but you're got a working skeleton. To learn more about what you can do with Jasper, see the <a href="/documentation/tutorials">Jasper Tutorials</a> page. See <a href="/documentation/bootstrapping">Bootstrapping</a> for more information about idiomatic Jasper bootstrapping.</p>
+<p>Your new Jasper service isn't actually <em>doing</em> anything useful, but you're got a working skeleton. To learn more about what you can do with Jasper, see the <a href="/documentation/tutorials">Jasper Tutorials</a> page. See <a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a> for more information about idiomatic Jasper bootstrapping.</p>
 <p>That covers bootstrapping Jasper by itself, but next let's see how you can add Jasper
 to an idiomatic ASP.Net Core application.</p>
 <h2 id="adding-jasper-to-an-asp.net-core-application">Adding Jasper to an ASP.Net Core Application</h2>
 <p>While you may certainly build headless services with Jasper, it's pretty likely that you will also want to integrate Jasper into
 ASP.Net Core applications.</p>
 <p>If you prefer to use typical ASP.Net Core bootstrapping or want to add Jasper messaging support to an existing project, you can use the <code>UseJasper&lt;T&gt;()</code> extension method on ASP.Net Core's <code>IWebHostBuilder</code> as shown below:</p>
-<pre><code class="language-csharp">&#xA;var host = new WebHostBuilder()&#xA;    .UseKestrel()&#xA;    .UseJasper&lt;ServiceBusApp&gt;()&#xA;    .Build();&#xA;&#xA;host.Run();&#xA;</code></pre>
-<p>The <code>T</code> constraint will refer to the Jasper configuration for your hybrid Jasper/ASP.Net Core application, this time in a subclass of the <code>JasperHttpRegistry</code> class that's just a specialized version of
-<code>JasperRegistry</code>:</p>
-<pre><code class="language-csharp">&#xA;public class ServiceBusApp : JasperRegistry&#xA;{&#xA;    public ServiceBusApp()&#xA;    {&#xA;        // Customize your messaging setup here&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;var host = WebHost.CreateDefaultBuilder()&#xA;    .UseStartup&lt;Startup&gt;()&#xA;&#xA;    // Adds Jasper to your ASP.Net Core application&#xA;    // with default configuration&#xA;    .UseJasper()&#xA;    .Start();&#xA;&#xA;</code></pre>
 <p>See <a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a> for more information about configuring Jasper through ASP.Net Core hosting.</p>
 <h2 id="your-first-http-endpoint">Your First HTTP Endpoint</h2>
 <p>The obligatory &quot;Hello World&quot; http endpoint is just this:</p>
-<pre><code class="language-csharp">&#xA;public class HomeEndpoint&#xA;{&#xA;    public string Get()&#xA;    {&#xA;        return &quot;Hello, world.&quot;;&#xA;    }&#xA;}&#xA;</code></pre>
-<p>As long as that class is in the same assembly as your <code>JasperHttpRegistry</code> class, Jasper will find it and make the &quot;Get&quot; method handle the root url of your application.</p>
+<pre><code class="language-csharp">&#xA;public class HomeEndpoint&#xA;{&#xA;    public string Get()&#xA;    {&#xA;        return &quot;Hello, world.&quot;;&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<p>As long as that class is in the main application assembly, Jasper will find it and make the &quot;Get&quot; method handle the root url of your application.</p>
 <p>See <a href="/documentation/http">HTTP Services</a> for more information about Jasper's HTTP handling features.</p>
 <h2 id="your-first-message-handler">Your First Message Handler</h2>
 <p>Let's say you're building an invoicing application and your application should handle an
 <code>InvoiceCreated</code> event. The skeleton for the message handler for that event would look like this:</p>
-<pre><code class="language-csharp">&#xA;public class InvoiceCreated&#xA;{&#xA;    public Guid InvoiceId { get; set; }&#xA;}&#xA;&#xA;public class InvoiceHandler&#xA;{&#xA;    public void Handle(InvoiceCreated created)&#xA;    {&#xA;        // do something here with the created variable...&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class InvoiceCreated&#xA;{&#xA;    public Guid InvoiceId { get; set; }&#xA;}&#xA;&#xA;public class InvoiceHandler&#xA;{&#xA;    public void Handle(InvoiceCreated created)&#xA;    {&#xA;        // do something here with the created variable...&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>See <a href="/documentation/messaging/handling/handlers">Message Handlers</a> for more information on message handler actions.</p>
 
 			      	</div>

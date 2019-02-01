@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -94,7 +94,7 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Scheduled Job Processing-->
-<p>You can send messages with Jasper, but request that the processing of the message happen at some later time with <code>IServiceBus.ScheduleSend()</code>:</p>
+<p>You can send messages with Jasper, but request that the processing of the message happen at some later time with <code>IMessageContext.ScheduleSend()</code>:</p>
 <pre><code class="language-csharp">&#xA;public async Task SendScheduledMessage(IMessageContext bus, Guid invoiceId)&#xA;{&#xA;    var message = new ValidateInvoiceIsNotLate&#xA;    {&#xA;        InvoiceId = invoiceId&#xA;    };&#xA;&#xA;    // Schedule the message to be processed in a certain amount&#xA;    // of time&#xA;    await bus.ScheduleSend(message, 30.Days());&#xA;&#xA;    // Schedule the message to be processed at a certain time&#xA;    await bus.ScheduleSend(message, DateTime.UtcNow.AddDays(30));&#xA;}&#xA;</code></pre>
 <p>The message itself is sent out immediately, but when the receiving application sees that the message is scheduled to be processed later, the received message will be moved into the &quot;delayed job processor&quot; in the receiving application.</p>
 <p>This functionality is useful for long lived workflows where there are time limits for any part of the process.</p>

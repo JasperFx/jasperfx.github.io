@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -98,7 +98,7 @@
 just add the <code>Jasper.ApplicationInsights</code> Nuget to your project and Jasper will pick up the extension automatically
 when your application starts up.</p>
 <p>To specify the instrumentation key for your application, use this syntax:</p>
-<pre><code class="language-csharp">&#xA;public class AppInsightsUsingApp : JasperRegistry&#xA;{&#xA;    public AppInsightsUsingApp()&#xA;    {&#xA;        // TODO -- use the new helper syntax here instead&#xA;        Settings.Alter&lt;ApplicationInsightsSettings&gt;((context, settings) =&gt;&#xA;        {&#xA;            // Assuming that you&#x27;re putting the InstrumentationKey in your application&#x27;s&#xA;            // configuration under the key &quot;appinsightsKey&quot;&#xA;            settings.InstrumentationKey = context.Configuration[&quot;appinsightsKey&quot;];&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppInsightsUsingApp : JasperRegistry&#xA;{&#xA;    public AppInsightsUsingApp()&#xA;    {&#xA;        // TODO -- use the new helper syntax here instead&#xA;        Settings.Alter&lt;ApplicationInsightsSettings&gt;((context, settings) =&gt;&#xA;        {&#xA;            // Assuming that you&#x27;re putting the InstrumentationKey in your application&#x27;s&#xA;            // configuration under the key &quot;appinsightsKey&quot;&#xA;            settings.InstrumentationKey = context.Configuration[&quot;appinsightsKey&quot;];&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 
 			      	</div>
 

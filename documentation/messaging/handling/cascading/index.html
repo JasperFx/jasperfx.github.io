@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -96,10 +96,10 @@
 			      		<!--title:Cascading Messages-->
 <p>Many times during the processing of a message you will need to create and send out other messages. Maybe you need to respond back to the original sender with a reply,
 maybe you need to trigger a subsequent action, or send out additional messages to start some kind of background processing. You can do that by just having
-your handler class use the <code>IServiceBus</code> interface as shown in this sample:</p>
+your handler class use the <code>IMessageContext</code> interface as shown in this sample:</p>
 <pre><code class="language-csharp">&#xA;public class NoCascadingHandler&#xA;{&#xA;    private readonly IMessageContext _bus;&#xA;&#xA;    public NoCascadingHandler(IMessageContext bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    public void Consume(MyMessage message)&#xA;    {&#xA;        // do whatever work you need to for MyMessage,&#xA;        // then send out a new MyResponse&#xA;        _bus.Send(new MyResponse());&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The code above certainly works and this is consistent with most of the competing service bus tools. However, Jasper supports the concept of <em>cascading messages</em>
-that allow you to automatically send out objects returned from your handler methods without having to use <code>IServiceBus</code> as shown below:</p>
+that allow you to automatically send out objects returned from your handler methods without having to use <code>IMessageContext</code> as shown below:</p>
 <pre><code class="language-csharp">&#xA;public class CascadingHandler&#xA;{&#xA;    public MyResponse Consume(MyMessage message)&#xA;    {&#xA;        return new MyResponse();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>When Jasper executes <code>CascadingHandler.Consume(MyMessage)</code>, it &quot;knows&quot; that the <code>MyResponse</code> return value should be sent through the
 service bus as part of the same transaction with whatever routing rules apply to <code>MyResponse</code>. A couple things to note here:</p>
@@ -107,11 +107,11 @@ service bus as part of the same transaction with whatever routing rules apply to
 <li>Cascading messages returned from handler methods will not be sent out until after the original message succeeds and is part of the underlying
 transport transaction</li>
 <li>Null's returned by handler methods are simply ignored</li>
-<li>There is a significant performance advantage to using cascading messages instead of explicitly calling <code>IServiceBus.Send()</code> if you are using the
+<li>There is a significant performance advantage to using cascading messages instead of explicitly calling <code>IMessageContext.Send()</code> if you are using the
 LightningQueues transport</li>
 <li>The cascading message feature was explicitly designed to make unit testing handler actions easier by shifting the test strategy
 to <a href="http://blog.jayfields.com/2008/02/state-based-testing.html">state-based</a> where you mostly need to verify the state of the response
-objects instead of mock-heavy testing against calls to <code>IServiceBus</code>.</li>
+objects instead of mock-heavy testing against calls to <code>IMessageContext</code>.</li>
 </ul>
 <h2 id="requestreply-scenarios">Request/Reply Scenarios</h2>
 <p>Normally, cascading messages are just sent out according to the configured subscription rules for that message type, but there's
@@ -130,7 +130,7 @@ is called from the &quot;Sender&quot; node:</p>
 <li>Receiver handles the <code>MyMessage</code> message by calling the <code>CascadingHandler.Consume(MyMessage)</code> method</li>
 <li>Receiver sees the value of the &quot;reply-requested&quot; header matches the response, so it sends the <code>MyResponse</code> object back to Sender</li>
 <li>When Sender receives the matching <code>MyResponse</code> message that corresponds to the original <code>MyMessage</code>, it sets the completion back
-to the Task returned by the <code>IServiceBus.Request&lt;TResponse&gt;()</code> method</li>
+to the Task returned by the <code>IMessageContext.Request&lt;TResponse&gt;()</code> method</li>
 </ol>
 <h2 id="conditional-responses">Conditional Responses</h2>
 <p>You may need some conditional logic within your handler to know what the cascading message is going to be. If you need to return
@@ -160,7 +160,7 @@ should be handled:</p>
 <h2 id="custom-cascading-message-behavior">Custom Cascading Message Behavior</h2>
 <p>Finally, you can create your own custom response behavior by creating your own implementation of
 <code>ISendMyself</code> and returning that wrapper object from your handler methods:</p>
-<pre><code class="language-csharp">&#xA;public class SpecialGoWest : ISendMyself&#xA;{&#xA;    public Envelope CreateEnvelope(Envelope original)&#xA;    {&#xA;        return new Envelope&#xA;        {&#xA;            Message = new GoWest(),&#xA;            Destination = original.ReplyUri,&#xA;            ContentType = &quot;text/xml&quot;&#xA;        };&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class SpecialGoWest : ISendMyself&#xA;{&#xA;    public Envelope CreateEnvelope(Envelope original)&#xA;    {&#xA;        return new Envelope&#xA;        {&#xA;            Message = new GoWest(),&#xA;            Destination = original.ReplyUri,&#xA;            ContentType = &quot;text/xml&quot;&#xA;        };&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p><code>DelayedResponse</code>, <code>RespondToSender</code>, and <code>SendDirectlyTo</code> are implementations of <code>ISendMyself</code>.</p>
 <h2 id="using-c-tuples-as-return-values">Using C# Tuples as Return Values</h2>
 <p>Sometimes you may well need to return multiple cascading messages from your original message action. In FubuMVC, Jasper's forebear, you had to return either <code>object[]</code> or <code>IEnumerable&lt;object&gt;</code> as the return type of your action -- which had the unfortunate side effect of partially obfuscating your code by making it less clear what message types were being cascaded from your handler without carefully

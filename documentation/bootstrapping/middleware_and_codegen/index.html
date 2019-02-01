@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>JasperFx - Jasper Middleware and Policies</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">JasperFx</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+		        <li>
+		          <a href="/documentation/getting_started">Getting Started</a>
+		        </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+		        <li>
+		        <li>
+<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/documentation/bootstrapping/environment_tests" title="Environment Tests">Previous</a></li>
+		      	<li><a href="/documentation/http" title="HTTP Services">Next</a></li>
+		      </ul>
+		      <div class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input id="search" type="search" class="form-control" placeholder="Search">
+		        </div>
+		      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a></li><li class="active">Jasper Middleware and Policies</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>JasperFx 0.9.5</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/http">HTTP Services</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Jasper Middleware and Policies<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/bootstrapping/middleware_and_codegen.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--title:Jasper Middleware and Policies-->
+<div class="alert-warning alert"><p><strong>Note!</strong>
+Jasper is the successor to an earlier project called <a href="https://fubumvc.github.io">FubuMVC</a> that focused very hard on
+user-defined conventions and a modular runtime pipeline. Great, but some users overused those features resulting in systems that were unmaintainable. While Jasper
+definitely still supports user defined conventions and a flexible runtime pipeline, we urge some caution about overusing these
+features when just some explicit code will do the job.</p>
+</div>
+<h2 id="jaspers-architectural-model">Jasper's Architectural Model</h2>
+<p>Internally, the key components of Jasper's architecture relevant to this section are shown below:</p>
+<p><h5><strong>Jasper's Configuration Model</strong></h5><img src="/content/jaspermodel.png" style="max-width:100%" /></p>
+<p>For the HTTP routes:</p>
+<ul>
+<li><code>RouteChain</code> is the configuration-time model for the Url pattern, the endpoint action method that executes the route, and any configured middleware
+or post processing operations</li>
+<li><code>RouteHandler</code> is the common base class for handling the HTTP routes. These classes are generated based on the configuration of its matching <code>RouteChain</code></li>
+<li><code>RouteGraph</code> is a collection of all the <code>RouteChain</code> objects for the system</li>
+<li><code>IRoutePolicy</code> provides a facility to allow for user-defined conventions or policies by directly modifying the <code>RouteGraph</code> model before the
+<code>RouteHandler</code> classes are generated</li>
+</ul>
+<p>Likewise, for the message handling:</p>
+<ul>
+<li><code>HandlerChain</code> is the configuration-time model for each message handled by a Jasper application, including all the action methods and middleware</li>
+<li><code>MessageHandler</code> is the common base class for the runtime-generated classes that handle messages at runtime. These classes are generated based
+on the configuration of its matching <code>HandlerChain</code></li>
+<li><code>HandlerGraph</code> is a collection of all the <code>HandlerChain</code> objects for the system</li>
+<li><code>IHandlerPolicy</code> provides a facility to allow for user-defined conventions or policies by directly modifying the <code>HandlerGraph</code> model before the
+<code>MessageHandler</code> classes are generated</li>
+</ul>
+<p>Jasper's internal middleware is the <a href="https://jasperfx.github.io/lamar/documentation/compilation/frames/">Frame model</a> from the closely related <a href="https://jasperfx.github.io/lamar">Lamar</a> project. During application bootstrapping, Jasper builds up both the <code>RouteGraph</code> and <code>HandlerGraph</code> models that essentially model a collection of Lamar <code>Frame</code> objects that get compiled into the <code>RouteHandler</code> and <code>MessageHandler</code> classes at runtime.</p>
+<p>To apply middleware to either HTTP routes or message handling, you'll be working with the common <code>IChain</code> interface shown below:</p>
+<pre><code class="language-csharp">&#xA;public interface IChain&#xA;{&#xA;    IList&lt;Frame&gt; Middleware { get; }&#xA;&#xA;    IList&lt;Frame&gt; Postprocessors { get; }&#xA;&#xA;    string Description { get; }&#xA;}&#xA;</code></pre>
+<h2 id="authoring-middleware">Authoring Middleware</h2>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+This whole code compilation model is pretty new and there aren't enough examples yet. Feel very free to ask questions in the Gitter room linked in the top bar of this page.</p>
+</div>
+<p>For Jasper's <a href="/documentation/http">HTTP support</a>, you can always use <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2">ASP.Net Core middleware</a>. However, within both the HTTP support and the
+messaging or command execution pipelines, you can also opt for Jasper's built in &quot;Russian Doll&quot; model of middleware. Jasper's middleware uses runtime code generation and compilation with <a href="https://jasperfx.github.io/lamar/documentation/compilation/">LamarCompiler</a>. What this means is that &quot;middleware&quot; in Jasper is code that is woven right into the message and route handlers.</p>
+<p>As an example, let's say you want to build some custom middleware that is a simple performance timing of either HTTP route execution or message execution. In essence, you want to inject code like this:</p>
+<pre><code class="language-csharp">&#xA;var stopwatch = new Stopwatch();&#xA;stopwatch.Start();&#xA;try&#xA;{&#xA;    // execute the HTTP request&#xA;    // or message&#xA;}&#xA;finally&#xA;{&#xA;    stopwatch.Stop();&#xA;    logger.LogInformation(&quot;Ran something in &quot; &#x2B; stopwatch.ElapsedMilliseconds);&#xA;}&#xA;</code></pre>
+<p>Alright, the first step is to create a LamarCompiler <code>Frame</code> class that generates that code around the inner message or HTTP handler:</p>
+<pre><code class="language-csharp">&#xA;public class StopwatchFrame : SyncFrame&#xA;{&#xA;    private readonly IChain _chain;&#xA;    private Variable _logger;&#xA;    private readonly Variable _stopwatch;&#xA;&#xA;    public StopwatchFrame(IChain chain)&#xA;    {&#xA;        _chain = chain;&#xA;&#xA;        // This frame creates a Stopwatch, so we&#xA;        // expose that fact to the rest of the generated method&#xA;        // just in case someone else wants that&#xA;        _stopwatch = new Variable(typeof(Stopwatch), &quot;stopwatch&quot;, this);&#xA;    }&#xA;&#xA;&#xA;    public override void GenerateCode(GeneratedMethod method, ISourceWriter writer)&#xA;    {&#xA;        writer.Write($&quot;var stopwatch = new {typeof(Stopwatch).FullNameInCode()}();&quot;);&#xA;        writer.Write($&quot;stopwatch.Start();&quot;);&#xA;&#xA;        writer.Write(&quot;BLOCK:try&quot;);&#xA;        Next?.GenerateCode(method, writer);&#xA;        writer.FinishBlock();&#xA;&#xA;        // Write a finally block where you record the stopwatch&#xA;        writer.Write(&quot;BLOCK:finally&quot;);&#xA;&#xA;        writer.Write($&quot;stopwatch.Stop();&quot;);&#xA;        writer.Write($&quot;{_logger.Usage}.Log(Microsoft.Extensions.Logging.LogLevel.Information, \&quot;{_chain.Description} ran in \&quot; &#x2B; {_stopwatch.Usage}.{nameof(Stopwatch.ElapsedMilliseconds)});)&quot;);&#xA;&#xA;        writer.FinishBlock();&#xA;    }&#xA;&#xA;    public override IEnumerable&lt;Variable&gt; FindVariables(IMethodVariables chain)&#xA;    {&#xA;        // This in effect turns into &quot;I need ILogger&lt;IChain&gt; injected into the&#xA;        // compiled class&quot;&#xA;        _logger = chain.FindVariable(typeof(ILogger&lt;IChain&gt;));&#xA;        yield return _logger;&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="applying-middleware">Applying Middleware</h2>
+<p>Okay, great, but the next question is &quot;how do I stick this middleware on routes or message handlers?&quot;. You've got three options:</p>
+<ol>
+<li>Use custom attributes</li>
+<li>Use a custom <code>IRoutePolicy</code> or <code>IHandlerPolicy</code> class</li>
+<li>Expose a static <code>Configure(chain)</code> method on handler classes</li>
+</ol>
+<p>Even though one of the original design goals of FubuMVC and now Jasper was to eliminate or at least reduce the number of attributes users had to spew out into their application code, let's start with using an attribute.</p>
+<h2 id="custom-attributes">Custom Attributes</h2>
+<p>To attach our <code>StopwatchFrame</code> as middleware to any route or message handler, we can write a custom attribute based on Jasper's
+<code>ModifyChainAttribute</code> class as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class StopwatchAttribute : ModifyChainAttribute&#xA;{&#xA;    public override void Modify(IChain chain, JasperGenerationRules rules)&#xA;    {&#xA;        chain.Middleware.Add(new StopwatchFrame(chain));&#xA;    }&#xA;}&#xA;</code></pre>
+<p>This attribute can now be placed either on a specific HTTP route endpoint method or message handler method to <strong>only</strong> apply to
+that specific action, or it can be placed on a <code>Handler</code> or <code>Endpoint</code> class to apply to all methods exported by that type.</p>
+<p>Here's an example:</p>
+<pre><code class="language-csharp">&#xA;public class ClockedEndpoint&#xA;{&#xA;    [Stopwatch]&#xA;    public string get_clocked()&#xA;    {&#xA;        return &quot;how fast&quot;;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Now, when the application is bootstrapped, this is the code that would be generated to handle the &quot;GET /clocked&quot; route:</p>
+<pre><code>    public class Jasper_Testing_Samples_ClockedEndpoint_get_clocked : Jasper.Http.Model.RouteHandler
+    {
+        private readonly Microsoft.Extensions.Logging.ILogger&lt;Jasper.Configuration.IChain&gt; _logger;
+
+        public Jasper_Testing_Samples_ClockedEndpoint_get_clocked(Microsoft.Extensions.Logging.ILogger&lt;Jasper.Configuration.IChain&gt; logger)
+        {
+            _logger = logger;
+        }
+
+
+
+        public override Task Handle(Microsoft.AspNetCore.Http.HttpContext httpContext, System.String[] segments)
+        {
+            var clockedEndpoint = new Jasper.Testing.Samples.ClockedEndpoint();
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            try
+            {
+                var result_of_get_clocked = clockedEndpoint.get_clocked();
+                return WriteText(result_of_get_clocked, httpContext.Response);
+            }
+
+            finally
+            {
+                stopwatch.Stop();
+                _logger.Log(Microsoft.Extensions.Logging.LogLevel.Information, &quot;Route 'GET: clocked' ran in &quot; + stopwatch.ElapsedMilliseconds);)
+            }
+
+        }
+
+    }
+</code></pre>
+<p><code>ModifyChainAttribute</code> is a generic way to add middleware or post processing frames, but if you need to configure things specific to routes or message handlers, you can also use <code>ModifyHandlerChainAttribute</code> for message handlers or <code>ModifyRouteAttribute</code> for http routes.</p>
+<h2 id="policies">Policies</h2>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+Again, please go easy with this feature and try not to shoot yourself in the foot by getting too aggressive with custom policies</p>
+</div>
+<p>You can register user-defined policies that apply to all chains or some subset of chains. For HTTP routes implement this interface:</p>
+<pre><code class="language-csharp">&#xA;public interface IRoutePolicy&#xA;{&#xA;    void Apply(RouteGraph graph, JasperGenerationRules rules);&#xA;}&#xA;</code></pre>
+<p>For message handlers, implement this interface instead:</p>
+<pre><code class="language-csharp">&#xA;public interface IHandlerPolicy&#xA;{&#xA;    void Apply(HandlerGraph graph, JasperGenerationRules rules);&#xA;}&#xA;</code></pre>
+<p>Here is an example of creating and applying both types of policies:</p>
+<pre><code class="language-csharp">&#xA;public class PutStopwatchOnRoutes : IRoutePolicy&#xA;{&#xA;    public void Apply(RouteGraph graph, JasperGenerationRules rules)&#xA;    {&#xA;        // Put this middleware on any route that&#xA;        // has the HTTP method POST, PUT, or DELETE&#xA;        foreach (var chain in graph.Commands)&#xA;        {&#xA;            chain.Middleware.Add(new StopwatchFrame(chain));&#xA;        }&#xA;    }&#xA;}&#xA;&#xA;public class PutStopwatchOnHandlers : IHandlerPolicy&#xA;{&#xA;    public void Apply(HandlerGraph graph, JasperGenerationRules rules)&#xA;    {&#xA;        // We&#x27;re adding the StopwatchFrame to all message types,&#xA;        // but we *could* filter the application&#xA;        foreach (var chain in graph.Chains)&#xA;        {&#xA;            chain.Middleware.Add(new StopwatchFrame(chain));&#xA;        }&#xA;    }&#xA;}&#xA;&#xA;public class StopwatchMonitoredApp : JasperRegistry&#xA;{&#xA;    public StopwatchMonitoredApp()&#xA;    {&#xA;        // Apply a handler policy&#xA;        Handlers.GlobalPolicy&lt;PutStopwatchOnHandlers&gt;();&#xA;&#xA;        HttpRoutes.GlobalPolicy&lt;PutStopwatchOnRoutes&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="using-configurechain-methods">Using Configure(chain) Methods</h2>
+<div class="alert-info alert"><p><strong>Note!</strong>
+This feature is experimental, but is meant to provide an easy way to apply middleware or other configuration to specific HTTP endpoints or
+message handlers without writing custom policies or having to resort to all new attributes.</p>
+</div>
+<p>There's one last option for configuring chains by a naming convention. If you want to configure the chains from just one handler or endpoint class,
+you can implement a method with one of these signatures:</p>
+<pre><code>public static void Configure(IChain)
+{
+    // gets called for each endpoint or message handling method
+    // on just this class
+}
+
+public static void Configure(RouteChain chain)`
+{
+    // gets called for each endpoint method on this class
+}
+
+public static void Configure(HandlerChain chain)
+{
+    // gets called for each message handling method
+    // on just this class
+}
+</code></pre>
+<p>Here's an example of this being used from Jasper's test suite:</p>
+<pre><code class="language-csharp">&#xA;public class CustomizedHandler&#xA;{&#xA;    public void Handle(SpecialMessage message)&#xA;    {&#xA;        // actually handle the SpecialMessage&#xA;    }&#xA;&#xA;    public static void Configure(HandlerChain chain)&#xA;    {&#xA;        chain.Middleware.Add(new CustomFrame());&#xA;    }&#xA;}&#xA;</code></pre>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/http">HTTP Services</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
+</html>

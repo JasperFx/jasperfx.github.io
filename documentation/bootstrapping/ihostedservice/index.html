@@ -48,7 +48,7 @@
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/bootstrapping/logging" title="Logging Integration">Previous</a></li>
-		      	<li><a href="/documentation/ioc" title="IoC Container Integration">Next</a></li>
+		      	<li><a href="/documentation/bootstrapping/environment_tests" title="Environment Tests">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -63,7 +63,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/bootstrapping">Bootstrapping</a></li><li class="active">Long Running Processes with IHostedService</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a></li><li class="active">Long Running Processes with IHostedService</li></ol>
 		  	</nav>
 		  </div>
 
@@ -73,14 +73,14 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/ioc">IoC Container Integration</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping/logging">Logging Integration</a></p>
 
 		        </ul>
@@ -94,13 +94,13 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Long Running Processes with IHostedService-->
-<p>Even if not running within an ASP.Net Core bootstrapped system, Jasper supports the ASP.Net <a href="https://www.stevejgordon.co.uk/asp-net-core-2-ihostedservice">IHostedService</a>
+<p>Jasper supports the ASP.Net <a href="https://www.stevejgordon.co.uk/asp-net-core-2-ihostedservice">IHostedService</a>
 interface to start and stop long running processes or startup and teardown actions in addition to the messaging or
 http handler support.</p>
 <p>Jasper itself uses this mechanism to run background processing for the durable messaging, starting up the actual message transports,
 and metrics aggregation with some add ons.</p>
 <p>To build a custom, long running process, see this example that just periodically sends a &quot;ping&quot; message:</p>
-<pre><code class="language-csharp">&#xA;// In this case, BackgroundService is a base class&#xA;// for the IHostedService that is *supposed* to be&#xA;// in a future version of ASP.Net Core that I shoved&#xA;// into Jasper so we could use it now. The one in Jasper&#xA;// will be removed later when the real one exists in&#xA;// ASP.Net Core itself&#xA;public class PingSender : BackgroundService&#xA;{&#xA;    private readonly IMessageContext _bus;&#xA;&#xA;    public PingSender(IMessageContext bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    protected override Task ExecuteAsync(CancellationToken stoppingToken)&#xA;    {&#xA;        int count = 1;&#xA;&#xA;        return Task.Run(async () =&gt;&#xA;        {&#xA;            while (!stoppingToken.IsCancellationRequested)&#xA;            {&#xA;                await Task.Delay(1000, stoppingToken);&#xA;&#xA;                await _bus.Send(new PingMessage&#xA;                {&#xA;                    Name = &quot;Message&quot; &#x2B; count&#x2B;&#x2B;&#xA;                });&#xA;            }&#xA;        }, stoppingToken);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;// In this case, BackgroundService is a base class&#xA;// for the IHostedService that is *supposed* to be&#xA;// in a future version of ASP.Net Core that I shoved&#xA;// into Jasper so we could use it now. The one in Jasper&#xA;// will be removed later when the real one exists in&#xA;// ASP.Net Core itself&#xA;public class PingSender : BackgroundService&#xA;{&#xA;    private readonly IMessageContext _bus;&#xA;&#xA;    public PingSender(IMessageContext bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    protected override Task ExecuteAsync(CancellationToken stoppingToken)&#xA;    {&#xA;        var count = 1;&#xA;&#xA;        return Task.Run(async () =&gt;&#xA;        {&#xA;            while (!stoppingToken.IsCancellationRequested)&#xA;            {&#xA;                await Task.Delay(1000, stoppingToken);&#xA;&#xA;                await _bus.Send(new PingMessage&#xA;                {&#xA;                    Name = &quot;Message&quot; &#x2B; count&#x2B;&#x2B;&#xA;                });&#xA;            }&#xA;        }, stoppingToken);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>To add <code>PingSender</code> to your application, it's just this code:</p>
 <pre><code class="language-csharp">&#xA;public class AppThatUsesPingHandler : JasperRegistry&#xA;{&#xA;    public AppThatUsesPingHandler()&#xA;    {&#xA;        // Just register your custom hosted service&#xA;        // as a singleton in the IoC container&#xA;        // against the IHostedService interface&#xA;        Services.AddSingleton&lt;IHostedService, PingSender&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Now, when you run the application holding the code above, the <code>PingSender.StartAsync()</code> method will be called
@@ -117,7 +117,7 @@ as part of bootstrapping. The corresponding <code>PingSender.StopAsync()</code> 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/ioc">IoC Container Integration</a>
+				        	<strong>Next: </strong><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a>
 
 				        </span>
 			      	</nav>

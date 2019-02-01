@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -113,7 +113,7 @@ Why didn't we just use <a href="https://www.hangfire.io/">Hangfire</a>? We looke
 <p>You can schedule a message to be executed in the local system. Either by specifying a <code>TimeSpan</code> delay like this:</p>
 <pre><code class="language-csharp">&#xA;public async Task schedule_locally(IMessageContext context, Guid issueId)&#xA;{&#xA;    var timeout = new WarnIfIssueIsStale&#xA;    {&#xA;        IssueId = issueId&#xA;    };&#xA;&#xA;    // Process the issue timeout logic 3 days from now&#xA;    // in *this* system&#xA;    await context.Schedule(timeout, 3.Days());&#xA;}&#xA;</code></pre>
 <p>Or specify the execution at an exact time like this:</p>
-<pre><code class="language-csharp">&#xA;public async Task schedule_locally_at_5_tomorrow_afternoon(IMessageContext context, Guid issueId)&#xA;{&#xA;    var timeout = new WarnIfIssueIsStale&#xA;    {&#xA;        IssueId = issueId&#xA;    };&#xA;&#xA;    var time = DateTime.Today.AddDays(1).AddHours(17);&#xA;&#xA;&#xA;    // Process the issue timeout at 5PM tomorrow&#xA;    // in *this* system&#xA;    // Do note that Jasper quietly converts this&#xA;    // to universal time in storage&#xA;    await context.ScheduleSend(timeout, time);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public async Task schedule_locally_at_5_tomorrow_afternoon(IMessageContext context, Guid issueId)&#xA;{&#xA;    var timeout = new WarnIfIssueIsStale&#xA;    {&#xA;        IssueId = issueId&#xA;    };&#xA;&#xA;    var time = DateTime.Today.AddDays(1).AddHours(17);&#xA;&#xA;&#xA;    // Process the issue timeout at 5PM tomorrow&#xA;    // in *this* system&#xA;    // Do note that Jasper quietly converts this&#xA;    // to universal time in storage&#xA;    await context.ScheduleSend(timeout, time);&#xA;}&#xA;&#xA;</code></pre>
 <p>Note that if you are using <a href="/documentation/messaging/transports/durable">Durable Messaging</a>, the message could be executed by any running node within the system rather than the currently running process. If you aren't using durable messaging, the message is kept and scheduled in memory. Do be aware of that for the sake of memory usage and whether or not the scheduled execution should survive past the lifetime of the current process.</p>
 <h2 id="schedule-a-message-to-another-system">Schedule a Message to Another System</h2>
 <p>Likewise, you can send a message to another system and request that the message be executed later, either by a time delay:</p>

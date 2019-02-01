@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -117,18 +117,16 @@ tries to select one that matches the value of the <code>content-type</code> head
 <li>Invoke the matching reader to read the raw <code>byte[]</code> data into a .Net object</li>
 <li>Now that you know the actual .Net type for the message, select the proper message handler and off it goes</li>
 </ol>
-<p>Also see <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/routing/subscriptions'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information about how the <code>content-type</code> data is used to match up
-subscriptions.</p>
 <h2 id="message-type-identity">Message Type Identity</h2>
 <p>Let's say that you have a basic message structure like this:</p>
 <pre><code class="language-csharp">&#xA;public class PersonBorn&#xA;{&#xA;    public string FirstName { get; set; }&#xA;    public string LastName { get; set; }&#xA;&#xA;    // This is obviously a contrived example&#xA;    // so just let this go for now;)&#xA;    public int Day { get; set; }&#xA;    public int Month { get; set; }&#xA;    public int Year { get; set; }&#xA;}&#xA;</code></pre>
 <p>By default, Jasper will identify this type by just using the .Net full name like so:</p>
-<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void message_alias_is_fullname_by_default()&#xA;{&#xA;    new Envelope(new PersonBorn())&#xA;        .MessageType.ShouldBe(typeof(PersonBorn).FullName);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void message_alias_is_fullname_by_default()&#xA;{&#xA;    new Envelope(new PersonBorn())&#xA;        .MessageType.ShouldBe(typeof(PersonBorn).FullName);&#xA;}&#xA;&#xA;</code></pre>
 <p>However, if you want to explicitly control the message type because you aren't sharing the DTO types or for some
 other reason (readability? diagnostics?), you can override the message type alias with an attribute:</p>
 <pre><code class="language-csharp">&#xA;[MessageIdentity(&quot;person-born&quot;)]&#xA;public class PersonBorn&#xA;{&#xA;    public string FirstName { get; set; }&#xA;    public string LastName { get; set; }&#xA;    public int Day { get; set; }&#xA;    public int Month { get; set; }&#xA;    public int Year { get; set; }&#xA;}&#xA;</code></pre>
 <p>Which now gives you different behavior:</p>
-<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void message_alias_is_fullname_by_default()&#xA;{&#xA;    new Envelope(new PersonBorn())&#xA;        .MessageType.ShouldBe(&quot;person-born&quot;);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void message_alias_is_fullname_by_default()&#xA;{&#xA;    new Envelope(new PersonBorn())&#xA;        .MessageType.ShouldBe(&quot;person-born&quot;);&#xA;}&#xA;&#xA;</code></pre>
 <h2 id="versioning">Versioning</h2>
 <p>By default, Jasper will just assume that any message is &quot;V1&quot; unless marked otherwise.
 Going back to the original <code>PersonBorn</code> message class in previous sections, let's say that you
@@ -143,7 +141,7 @@ Any custom serializers should follow some kind of naming convention for content 
 <p>The easiest way to do this is to just subclass the base <code>MessageDeserializerBase&lt;T&gt;</code> class as shown below:</p>
 <pre><code class="language-csharp">&#xA;public class BlueTextReader : MessageDeserializerBase&lt;BlueMessage&gt;&#xA;{&#xA;    public BlueTextReader() : base(&quot;text/plain&quot;)&#xA;    {&#xA;    }&#xA;&#xA;    public override BlueMessage ReadData(byte[] data)&#xA;    {&#xA;        var name = Encoding.UTF8.GetString(data);&#xA;        return new BlueMessage {Name = name};&#xA;    }&#xA;&#xA;    protected override async Task&lt;BlueMessage&gt; ReadData(Stream stream)&#xA;    {&#xA;        var name = await stream.ReadAllTextAsync();&#xA;        return new BlueMessage {Name = name};&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Likewise, to provide a custom message serializer for a message type, you need to implement the <code>IMessageSerializer</code> interface shown below:</p>
-<pre><code class="language-csharp">&#xA;public interface IMessageSerializer&#xA;{&#xA;    Type DotNetType { get; }&#xA;&#xA;    string ContentType { get; }&#xA;    byte[] Write(object model);&#xA;    Task WriteToStream(object model, HttpResponse response);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IMessageSerializer&#xA;{&#xA;    Type DotNetType { get; }&#xA;&#xA;    string ContentType { get; }&#xA;    byte[] Write(object model);&#xA;&#xA;    Task WriteToStream(object model, HttpResponse response);&#xA;}&#xA;</code></pre>
 <p>Again, the easiest way to implement this interface is to subclass the <code>MessageSerializerBase&lt;T&gt;</code> class as shown below:</p>
 <pre><code class="language-csharp">&#xA;public class GreenTextWriter : MessageSerializerBase&lt;GreenMessage&gt;&#xA;{&#xA;    public GreenTextWriter() : base(&quot;text/plain&quot;)&#xA;    {&#xA;    }&#xA;&#xA;    public override byte[] Write(GreenMessage model)&#xA;    {&#xA;        return Encoding.UTF8.GetBytes(model.Name);&#xA;    }&#xA;&#xA;    public override Task WriteToStream(GreenMessage model, HttpResponse response)&#xA;    {&#xA;        return response.WriteAsync(model.Name);&#xA;    }&#xA;}&#xA;</code></pre>
 <p><code>IMessageDeserializer</code> and <code>IMessageSerializer</code> classes in the main application assembly are automatically discovered and applied by Jasper. If you need to add custom
@@ -152,11 +150,11 @@ reader or writers from another assembly, you just need to add them to the underl
 <h2 id="custom-serializers">Custom Serializers</h2>
 <p>To use additional .Net serializers, you just need to create a new implementation of the <code>Jasper.Conneg.ISerializerFactory</code> interface and register
 that into the IoC service container.</p>
-<pre><code class="language-csharp">&#xA;public interface ISerializerFactory&#xA;{&#xA;    object Deserialize(Stream message);&#xA;&#xA;    string ContentType { get; }&#xA;&#xA;    IMessageDeserializer ReaderFor(Type messageType);&#xA;    IMessageSerializer WriterFor(Type messageType);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface ISerializerFactory&#xA;{&#xA;    string ContentType { get; }&#xA;    object Deserialize(Stream message);&#xA;&#xA;    IMessageDeserializer ReaderFor(Type messageType);&#xA;    IMessageSerializer WriterFor(Type messageType);&#xA;}&#xA;&#xA;</code></pre>
 <p>See the <a href="https://github.com/JasperFx/jasper/blob/master/src/Jasper/Conneg/Json/NewtonsoftSerializerFactory.cs">built in Newtonsoft.Json adapter</a> for an example usage.</p>
 <h2 id="versioned-message-forwarding">Versioned Message Forwarding</h2>
 <p>If you make breaking changes to an incoming message in a later version, you can simply handle both versions of that message separately:</p>
-<pre><code class="language-csharp">&#xA;public class PersonCreatedHandler&#xA;{&#xA;    public static void Handle(PersonBorn person)&#xA;    {&#xA;        // do something w/ the message&#xA;    }&#xA;&#xA;    public static void Handle(PersonBornV2 person)&#xA;    {&#xA;        // do something w/ the message&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class PersonCreatedHandler&#xA;{&#xA;    public static void Handle(PersonBorn person)&#xA;    {&#xA;        // do something w/ the message&#xA;    }&#xA;&#xA;    public static void Handle(PersonBornV2 person)&#xA;    {&#xA;        // do something w/ the message&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>Or you could use a custom <code>IMessageDeserializer</code> to read incoming messages from V1 into the new V2 message type, or you can take advantage of message forwarding
 so you only need to handle one message type using the <code>IForwardsTo&lt;T&gt;</code> interface as shown below:</p>
 <pre><code class="language-csharp">&#xA;public class PersonBorn : IForwardsTo&lt;PersonBornV2&gt;&#xA;{&#xA;    public string FirstName { get; set; }&#xA;    public string LastName { get; set; }&#xA;    public int Day { get; set; }&#xA;    public int Month { get; set; }&#xA;    public int Year { get; set; }&#xA;&#xA;    public PersonBornV2 Transform()&#xA;    {&#xA;        return new PersonBornV2&#xA;        {&#xA;            FirstName = FirstName,&#xA;            LastName = LastName,&#xA;            Birthday = new DateTime(Year, Month, Day)&#xA;        };&#xA;    }&#xA;}&#xA;</code></pre>
@@ -168,7 +166,7 @@ message, and on the receiving end, Jasper would know to deserialize the Json dat
 <h2 id="customizing-json-serialization">Customizing Json Serialization</h2>
 <p>Just in case the default Json serialization isn't quite what you need, you can customize the Json serialization inside
 of your <code>JasperRegistry</code> class like so:</p>
-<pre><code class="language-csharp">&#xA;public class CustomizingJsonSerialization : JasperRegistry&#xA;{&#xA;    public CustomizingJsonSerialization()&#xA;    {&#xA;        Settings.Alter&lt;MessagingSettings&gt;(_ =&gt;&#xA;        {&#xA;            // Edit the JsonSerializerSettings used by the messaging serialization&#xA;            _.JsonSerialization.ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor;&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class CustomizingJsonSerialization : JasperRegistry&#xA;{&#xA;    public CustomizingJsonSerialization()&#xA;    {&#xA;        Settings.Alter&lt;JasperOptions&gt;(_ =&gt;&#xA;        {&#xA;            // Edit the JsonSerializerSettings used by the messaging serialization&#xA;            _.JsonSerialization.ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor;&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 
 			      	</div>
 

@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -96,12 +96,12 @@
 			      		<!--title:Message Type Specific Delivery Rules-->
 <p>You may want to enforce some specific rules about how Jasper publishes messages on a message type by message
 type basis. The most common example is shown below:</p>
-<pre><code class="language-csharp">&#xA;// Any message of this type should be successfully&#xA;// delivered within 10 seconds or discarded&#xA;[DeliverWithin(10)]&#xA;public class StatusMessage{}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;// Any message of this type should be successfully&#xA;// delivered within 10 seconds or discarded&#xA;[DeliverWithin(10)]&#xA;public class StatusMessage&#xA;{&#xA;}&#xA;&#xA;</code></pre>
 <h2 id="custom-attributes">Custom Attributes</h2>
 <p>If you really want to, you can write your own custom attribute to modify how Jasper sends out a message
 by subclassing the <code>[ModifyEnvelope]</code> attribute. The attribute shown in the previous sample is itself
 implemented like that:</p>
-<pre><code class="language-csharp">&#xA;public class DeliverWithinAttribute : ModifyEnvelopeAttribute&#xA;{&#xA;    private readonly int _seconds;&#xA;&#xA;    public DeliverWithinAttribute(int seconds)&#xA;    {&#xA;        _seconds = seconds;&#xA;    }&#xA;&#xA;    public override void Modify(Envelope envelope)&#xA;    {&#xA;        envelope.DeliverBy = DateTimeOffset.UtcNow.AddSeconds(_seconds);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class DeliverWithinAttribute : ModifyEnvelopeAttribute&#xA;{&#xA;    private readonly int _seconds;&#xA;&#xA;    public DeliverWithinAttribute(int seconds)&#xA;    {&#xA;        _seconds = seconds;&#xA;    }&#xA;&#xA;    public override void Modify(Envelope envelope)&#xA;    {&#xA;        envelope.DeliverBy = DateTimeOffset.UtcNow.AddSeconds(_seconds);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 
 			      	</div>
 

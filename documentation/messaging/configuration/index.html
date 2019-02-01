@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -94,15 +94,77 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Configuring the Service Bus-->
-<p>All system configuration for a Jasper application starts with the <a href="/documentation/bootstrapping/configuring_jasper">JasperRegistry</a> class. Underneath <code>JasperRegistry</code> are these sections that are specific to the messaging support:</p>
+<p>The message bus capabilities of Jasper can be configured in a mix of ways:</p>
+<ol>
+<li>Through your application configuration file</li>
+<li>Directly through the <code>JasperOptions</code> model</li>
+<li><code>JasperRegistry</code>, which ultimately are just fluent interface wrappers to just configure the underlying <code>JasperOptions</code> model</li>
+</ol>
+<h2 id="using-your-configuration-file">Using Your Configuration File</h2>
+<p>If you want to, you can completely configure the <code>JasperOptions</code> model in your <code>appsettings.json</code> file with a section called <em>Jasper</em> that would look like this:</p>
+<pre>
+{
+  "Jasper":{
+    "HostedServicesEnabled": true,
+    "DisableAllTransports": true,
+    "ThrowOnValidationErrors": false,
+    "Retries": {
+      "Cooldown": "00:00:05",
+      "FailuresBeforeCircuitBreaks": 3,
+      "MaximumEnvelopeRetryStorage": 100,
+      "RecoveryBatchSize": 100,
+      "NodeReassignmentPollingTime": "00:01:00",
+      "FirstNodeReassignmentExecution": "00:00:00"
+    },
+    "ScheduledJobs": {
+      "FirstExecution": "00:00:00",
+      "PollingTime": "00:00:10"
+    },
+    "MetricsCollectionSamplingInterval": "00:00:05",
+    "MaximumLocalEnqueuedBackPressureThreshold": 10000,
+    "BackPressurePollingInterval": "00:00:02",
+    "PersistDeadLetterEnvelopes": true,
+    "Listeners": [
+      "tcp://localhost:2000",
+      "tcp://localhost:2001"
+    ],
+    "Subscriptions": [
+      {
+        "Scope": "All",
+        "Uri": "tcp://localhost:2002",
+        "ContentTypes": [
+          "application/json"
+        ],
+        "Match": null
+      },
+      {
+        "Scope": "Type",
+        "Uri": "tcp://localhost:2004",
+        "ContentTypes": [
+          "application/json"
+        ],
+        "Match": "Jasper.Testing.Message1"
+      }
+    ]
+  }
+}
+
+</pre>
+<p>In the JSON section above, the primary sections you care about are:</p>
+<ul>
+<li>The <code>Listeners</code> section is an array that tells Jasper where and how to listen for incoming messages through registered transports</li>
+<li>The <code>Subscriptions</code> section allows you to make all necessary message subscriptions in configuration, but this is probably more easily
+accomplished by the <a href="/documentation/messaging/routing">strong typed routing configuration</a>.</li>
+</ul>
+<h2 id="programmatic-configuration">Programmatic Configuration</h2>
+<p>All system configuration for a Jasper application starts with the <a href="/documentation/bootstrapping/configuring_jasper">JasperRegistry</a> or <code>JasperRegistry</code> classes. Underneath <code>JasperRegistry</code> are these sections that are specific to the messaging support:</p>
 <ul>
 <li><code>JasperRegistry.Handlers</code> - Configure policies about how message handlers are discovered, middleware is applied, and error handling policies. See <a href="/documentation/messaging/handling">Handling Received Messages</a> for more information.</li>
 <li><code>JasperRegistry.Publish</code> - Optionally declare what messages or events are published by the Jasper system and any static publishing rules. See <a href="/documentation/messaging/routing">Routing Messages</a> for more information.</li>
-<li><code>JasperRegistry.Subscribe</code> - Register as a subscriber for messages from other systems. See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/routing/subscriptions'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information.</li>
 <li><code>JasperRegistry.Transports</code> - Configure or disable the built in transports in Jasper. See <a href="/documentation/messaging/transports">Messaging Transports</a> for more information.</li>
 </ul>
 <p>Sample usages of each of these sections are shown below:</p>
-<pre><code class="language-csharp">&#xA;public class MyMessagingApp : JasperRegistry&#xA;{&#xA;    public MyMessagingApp()&#xA;    {&#xA;        // Configure handler policies&#xA;        Handlers.DefaultMaximumAttempts = 3;&#xA;        Handlers.OnException&lt;SqlException&gt;().RetryLater(3.Seconds());&#xA;&#xA;        // Declare published messages&#xA;        Publish.Message&lt;Message1&gt;().To(&quot;tcp://server1:2222&quot;);&#xA;&#xA;        // Configure the built in transports&#xA;        Transports.LightweightListenerAt(2233);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MyMessagingApp : JasperRegistry&#xA;{&#xA;    public MyMessagingApp()&#xA;    {&#xA;        // Configure handler policies&#xA;        Handlers.Retries.MaximumAttempts = 3;&#xA;        Handlers.Retries.Add(x =&gt; x.Handle&lt;SqlException&gt;().Reschedule(3.Seconds()));&#xA;&#xA;        // Declare published messages&#xA;        Publish.Message&lt;Message1&gt;().To(&quot;tcp://server1:2222&quot;);&#xA;&#xA;        // Configure the built in transports&#xA;        Transports.LightweightListenerAt(2233);&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="listen-for-messages">Listen for Messages</h2>
 <p>You can direct Jasper to listen for incoming messages with the built in transports by just declaring
 the incoming port for the transport or by providing a <code>Uri</code> that expresses both the transport type and
@@ -110,20 +172,11 @@ port number like this:</p>
 <pre><code class="language-csharp">&#xA;public class MyListeningApp : JasperRegistry&#xA;{&#xA;    public MyListeningApp()&#xA;    {&#xA;        // Use the simpler, but transport specific syntax&#xA;        // to just declare what port the transport should use&#xA;        // to listen for incoming messages&#xA;        Transports.LightweightListenerAt(2233);&#xA;&#xA;        // or use a Uri to declare both the transport type and port&#xA;        Transports.ListenForMessagesFrom(&quot;tcp://localhost:2233&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Other transport types like the forthcoming RabbitMq and Azure Service Bus transports will probably be configured strictly
 by using the <code>Uri</code> mechanism.</p>
-<h2 id="using-strong-typed-configuration">Using Strong Typed Configuration</h2>
-<p>Messaging can also take advantage of Jasper's support for <a href="/documentation/bootstrapping/configuration">strong typed configuration</a> like this:</p>
-<pre><code class="language-csharp">&#xA;public class MySettings&#xA;{&#xA;    public int LightweightPort { get; set; } = 2222;&#xA;    public Uri DefaultListener { get; set; } = &quot;durable://localhost:2223&quot;.ToUri();&#xA;&#xA;    public int MaximumSendAttempts { get; set; } = 5;&#xA;}&#xA;&#xA;public class MyAppWithSettings : JasperRegistry&#xA;{&#xA;    public MyAppWithSettings()&#xA;    {&#xA;        Configuration&#xA;            .AddEnvironmentVariables()&#xA;            .AddJsonFile(&quot;appSettings.json&quot;);&#xA;&#xA;        Settings.With&lt;MySettings&gt;(_ =&gt;&#xA;        {&#xA;            Transports.LightweightListenerAt(_.LightweightPort);&#xA;&#xA;            Transports.ListenForMessagesFrom(_.DefaultListener);&#xA;&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
-<h2 id="uri-lookups-and-aliasing">Uri Lookups and Aliasing</h2>
-<p>Another way to configure the service bus is to use <code>Uri</code> aliasing that allows you to just make the configuration
-with &quot;stand in&quot; <code>Uri's</code> that are resolved later to the real value. So far, the only mechanism built into the core
-Jasper framework will pull the real values from the underlying <code>IConfigurationRoot</code> for the application.</p>
-<p>See this example below:</p>
-<pre><code class="language-csharp">&#xA;public class MyAppUsingUriLookups : JasperRegistry&#xA;{&#xA;    public MyAppUsingUriLookups()&#xA;    {&#xA;        Configuration&#xA;            .AddInMemoryCollection(new Dictionary&lt;string, string&gt;{{&quot;incoming&quot;, &quot;tcp://server3:2000&quot;}});&#xA;&#xA;        // This usage assumes that there is a value in the configuration&#xA;        // with the key &quot;incoming&quot; that corresponds to a Uri&#xA;        Transports.ListenForMessagesFrom(&quot;config://incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
-<p>Behind the scenes, the value for <em>config://incoming</em> is interpreted by Jasper as the Uri string stored in configuration with the key &quot;incoming,&quot;
-or in code terms, <code>IConfigurationRoot.GetValue&lt;string&gt;(&quot;incoming&quot;)</code></p>
-<p>There is also an addon Uri lookup that uses Consul. See <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/extensions/consul'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> for more information.</p>
-<p>The Uri aliases are respected anywhere where <code>Uri's</code> are accepted as arguments in <code>JasperRegistry</code> or when explicitly specifying the destination
-of a message being sent through the messaging.</p>
+<h2 id="advanced-configuration">Advanced Configuration</h2>
+<p>If desirable, you can directly manipulate the <code>JasperOptions</code> model from your system's <code>IConfiguration</code> with this bootstrapping model:</p>
+<pre><code class="language-csharp">&#xA;var host = WebHost.CreateDefaultBuilder()&#xA;    .UseStartup&lt;Startup&gt;()&#xA;    .UseJasper(configure: (context, options) =&gt;&#xA;    {&#xA;        // I&#x27;m not using it here, but you have access to&#xA;        // the ASP.Net Core HostingEnvironment&#xA;        var hosting = context.HostingEnvironment;&#xA;&#xA;        // And the IConfiguration for your system&#xA;        var config = context.Configuration;&#xA;&#xA;        // Add a transport listener at the Uri in&#xA;        // your configuration&#xA;        options.ListenForMessagesFrom(config[&quot;listener&quot;]);&#xA;&#xA;        // Add a subscription for a specific message type&#xA;        options.AddSubscription(Subscription.ForType&lt;Message1&gt;(config[&quot;outgoing&quot;]));&#xA;&#xA;        // Or add a subscription for all messages&#xA;        options.AddSubscription(Subscription.All(config[&quot;outgoing&quot;]));&#xA;    })&#xA;    .Start();&#xA;&#xA;</code></pre>
+<p>or its equivalent with <code>JasperRegistry</code>:</p>
+<pre><code class="language-csharp">&#xA;public class ConfigUsingApp : JasperRegistry&#xA;{&#xA;    public ConfigUsingApp()&#xA;    {&#xA;        Settings.Messaging((context, options) =&gt;&#xA;        {&#xA;            // I&#x27;m not using it here, but you have access to&#xA;            // the ASP.Net Core HostingEnvironment&#xA;            var hosting = context.HostingEnvironment;&#xA;&#xA;            // And the IConfiguration for your system&#xA;            var config = context.Configuration;&#xA;&#xA;            // Add a transport listener at the Uri in&#xA;            // your configuration&#xA;            options.ListenForMessagesFrom(config[&quot;listener&quot;]);&#xA;&#xA;            // Add a subscription for a specific message type&#xA;            options.AddSubscription(Subscription.ForType&lt;Message1&gt;(config[&quot;outgoing&quot;]));&#xA;&#xA;            // Or add a subscription for all messages&#xA;            options.AddSubscription(Subscription.All(config[&quot;outgoing&quot;]));&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 

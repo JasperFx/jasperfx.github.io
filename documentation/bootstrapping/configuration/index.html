@@ -47,8 +47,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/bootstrapping/configuring_jasper" title="Configuring Jasper Applications">Previous</a></li>
-		      	<li><a href="/documentation/bootstrapping/console" title="Jasper in Console Applications">Next</a></li>
+		      	<li><a href="/documentation/bootstrapping/aspnetcore" title="Adding Jasper to an ASP.Net Core Application">Previous</a></li>
+		      	<li><a href="/documentation/bootstrapping/console" title="Jasper Command Line Support">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -63,7 +63,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/bootstrapping">Bootstrapping</a></li><li class="active">Application Configuration and Settings</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a></li><li class="active">Application Configuration and Settings</li></ol>
 		  	</nav>
 		  </div>
 
@@ -73,15 +73,15 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/console">Jasper in Console Applications</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/console">Jasper Command Line Support</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -94,10 +94,14 @@
 
 			      	<div id="main-pane">
 			      		<!--title: Application Configuration and Settings-->
-<div class="alert alert-info"><b>Note!</b> All of the code snippets shown in this topic apply to the JasperRegistry syntax</div>
-<p>For application configuration, Jasper supports both the built in .Net Core configuration and a form of strong typed configuration
-we call the <a href="https://jeremydmiller.com/2014/11/07/strong_typed_configuration/">&quot;Settings&quot; model that was originally used in FubuMVC</a>.</p>
-<h2 id="quick-start">Quick Start</h2>
+<div class="alert-info alert"><p><strong>Note!</strong><br />
+All of the code snippets shown in this topic apply to the JasperRegistry syntax</p>
+</div>
+<p>Because Jasper applications are also ASP.Net Core applications, the built in <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.2">ASP.Net Core configuration just works</a>, and that is configured the way
+you're probably already used to using with the <code>IWebHostBuilder</code> model.</p>
+<p>On top of that, Jasper supports a form of strong typed configuration
+we call the <a href="https://jeremydmiller.com/2014/11/07/strong_typed_configuration/">&quot;Settings&quot; model that was originally used in FubuMVC</a>. This is a lighterweight alternative to ASP.Net Core's <code>IOptions</code> model (which is also usable with Jasper).</p>
+<h2 id="settings-quick-start">Settings Quick Start</h2>
 <p>Probably the most common scenario is to have a single configuration file mapped to a single object:</p>
 <ol>
 <li>Add a class that ends with <code>Settings</code> to your project, e.g. <code>MySettings.cs</code>.</li>
@@ -105,40 +109,30 @@ we call the <a href="https://jeremydmiller.com/2014/11/07/strong_typed_configura
 <li>Use the <code>Build</code> method to tell Jasper about your configuration file.</li>
 <li>Include your <code>Settings</code> class in the constructor of a class and Jasper will automatically inject the settings object</li>
 </ol>
-<pre><code class="language-csharp">&#xA;public class MyApp : JasperRegistry&#xA;{&#xA;    public MyApp()&#xA;    {&#xA;        Configuration.AddJsonFile(&quot;mysettings.json&quot;);&#xA;    }&#xA;}&#xA;&#xA;public class SettingsTest&#xA;{&#xA;    private readonly MySettings _settings;&#xA;&#xA;    public SettingsTest(MySettings settings)&#xA;    {&#xA;        _settings = settings;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MyApp : JasperRegistry&#xA;{&#xA;    public MyApp()&#xA;    {&#xA;        Hosting(x =&gt; x.ConfigureAppConfiguration((context, config) =&gt; config.AddJsonFile(&quot;mysettings.json&quot;)));&#xA;    }&#xA;}&#xA;&#xA;&#xA;public class SettingsTest&#xA;{&#xA;    private readonly MySettings _settings;&#xA;&#xA;    public SettingsTest(MySettings settings)&#xA;    {&#xA;        _settings = settings;&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="configuration-lifecycle">Configuration Lifecycle</h2>
 <p>Application configuration can come from a mix of the built in .Net Core configuration sources and programmatic options set in either your
 <code>JasperRegistry</code> or a loaded extension. While you make all the declarations in your <code>JasperRegistry</code> class, Jasper takes some steps to execute the usage of configuration options at bootstrapping time like so:</p>
 <ol>
-<li>Build out the .Net Core <code>IConfigurationRoot</code> object based on the sources added to <code>JasperRegistry.Configuration</code>.</li>
-<li>Apply any of the actions registered by <code>Settings.WithConfig()</code></li>
-<li>Loads the default data for known <code>Settings</code> types</li>
+<li>Loads the default data for known <code>Settings</code> types by looking first for a configuration section named with the prefix of your <code>Settings</code> type name.</li>
 <li>Apply all the <code>JasperRegistry.Settings.Alter()</code> or <code>Replace()</code> delegates from registered extensions in the order that they were registered</li>
 <li>Apply all the <code>JasperRegistry.Settings.Alter()</code> or <code>Replace()</code> delegates configured in your <code>JasperRegistry</code> in the order that they were
 registered to ensure that the application specific options always win out over the base options or options coming from an extension</li>
-<li>Finally, apply all the <code>JasperRegistry.Settings.With()</code> delegates configured in your <code>JasperRegistry</code> to use the final, configured versions of
-<code>Settings</code> objects to alter your application setup</li>
 </ol>
-<h2 id="add-configuration-sources">Add Configuration Sources</h2>
-<p>Jasper uses the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration">.NET Core ConfigurationBuilder</a> to get config data and bind it to objects.</p>
-<pre><code class="language-csharp">&#xA;Configuration.SetBasePath(&quot;path&quot;)&#xA;    .AddJsonFile(&quot;myconfig.json&quot;)&#xA;    .AddJsonFile(&quot;myotherconfig.json.config&quot;)&#xA;    .AddEnvironmentVariables();&#xA;&#xA;</code></pre>
-<p>If you need to bind a settings class that does not follow the convention of ending with <code>Settings</code> then use the <code>Configure</code> method to tell Jasper which class you want to bind.</p>
-<pre><code class="language-csharp">&#xA;Settings.Require&lt;Colors&gt;();&#xA;</code></pre>
-<p>If a settings class needs additional information to bind correctly, such as being in a nested sub-section, use the <code>Configure</code> method.</p>
-<pre><code class="language-csharp">&#xA;Settings.Configure&lt;MySettings&gt;(_ =&gt; _.GetSection(&quot;subsection&quot;));&#xA;</code></pre>
-<h2 id="alter-the-application-with-iconfiguration">Alter the Application with IConfiguration</h2>
-<p>To actually use the compiled configuration to alter the current <code>JasperRegistry</code> that defines
+<h2 id="alter-the-settings-objects-with-iconfiguration">Alter the Settings Objects with IConfiguration</h2>
+<p>If you're already using an ASP.Net Core <code>Startup</code> class for configuring your application, the easiest way to configure
+Jasper <code>Settings</code> objects based on that configuration is to just inject that class into your <code>Startup</code> and work directly against it as
+shown in this example:</p>
+<pre><code class="language-csharp">&#xA;public class Startup&#xA;{&#xA;    private readonly JasperOptions _options;&#xA;    private readonly IConfiguration _configuration;&#xA;    private readonly IHostingEnvironment _hosting;&#xA;&#xA;    public Startup(JasperOptions options, IConfiguration configuration, IHostingEnvironment hosting)&#xA;    {&#xA;        _options = options;&#xA;        _configuration = configuration;&#xA;        _hosting = hosting;&#xA;    }&#xA;&#xA;    public void Configure(IApplicationBuilder app)&#xA;    {&#xA;        // modify the JasperOptions with your IConfiguration&#xA;        // and IHostingEnvironment&#xA;    }&#xA;&#xA;&#xA;}&#xA;</code></pre>
+<p>Otherwise, you can do this as well within your <code>JasperRegistry</code> class that defines
 your application like this simple example that just plucks a value from configuration and applies
 that to the <code>ServiceName</code> for the application:</p>
-<pre><code class="language-csharp">&#xA;public class UsingConfigApp : JasperRegistry&#xA;{&#xA;    public UsingConfigApp()&#xA;    {&#xA;        // Ignore this please;)&#xA;        Handlers.DisableConventionalDiscovery();&#xA;&#xA;&#xA;        Configuration&#xA;            .AddInMemoryCollection(new Dictionary&lt;string, string&gt; {{&quot;AppName&quot;, &quot;WocketInMyPocket&quot;}});&#xA;&#xA;        Settings.Configure(c =&gt; ServiceName = c.Configuration[&quot;AppName&quot;]);&#xA;    }&#xA;}&#xA;&#xA;[Fact]&#xA;public Task can_alter_settings()&#xA;{&#xA;    theRegistry.Settings.Alter&lt;MyFakeSettings&gt;(s =&gt; { s.SomeSetting = 5; });&#xA;&#xA;&#xA;    return with&lt;MyFakeSettings&gt;(x =&gt; x.SomeSetting.ShouldBe(5));&#xA;}&#xA;&#xA;[Fact]&#xA;public Task can_apply_alterations_using_the_config()&#xA;{&#xA;    theRegistry.Configuration.AddJsonFile(&quot;appsettings.json&quot;);&#xA;    theRegistry.Settings.Alter&lt;FakeSettings&gt;((c, x) =&gt; { x.SomeSetting = int.Parse(c.Configuration[&quot;SomeSetting&quot;]); });&#xA;&#xA;    return with&lt;FakeSettings&gt;(x =&gt; x.SomeSetting.ShouldBe(1));&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task can_configure_builder()&#xA;{&#xA;    theRegistry.Configuration&#xA;        .AddJsonFile(&quot;appsettings.json&quot;)&#xA;        .AddJsonFile(&quot;colors.json&quot;);&#xA;&#xA;&#xA;    theRegistry.Settings.Require&lt;Colors&gt;();&#xA;    theRegistry.Settings.Require&lt;MyFakeSettings&gt;();&#xA;&#xA;    var runtime = await JasperRuntime.ForAsync(theRegistry);&#xA;&#xA;    try&#xA;    {&#xA;        var colors = runtime.Get&lt;Colors&gt;();&#xA;        var settings = runtime.Get&lt;MyFakeSettings&gt;();&#xA;&#xA;        colors.Red.ShouldBe(&quot;#ff0000&quot;);&#xA;        settings.SomeSetting.ShouldBe(1);&#xA;    }&#xA;    finally&#xA;    {&#xA;        await runtime.Shutdown();&#xA;    }&#xA;&#xA;&#xA;&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class UsingConfigApp : JasperRegistry&#xA;{&#xA;    public UsingConfigApp()&#xA;    {&#xA;        // Ignore this please;)&#xA;        Handlers.DisableConventionalDiscovery();&#xA;&#xA;&#xA;        Hosting( x=&gt; x.ConfigureAppConfiguration((_, config) =&gt;&#xA;        {&#xA;            config.AddInMemoryCollection(new Dictionary&lt;string, string&gt; {{&quot;AppName&quot;, &quot;WocketInMyPocket&quot;}});&#xA;        }));&#xA;&#xA;&#xA;        Settings.Alter&lt;JasperOptions&gt;((c, options) =&gt; options.ServiceName = c.Configuration[&quot;AppName&quot;]);&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="modify-settings">Modify Settings</h2>
 <p>It may be necessary to modify a settings object after it has been loaded from configuration.  Settings can be altered:</p>
-<pre><code class="language-csharp">&#xA;Settings.Alter&lt;Jasper.Testing.Settings.MyFakeSettings&gt;(_ =&gt;&#xA;{&#xA;    _.SomeSetting = 5;&#xA;});&#xA;&#xA;// or additionally use IConfiguration&#xA;Settings.Alter&lt;MyFakeSettings&gt;((context, settings) =&gt;&#xA;{&#xA;    settings.SomeSetting = int.Parse(context.Configuration[&quot;SomeKey&quot;]);&#xA;});&#xA;&#xA;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;Settings.Alter&lt;MyFakeSettings&gt;(_ =&gt; { _.SomeSetting = 5; });&#xA;&#xA;// or additionally use IConfiguration&#xA;Settings.Alter&lt;MyFakeSettings&gt;((context, settings) =&gt;&#xA;{&#xA;    settings.SomeSetting = int.Parse(context.Configuration[&quot;SomeKey&quot;]);&#xA;});&#xA;&#xA;&#xA;</code></pre>
 <p>or completely replaced:</p>
 <pre><code class="language-csharp">&#xA;Settings.Replace(new MyFakeSettings&#xA;{&#xA;    SomeSetting = 3,&#xA;    OtherSetting = &quot;blue&quot;&#xA;});&#xA;</code></pre>
-<h2 id="modify-application">Modify Application</h2>
-<p>The <code>JasperRegistry</code> (or the application that inherits from <code>JasperRegistry</code>) can be modified using loaded settings:</p>
-<pre><code class="language-csharp">&#xA;public class MyApplication : JasperRegistry&#xA;{&#xA;    public bool MyBoolean { get; set; }&#xA;&#xA;    public MyApplication()&#xA;    {&#xA;        Settings.With&lt;MyFakeSettings&gt;(_ =&gt;&#xA;        {&#xA;            if (_.SomeSetting == 1)&#xA;            {&#xA;                MyBoolean = true;&#xA;            }&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -146,12 +140,12 @@ that to the <code>ServiceName</code> for the application:</p>
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a>
+				        	<strong>Previous: </strong><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/bootstrapping/console">Jasper in Console Applications</a>
+				        	<strong>Next: </strong><a href="/documentation/bootstrapping/console">Jasper Command Line Support</a>
 
 				        </span>
 			      	</nav>

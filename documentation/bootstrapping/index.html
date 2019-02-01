@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Bootstrapping</title>
+		<title>JasperFx - Bootstrapping & Configuration</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -63,7 +63,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Bootstrapping</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Bootstrapping &amp; Configuration</li></ol>
 		  	</nav>
 		  </div>
 
@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -88,33 +88,45 @@
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Bootstrapping<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/bootstrapping/index.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Bootstrapping & Configuration<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/bootstrapping/index.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title:Bootstrapping-->
-<p>To configure and bootstrap a Jasper application, you are primarily interacting with just a handful of types:</p>
-<ol>
-<li><code>JasperRuntime</code> - this manages the lifecycle of a Jasper application from bootstrapping to cleanly shutting down the application and releasing resources. It also exposes the underlying IoC container for the application and several members that just provide information about the running application</li>
-<li><code>JasperRegistry</code> - this class is used to configure all the options of a Jasper application</li>
-<li><code>JasperAgent</code> - a static helper for bootstrapping and managing a <code>JasperRuntime</code> from
-a console application. See <a href="/documentation/bootstrapping/console">Jasper in Console Applications</a> for more information</li>
-<li><code>IWebHostBuilder.UseJasper()</code> or <code>IApplicationBuilder.AddJasper()</code> - extension methods provided to add Jasper to an ASP.Net Core application. See <a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a> for more information.</li>
-</ol>
-<p>If you do not need to override or add to any of Jasper's default configuration, you can happily bootstrap a <code>JasperRuntime</code> like this:</p>
-<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.Basic())&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
+			      		<!--title:Bootstrapping & Configuration-->
+<div class="alert-info alert"><p><strong>Note!</strong>
+Jasper uses the ASP.Net Core <code>IWebHostBuilder</code> infrastructure internally for bootstrapping now, even for idiomatic Jasper
+bootstrapping.</p>
+</div>
+<p>All the examples in this page are using the default, &quot;in the box&quot; options for Jasper. To see what else can be configured or added to a Jasper application, see the folling topics:</p>
+<ul class="table-of-contents"><li><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a></li><li><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a></li><li><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a></li><li><a href="/documentation/bootstrapping/console">Jasper Command Line Support</a></li><li><a href="/documentation/bootstrapping/ioc">IoC Container Integration</a></li><li><a href="/documentation/bootstrapping/logging">Logging Integration</a></li><li><a href="/documentation/bootstrapping/ihostedservice">Long Running Processes with IHostedService</a></li><li><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a></li><li><a href="/documentation/bootstrapping/middleware_and_codegen">Jasper Middleware and Policies</a></li></ul>
+<p>Even if running &quot;headless&quot; (i.e., without Kestrel), Jasper applications are effectively ASP.Net Core applications and use the ASP.Net Core <code>IWebHostBuilder</code> for all bootstrapping and application lifecycle events.</p>
+<p>In its simplest possible setup, you can fire up a Jasper application in memory like so:</p>
+<pre><code class="language-csharp">&#xA;var host = WebHost.CreateDefaultBuilder()&#xA;    .UseStartup&lt;Startup&gt;()&#xA;    .UseJasper() // Use Jasper with all its&#xA;                 // defaults&#xA;    .Start();&#xA;</code></pre>
+<p>More likely though, you'll want to run a Jasper-ized ASP.net Core application from a command line application. Jasper goes all in on command line tooling with quite a bit of its own diagnostics, so naturally it comes with a first class citizen for bootstrapping and executing from the command line
+with <code>JasperHost</code> like so:</p>
+<pre><code class="language-csharp">&#xA;public static int Main(params string[] args)&#xA;{&#xA;    var builder = WebHost.CreateDefaultBuilder()&#xA;        .UseStartup&lt;Startup&gt;()&#xA;        .UseJasper();&#xA;&#xA;    return JasperAgent.Run(builder, args);&#xA;}&#xA;</code></pre>
+<p>Or with the usage of an extension method in Jasper, this is an exact equivalent:</p>
+<pre><code class="language-csharp">&#xA;public static int Main(params string[] args)&#xA;{&#xA;    return WebHost.CreateDefaultBuilder()&#xA;        .UseStartup&lt;Startup&gt;()&#xA;        .UseJasper()&#xA;        .RunJasper(args);&#xA;}&#xA;</code></pre>
+<h2 id="headless-applications">Headless Applications</h2>
+<p>If you are building a Jasper application that does not expose any HTTP endpoints or needs to customize the underlying <code>IWebHostBuilder</code>, you can use
+<code>JasperHost.CreateDefaultBuilder()</code> as shown below to create a pre-configured <code>IWebHostBuilder</code> that is lighter than <code>WebHost.CreateDefaultBuilder()</code> that you would use for HTTP projects:</p>
+<pre><code class="language-csharp">&#xA;using (var host = JasperHost.CreateDefaultBuilder()&#xA;    .UseJasper()&#xA;    .StartJasper())&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
+<p>This default <code>IWebHostBuilder</code> behind the scenes is this:</p>
+<pre><code class="language-csharp">&#xA;return new WebHostBuilder()&#xA;    .ConfigureAppConfiguration((hostingContext, config) =&gt;&#xA;    {&#xA;        var env = hostingContext.HostingEnvironment;&#xA;&#xA;        config&#xA;            .AddJsonFile(&quot;appsettings.json&quot;, optional: true, reloadOnChange: true)&#xA;            .AddJsonFile($&quot;appsettings.{env.EnvironmentName}.json&quot;, optional: true, reloadOnChange: true);&#xA;&#xA;        config.AddEnvironmentVariables();&#xA;&#xA;    })&#xA;    .ConfigureLogging((hostingContext, logging) =&gt;&#xA;    {&#xA;        logging.AddConfiguration(hostingContext.Configuration.GetSection(&quot;Logging&quot;));&#xA;        logging.AddConsole();&#xA;        logging.AddDebug();&#xA;&#xA;    })&#xA;    .ConfigureServices(s =&gt;&#xA;    {&#xA;        // Registers an empty startup if there is none in the application&#xA;        if (s.All(x =&gt; x.ServiceType != typeof(IStartup)))&#xA;        {&#xA;            s.AddSingleton&lt;IStartup&gt;(new NulloStartup());&#xA;        }&#xA;&#xA;        // Registers a &quot;nullo&quot; server if there is none in the application&#xA;        // i.e., Kestrel isn&#x27;t applied&#xA;        if (s.All(x =&gt; x.ServiceType != typeof(IServer)))&#xA;        {&#xA;            s.AddSingleton&lt;IServer&gt;(new NulloServer());&#xA;        }&#xA;&#xA;        // This guarantees that the Jasper middleware is part of the RequestDelegate&#xA;        // at the end if it has not been explicitly added&#xA;        s.AddSingleton&lt;IStartupFilter&gt;(new RegisterJasperStartupFilter());&#xA;    });&#xA;</code></pre>
+<p>There is also a shortcut for bootstrapping directly with <code>JasperHost</code> like this:</p>
+<pre><code class="language-csharp">&#xA;using (var host = JasperHost.Basic())&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
 <p>Which is just syntactical sugar for:</p>
-<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For(new JasperRegistry()))&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
-<p>This option might be enough to do some useful things with Jasper as a command executor at the least, but more likely you'll want to add other elements to your system like additional services to the <a href="/documentation/ioc">underlying IoC container</a>, <a href="/documentation/messaging/configuration">the messaging configuration</a>, or <a href="/documentation/bootstrapping/aspnetcore">ASP.Net Core middleware</a>.</p>
+<pre><code class="language-csharp">&#xA;using (var host = JasperHost.CreateDefaultBuilder()&#xA;    .UseJasper()&#xA;    .StartJasper())&#xA;{&#xA;    // do stuff&#xA;}&#xA;</code></pre>
+<p>And likewise, to run a Jasper application from a command line application, you can again use <code>JasperRuntime</code> like so:</p>
+<pre><code class="language-csharp">&#xA;public static int Main(params string[] args)&#xA;{&#xA;    return JasperAgent.RunBasic(args);&#xA;}&#xA;</code></pre>
+<p>This option might be enough to do some useful things with Jasper as a command executor at the least, but more likely you'll want to add other elements to your system like additional services to the <a href="/documentation/bootstrapping/ioc">underlying IoC container</a>, <a href="/documentation/messaging/configuration">the messaging configuration</a>, or <a href="/documentation/bootstrapping/aspnetcore">ASP.Net Core middleware</a>.</p>
 <p>All configuration and set up of Jasper starts with the <code>JasperRegistry</code> class. Typically you would subclass <code>JasperRegistry</code>, but if you have only minimal configuration needs, you might bootstrap like this:</p>
-<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For(_ =&gt;&#xA;{&#xA;    _.Transports.ListenForMessagesFrom(&quot;tcp://localhost:2001&quot;);&#xA;}))&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;using (var runtime = JasperHost.For(_ =&gt;&#xA;{&#xA;    _.Transports.ListenForMessagesFrom(&quot;tcp://localhost:2001&quot;);&#xA;}))&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;</code></pre>
 <p>More likely though is that you will opt to define your application with a custom <code>JasperRegistry</code>:</p>
-<pre><code class="language-csharp">&#xA;public class MyJasperApp : JasperRegistry&#xA;{&#xA;    public MyJasperApp()&#xA;    {&#xA;        ServiceName = &quot;My Jasper App&quot;;&#xA;&#xA;        Configuration.AddEnvironmentVariables();&#xA;&#xA;        Transports.ListenForMessagesFrom(&quot;durable://localhost:2111/incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class MyJasperApp : JasperRegistry&#xA;{&#xA;    public MyJasperApp()&#xA;    {&#xA;        ServiceName = &quot;My Jasper App&quot;;&#xA;&#xA;        Transports.ListenForMessagesFrom(&quot;durable://localhost:2111/incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>And then use that to bootstrap your application:</p>
-<pre><code class="language-csharp">&#xA;using (var runtime = JasperRuntime.For&lt;MyJasperApp&gt;())&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;// or&#xA;&#xA;using (var runtime = JasperRuntime.For(new MyJasperApp()))&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;</code></pre>
-<p>See also:</p>
-<ul class="table-of-contents"><li><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a></li><li><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a></li><li><a href="/documentation/bootstrapping/console">Jasper in Console Applications</a></li><li><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a></li><li><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a></li><li><a href="/documentation/bootstrapping/logging">Logging Integration</a></li><li><a href="/documentation/bootstrapping/ihostedservice">Long Running Processes with IHostedService</a></li></ul>
+<pre><code class="language-csharp">&#xA;using (var runtime = JasperHost.For&lt;MyJasperApp&gt;())&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;// or&#xA;&#xA;using (var runtime = JasperHost.For(new MyJasperApp()))&#xA;{&#xA;    // do stuff&#xA;}&#xA;&#xA;</code></pre>
 
 			      	</div>
 

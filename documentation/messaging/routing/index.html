@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -94,17 +94,16 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Routing Messages-->
-<p>When you publish a message using <code>IServiceBus</code> without explicitly setting the Uri of the desired
+<p>When you publish a message using <code>IMessageContext</code> without explicitly setting the Uri of the desired
 destination, Jasper has to invoke the known message routing rules and dynamic subscriptions to
 figure out which locations should receive the message. Consider this code that publishes a
 <code>PingMessage</code>:</p>
 <pre><code class="language-csharp">&#xA;public class SendingExample&#xA;{&#xA;    public async Task SendPingsAndPongs(IMessageContext bus)&#xA;    {&#xA;        // Publish a message&#xA;        await bus.Send(new PingMessage());&#xA;    }&#xA;}&#xA;</code></pre>
 <p>To route <code>PingMessage</code> to a channel, we can apply static message routing rules by using one of the
 <em>SendMessage****</em> methods as shown below:</p>
-<pre><code class="language-csharp">&#xA;public class StaticRoutingApp : JasperRegistry&#xA;{&#xA;    public StaticRoutingApp(AppSettings settings)&#xA;    {&#xA;        // Explicitly add a single message type&#xA;        Publish.Message&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the assembly&#xA;        // to this channel, by supplying a type contained&#xA;        // within that assembly&#xA;        Publish.MessagesFromAssemblyContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the named&#xA;        // assembly to this channel&#xA;        Publish.MessagesFromAssembly(Assembly.Load(new AssemblyName(&quot;MyMessageLibrary&quot;)))&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the&#xA;        // namespace given to this channel&#xA;        Publish.MessagesFromNamespace(&quot;MyMessageLibrary&quot;)&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the namespace&#xA;        // of the type to this channel&#xA;        Publish.MessagesFromNamespaceContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class StaticRoutingApp : JasperRegistry&#xA;{&#xA;    public StaticRoutingApp(AppSettings settings)&#xA;    {&#xA;        // Explicitly add a single message type&#xA;        Publish.Message&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the assembly&#xA;        // to this channel, by supplying a type contained&#xA;        // within that assembly&#xA;        Publish.MessagesFromAssemblyContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the named&#xA;        // assembly to this channel&#xA;        Publish.MessagesFromAssembly(Assembly.Load(new AssemblyName(&quot;MyMessageLibrary&quot;)))&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the&#xA;        // namespace given to this channel&#xA;        Publish.MessagesFromNamespace(&quot;MyMessageLibrary&quot;)&#xA;            .To(settings.Transactions);&#xA;&#xA;        // Publish any message type contained in the namespace&#xA;        // of the type to this channel&#xA;        Publish.MessagesFromNamespaceContaining&lt;PingMessage&gt;()&#xA;            .To(settings.Transactions);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>Do note that doing the message type filtering by namespace will also include child namespaces. In
 our own usage we try to rely on either namespace rules or by using shared message assemblies.</p>
-<p>See also the <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/messaging/routing/subscriptions'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p></p>
 
 			      	</div>
 

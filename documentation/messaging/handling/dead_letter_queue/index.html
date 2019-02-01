@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -102,7 +102,7 @@ off to the side in your envelope storage.</p>
 <h2 id="retrieve-an-error-report">Retrieve an Error Report</h2>
 <p>It should be easy to browse the dead letter queue tables in your Postgresql database (<code>mt_doc_errorreport</code>) or your Sql Server database (<code>jasper_dead_letters</code>). If you know the envelope id of a dead letter envelope, you can use the <code>IEnvelopePersistor</code> interface in the IoC container of your application to
 fetch the entire error report like this:</p>
-<pre><code class="language-csharp">&#xA;public async Task load_error_report(IEnvelopePersistor persistor, Guid envelopeId)&#xA;{&#xA;    var report = await persistor.LoadDeadLetterEnvelope(envelopeId);&#xA;&#xA;    // The Id&#xA;    Console.WriteLine(report.Id);&#xA;&#xA;    // Why it was moved out&#xA;    Console.WriteLine(report.Explanation);&#xA;&#xA;    // The underlying message typ&#xA;    Console.WriteLine(report.MessageType);&#xA;&#xA;&#xA;    // Reconstitute the original Envelope&#xA;    // Envelope.Data would have the raw data here&#xA;    var envelope = report.RebuildEnvelope();&#xA;&#xA;    // The name ofthe system that sent the message&#xA;    Console.WriteLine(report.Source);&#xA;&#xA;    // The .Net Exception type name&#xA;    Console.WriteLine(report.ExceptionType);&#xA;&#xA;    // Just the message of the exception&#xA;    Console.WriteLine(report.ExceptionMessage);&#xA;&#xA;    // JUST SHOW ME THE FULL STACKTRACE ALREADY!!!!&#xA;    Console.WriteLine(report.ExceptionText);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public async Task load_error_report(IEnvelopePersistor persistor, Guid envelopeId)&#xA;{&#xA;    var report = await persistor.LoadDeadLetterEnvelope(envelopeId);&#xA;&#xA;    // The Id&#xA;    Console.WriteLine(report.Id);&#xA;&#xA;    // Why it was moved out&#xA;    Console.WriteLine(report.Explanation);&#xA;&#xA;    // The underlying message typ&#xA;    Console.WriteLine(report.MessageType);&#xA;&#xA;&#xA;    // Reconstitute the original Envelope&#xA;    // Envelope.Data would have the raw data here&#xA;    var envelope = report.RebuildEnvelope();&#xA;&#xA;    // The name ofthe system that sent the message&#xA;    Console.WriteLine(report.Source);&#xA;&#xA;    // The .Net Exception type name&#xA;    Console.WriteLine(report.ExceptionType);&#xA;&#xA;    // Just the message of the exception&#xA;    Console.WriteLine(report.ExceptionMessage);&#xA;&#xA;    // JUST SHOW ME THE FULL STACKTRACE ALREADY!!!!&#xA;    Console.WriteLine(report.ExceptionText);&#xA;}&#xA;&#xA;</code></pre>
 
 			      	</div>
 

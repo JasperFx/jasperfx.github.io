@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -104,7 +104,7 @@ between the rest of the world and your application code. When a Jasper applicati
 <h2 id="how-jasper-consumes-your-message-handlers">How Jasper Consumes Your Message Handlers</h2>
 <p>If you're worried about the performance implications of Jasper calling into your code without any interfaces or base classes, nothing to worry about because Jasper <strong>does not use Reflection at runtime</strong> to call your actions. Instead, Jasper uses <a href="https://jeremydmiller.com/2015/11/11/using-roslyn-for-runtime-code-generation-in-marten/">runtime
 code generation with Roslyn</a> to write the &quot;glue&quot; code around your actions. Internally, Jasper is generating a subclass of <code>MessageHandler</code> for each known message type:</p>
-<pre><code class="language-csharp">&#xA;public abstract class MessageHandler&#xA;{&#xA;    public HandlerChain Chain { get; set; }&#xA;&#xA;    // This method actually processes the incoming Envelope&#xA;    public abstract Task Handle(IMessageContext context);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public abstract class MessageHandler&#xA;{&#xA;    public HandlerChain Chain { get; set; }&#xA;&#xA;    // This method actually processes the incoming Envelope&#xA;    public abstract Task Handle(IMessageContext context);&#xA;}&#xA;&#xA;</code></pre>
 <p>See <a href="/documentation/messaging/handling/handlers">Message Handlers</a> for information on how Jasper generates the <code>MessageHandler</code> code
 and how to customize that code.</p>
 <h2 id="naming-conventions">Naming Conventions</h2>
@@ -119,7 +119,7 @@ looks for any argument named either &quot;message&quot;, &quot;input&quot;, or &
 <p>See <a href="/documentation/messaging/handling/discovery">Message Handler Discovery</a> for more information.</p>
 <h2 id="instance-handler-methods">Instance Handler Methods</h2>
 <p>Handler methods can be instance methods on handler classes if it's desirable to scope the handler object to the message:</p>
-<pre><code class="language-csharp">&#xA;public class ExampleHandler&#xA;{&#xA;    public void Handle(Message1 message)&#xA;    {&#xA;        // Do work synchronously&#xA;    }&#xA;&#xA;    public Task Handle(Message2 message)&#xA;    {&#xA;        // Do work asynchronously&#xA;        return Task.CompletedTask;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class ExampleHandler&#xA;{&#xA;    public void Handle(Message1 message)&#xA;    {&#xA;        // Do work synchronously&#xA;    }&#xA;&#xA;    public Task Handle(Message2 message)&#xA;    {&#xA;        // Do work asynchronously&#xA;        return Task.CompletedTask;&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>Note that you can use either synchronous or asynchronous methods depending on your needs, so you're not constantly being
 forced to return <code>Task.CompletedTask</code> over and over again for operations that are purely CPU-bound (but Jasper itself might be doing
 that for you in its generated <code>MessageHandler</code> code).</p>
@@ -127,7 +127,7 @@ that for you in its generated <code>MessageHandler</code> code).</p>
 <div class="alert alert-info"><b>Note!</b> Using a static method as your message handler can be a small performance
 improvement by avoiding the need to create and garbage collect new objects at runtime.</div>
 <p>As an alternative, you can also use static methods as message handlers:</p>
-<pre><code class="language-csharp">&#xA;public static class ExampleHandler&#xA;{&#xA;    public static void Handle(Message1 message)&#xA;    {&#xA;        // Do work synchronously&#xA;    }&#xA;&#xA;    public static Task Handle(Message2 message)&#xA;    {&#xA;        // Do work asynchronously&#xA;        return Task.CompletedTask;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public static class ExampleHandler&#xA;{&#xA;    public static void Handle(Message1 message)&#xA;    {&#xA;        // Do work synchronously&#xA;    }&#xA;&#xA;    public static Task Handle(Message2 message)&#xA;    {&#xA;        // Do work asynchronously&#xA;        return Task.CompletedTask;&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>The handler classes can be static classes as well. This technique gets much more useful when combined with Jasper's
 support for method injection in a following section.</p>
 <h2 id="constructor-injection">Constructor Injection</h2>
@@ -135,18 +135,18 @@ support for method injection in a following section.</p>
 without any IoC container overhead). In that case, you can happily inject dependencies into your message handler classes through the
 constructor like this example that takes in a dependency on an <code>IDocumentSession</code> from <a href="http://jasperfx.github.io/marten">Marten</a>:</p>
 <pre><code class="language-csharp">&#xA;public class ServiceUsingHandler&#xA;{&#xA;    private readonly IDocumentSession _session;&#xA;&#xA;    public ServiceUsingHandler(IDocumentSession session)&#xA;    {&#xA;        _session = session;&#xA;    }&#xA;&#xA;    public Task Handle(InvoiceCreated created)&#xA;    {&#xA;        var invoice = new Invoice {Id = created.InvoiceId};&#xA;        _session.Store(invoice);&#xA;&#xA;        return _session.SaveChangesAsync();&#xA;    }&#xA;}&#xA;</code></pre>
-<p>See <a href="/documentation/ioc">IoC Container Integration</a> for more information about how Jasper integrates the application's IoC container.</p>
+<p>See <a href="/documentation/bootstrapping/ioc">IoC Container Integration</a> for more information about how Jasper integrates the application's IoC container.</p>
 <h2 id="method-injection">Method Injection</h2>
 <p>Similar to ASP.Net MVC Core, Jasper supports the concept of <a href="https://www.martinfowler.com/articles/injection.html">method injection</a> in handler methods where you can just accept additional
 arguments that will be passed into your method by Jasper when a new message is being handled.</p>
 <p>Below is an example action method that takes in a dependency on an <code>IDocumentSession</code> from <a href="http://jasperfx.github.io/marten">Marten</a>:</p>
-<pre><code class="language-csharp">&#xA;public static class MethodInjectionHandler&#xA;{&#xA;    public static Task Handle(InvoiceCreated message, IDocumentSession session)&#xA;    {&#xA;        var invoice = new Invoice {Id = message.InvoiceId};&#xA;        session.Store(invoice);&#xA;&#xA;        return session.SaveChangesAsync();&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public static class MethodInjectionHandler&#xA;{&#xA;    public static Task Handle(InvoiceCreated message, IDocumentSession session)&#xA;    {&#xA;        var invoice = new Invoice {Id = message.InvoiceId};&#xA;        session.Store(invoice);&#xA;&#xA;        return session.SaveChangesAsync();&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>So, what can be injected as an argument to your message handler?</p>
 <ol>
 <li>Any service that is registered in your application's IoC container</li>
 <li><code>Envelope</code></li>
 <li>The current time in UTC if you have a parameter like <code>DateTime now</code> or <code>DateTimeOffset now</code></li>
-<li>Services or variables that match a registered code generation strategy. See <a href="/documentation/middleware_and_codegen">Jasper Middleware and Codegen</a> for more information on this mechanism.</li>
+<li>Services or variables that match a registered code generation strategy. See <a href="/documentation/bootstrapping/middleware_and_codegen">Jasper Middleware and Policies</a> for more information on this mechanism.</li>
 </ol>
 <h2 id="cascading-messages-from-actions">Cascading Messages from Actions</h2>
 <p>To have additional messages queued up to be sent out when the current message has been successfully completed,

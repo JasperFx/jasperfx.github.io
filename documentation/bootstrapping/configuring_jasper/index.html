@@ -47,8 +47,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/bootstrapping" title="Bootstrapping">Previous</a></li>
-		      	<li><a href="/documentation/bootstrapping/configuration" title="Application Configuration and Settings">Next</a></li>
+		      	<li><a href="/documentation/bootstrapping" title="Bootstrapping & Configuration">Previous</a></li>
+		      	<li><a href="/documentation/bootstrapping/aspnetcore" title="Adding Jasper to an ASP.Net Core Application">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -63,7 +63,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/bootstrapping">Bootstrapping</a></li><li class="active">Configuring Jasper Applications</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a></li><li class="active">Configuring Jasper Applications</li></ol>
 		  	</nav>
 		  </div>
 
@@ -73,15 +73,15 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.0</h3>
+		      	<h3>JasperFx 0.9.5</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping">Bootstrapping</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping">Bootstrapping & Configuration</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -103,20 +103,21 @@ discussions of setting up Jasper applications:</p>
 <li><a href="/documentation/messaging">Messaging</a> for setting up messaging receivers, subscriptions, and publishing in your application</li>
 </ul>
 <h2 id="service-name">Service Name</h2>
-<p>By default, Jasper derives a descriptive <em>ServiceName</em> for your application by taking the class name of your <code>JasperRegistry</code> and stripping off
-any &quot;JasperRegistry&quot; or &quot;Registry&quot; suffix. For diagnostic purposes you may want to override the service name like so:</p>
+<p>By default, Jasper derives a descriptive <em>ServiceName</em> for your application by taking the class name of your custom <code>JasperRegistry</code> and stripping off
+any &quot;JasperRegistry&quot; or &quot;Registry&quot; suffix. If you are not using a custom <code>JasperRegistry</code>, Jasper will use the main application assembly name as the service name. For diagnostic purposes you may want to override the service name like so:</p>
 <pre><code class="language-csharp">&#xA;public class CustomServiceRegistry : JasperRegistry&#xA;{&#xA;    public CustomServiceRegistry()&#xA;    {&#xA;        // The derived default would be &quot;CustomService&quot;&#xA;        ServiceName = &quot;My Custom Service&quot;;&#xA;    }&#xA;}&#xA;</code></pre>
-<h2 id="hosting-environment">Hosting Environment</h2>
-<p>Jasper exposes the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments">ASP.Net Core Environment name</a> with this usage:</p>
-<pre><code class="language-csharp">&#xA;public class EnvironmentNameRegistry : JasperRegistry&#xA;{&#xA;    public EnvironmentNameRegistry()&#xA;    {&#xA;        // which is just a shortcut for:&#xA;        Hosting.UseEnvironment(&quot;Production&quot;);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
-<p>You can use the <code>EnvironmentName</code> property within the constructor function of your <code>JasperRegistry</code> to do conditional configuration based on environment just like you would in an ASP.Net Core application:</p>
-<pre><code class="language-csharp">&#xA;public class UsingEnvironmentName : JasperRegistry&#xA;{&#xA;    public UsingEnvironmentName()&#xA;    {&#xA;        // Idiomatic Jasper way&#xA;        Settings.Configure(context =&gt;&#xA;        {&#xA;            if (context.HostingEnvironment.IsDevelopment())&#xA;            {&#xA;                // If in development, I want to replace some kind&#xA;                // of problematic 3rd party service wrapper with&#xA;                // a nicely behaved stub&#xA;                Services.AddSingleton&lt;IThirdPartyService, StubThirdPartyService&gt;();&#xA;            }&#xA;        });&#xA;&#xA;        // ASP.Net Core idiomatic way&#xA;        Hosting.ConfigureServices((context, services) =&gt;&#xA;        {&#xA;            if (context.HostingEnvironment.IsDevelopment())&#xA;            {&#xA;                // If in development, I want to replace some kind&#xA;                // of problematic 3rd party service wrapper with&#xA;                // a nicely behaved stub&#xA;                services.AddSingleton&lt;IThirdPartyService, StubThirdPartyService&gt;();&#xA;            }&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
-<p>You can also access the current application directory and other information from the <code>IHostedEnvironment</code> property on the context object in both signatures.</p>
 <h2 id="service-registrations">Service Registrations</h2>
 <div class="alert alert-info"><b>Note!</b> Jasper was conceived and designed in no small part to reduce the role of an IoC container at runtime, but "much, much less" is still more than "none." </div>
-<p>Like most application frameworks in .Net, Jasper uses an IoC container to do basic composition within its runtime pipeline. You can add your own registrations to the application container directly in your <code>JasperRegistry</code>:</p>
+<p>Like most application frameworks in .Net, Jasper uses an IoC container to do basic composition within its runtime pipeline. You can add your own registrations to the application container directly in any combination of:</p>
+<ol>
+<li>The <code>Startup.ConfigureServices()</code> method. Use this mechanism if you need to do conditional registrations based on the hosting environment. I.e., apply this service if in &quot;Testing&quot; or this other one if in &quot;Development.&quot;</li>
+<li>Using the <code>IWebHostBuilder.ConfigureServices()</code> extension method</li>
+<li>With <code>JasperRegistry.Services</code> for <a href="https://jasperfx.github.io/lamar">Lamar-centric</a> registrations (which also supports the ASP.Net Core service registrations as well).</li>
+</ol>
+<p>But, the Jasper team <strong>strongly recommends that you make all your service registrations in one place as much as possible</strong> for easier debugging later.</p>
+<p>Using your <code>JasperRegistry</code>:</p>
 <pre><code class="language-csharp">&#xA;public class MyJasperApp : JasperRegistry&#xA;{&#xA;    public MyJasperApp()&#xA;    {&#xA;        // Adding services to the underlying container via&#xA;        // the ASP.Net Core DI abstractions&#xA;        Services.AddTransient&lt;ISecurityService, MySecurityService&gt;();&#xA;&#xA;        // or via idiomatic StructureMap&#xA;        Services.For&lt;ISecurityService&gt;().Use&lt;MySecurityService&gt;();&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
-<p>See <a href="/documentation/ioc">IoC Container Integration</a> for a lot more information about how Jasper uses an IoC container.</p>
+<p>See <a href="/documentation/bootstrapping/ioc">IoC Container Integration</a> for a lot more information about how Jasper uses an IoC container because it is a little bit different than other .Net frameworks.</p>
 <h2 id="adding-extensions">Adding Extensions</h2>
 <p>Jasper comes with its own extensibility model based on an interface called <code>IJasperExtension</code>. A custom extension
 might look something like this:</p>
@@ -131,12 +132,12 @@ might look something like this:</p>
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/bootstrapping">Bootstrapping</a>
+				        	<strong>Previous: </strong><a href="/documentation/bootstrapping">Bootstrapping & Configuration</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a>
+				        	<strong>Next: </strong><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a>
 
 				        </span>
 			      	</nav>
