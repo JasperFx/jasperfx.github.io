@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.5</h3>
+		      	<h3>JasperFx 0.9.6</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -97,7 +97,7 @@
 <p>In some cases you will send a message and expect a reply at some point from the downstream system, but you
 don't need the response right away and you don't care which node in your application handles the eventual reply.
 For that scenario, Jasper provides this functionality with the syntax shown below:</p>
-<pre><code class="language-csharp">&#xA;public async Task using_global_request_and_reply(IMessageContext messaging)&#xA;{&#xA;    // Send a question to another application, and request that the handling&#xA;    // service send back an answer&#xA;    await messaging.SendAndExpectResponseFor&lt;Answer&gt;(new Question());&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task invoke_expecting_a_response()&#xA;{&#xA;    StartTheReceiver(x =&gt; { x.Handlers.IncludeType&lt;QuestionAndAnswer&gt;(); });&#xA;&#xA;    var answer = await theReceiver.Messaging.Invoke&lt;Answer&gt;(new Question {One = 3, Two = 4});&#xA;&#xA;    answer.Sum.ShouldBe(7);&#xA;    answer.Product.ShouldBe(12);&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task invoke_with_expected_response_when_there_is_no_receiver()&#xA;{&#xA;    StartTheReceiver(x =&gt; { x.Handlers.IncludeType&lt;QuestionAndAnswer&gt;(); });&#xA;    await Exception&lt;ArgumentOutOfRangeException&gt;.ShouldBeThrownByAsync(async () =&gt;&#xA;    {&#xA;        await theReceiver.Messaging.Invoke&lt;Answer&gt;(new QuestionWithNoHandler());&#xA;    });&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task invoke_with_no_known_response_do_not_blow_up()&#xA;{&#xA;    StartTheReceiver(x =&gt; { x.Handlers.IncludeType&lt;QuestionAndAnswer&gt;(); });&#xA;    (await theReceiver.Messaging.Invoke&lt;Answer&gt;(new QuestionWithNoAnswer()))&#xA;        .ShouldBeNull();&#xA;}&#xA;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public async Task using_global_request_and_reply(IMessageContext messaging)&#xA;{&#xA;    // Send a question to another application, and request that the handling&#xA;    // service send back an answer&#xA;    await messaging.SendAndExpectResponseFor&lt;Answer&gt;(new Question());&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task invoke_expecting_a_response()&#xA;{&#xA;    StartTheReceiver(x =&gt; { x.Handlers.IncludeType&lt;QuestionAndAnswer&gt;(); });&#xA;&#xA;    var answer = await theReceiver.Messaging.Invoke&lt;Answer&gt;(new Question {One = 3, Two = 4});&#xA;&#xA;    answer.Sum.ShouldBe(7);&#xA;    answer.Product.ShouldBe(12);&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task invoke_with_expected_response_when_there_is_no_receiver()&#xA;{&#xA;    StartTheReceiver(x =&gt; { x.Handlers.IncludeType&lt;QuestionAndAnswer&gt;(); });&#xA;    await Should.ThrowAsync&lt;ArgumentOutOfRangeException&gt;(async () =&gt;&#xA;    {&#xA;        await theReceiver.Messaging.Invoke&lt;Answer&gt;(new QuestionWithNoHandler());&#xA;    });&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task invoke_with_no_known_response_do_not_blow_up()&#xA;{&#xA;    StartTheReceiver(x =&gt; { x.Handlers.IncludeType&lt;QuestionAndAnswer&gt;(); });&#xA;    (await theReceiver.Messaging.Invoke&lt;Answer&gt;(new QuestionWithNoAnswer()))&#xA;        .ShouldBeNull();&#xA;}&#xA;&#xA;</code></pre>
 
 			      	</div>
 
