@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.7</h3>
+		      	<h3>JasperFx 0.9.8</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -103,7 +103,7 @@
 be permanently discarded in about 10 seconds if it is unsuccessful. The lightweight transport is useful for control messages or messages that have
 a very limited value in terms of time. My shop uses this transport for frequent status update messages that are very quickly obsolete.</p>
 <h2 id="durable-tcp-messaging">Durable TCP Messaging</h2>
-<p>First, see <a href="/documentation/messaging/transports/durable">Durable Messaging</a> about how message durability is enabled and functions within Jasper.</p>
+<p>First, see <a href="/documentation/messaging/transports/durable">Store and Forward Messaging</a> about how message durability is enabled and functions within Jasper.</p>
 <p>The TCP transport can be used durably as both listener or sender. To configure a durable TCP listener, use one of these options:</p>
 <pre><code class="language-csharp">&#xA;public class DurableTransportApp : JasperRegistry&#xA;{&#xA;    public DurableTransportApp()&#xA;    {&#xA;        // Set up a listener (this is optional)&#xA;        Transports.DurableListenerAt(2200);&#xA;&#xA;        // Or, alternatively set up durable listening by Uri&#xA;        Transports.ListenForMessagesFrom(&quot;tcp://localhost:2200/durable&quot;);&#xA;&#xA;        // Or, alternatively set up durable listening by Uri&#xA;        Transports.ListenForMessagesFrom(&quot;durable://localhost:2200&quot;);&#xA;&#xA;        // With the RabbitMQ transport&#xA;        Transports.ListenForMessagesFrom(&quot;rabbitmq://server1/durable/queue1&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>Note here that the Uri's <code>durable://server:port</code> and <code>tcp://server:port/durable</code> are considered as equivalents by Jasper.</p>

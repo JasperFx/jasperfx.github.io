@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.7</h3>
+		      	<h3>JasperFx 0.9.8</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -184,7 +184,7 @@ command or as the superclass to your input class:</p>
 <pre><code class="language-csharp">&#xA;[Description(&quot;Display the known Lamar service registrations&quot;)]&#xA;public class ServicesCommand : OaktonCommand&lt;JasperInput&gt;&#xA;{&#xA;    public override bool Execute(JasperInput input)&#xA;    {&#xA;        using (var runtime = input.BuildHost(StartMode.Lightweight))&#xA;        {&#xA;            Console.WriteLine(runtime.Container.WhatDoIHave());&#xA;        }&#xA;&#xA;        return true;&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>Do note that the command will be responsible for disposing and shutting down the running <code>IJasperHost</code>.</p>
 <h2 id="message-storage">Message Storage</h2>
-<p>See <a href="/documentation/messaging/transports/durable">Durable Messaging</a> for documentation on using the command line tooling to manage message storage.</p>
+<p>See <a href="/documentation/messaging/transports/durable">Store and Forward Messaging</a> for documentation on using the command line tooling to manage message storage.</p>
 
 			      	</div>
 

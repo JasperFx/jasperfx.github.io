@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.7</h3>
+		      	<h3>JasperFx 0.9.8</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -98,7 +98,7 @@
 <p>To provide more fine-grained control over how messages are handled within your application, you can assign messages to
 named &quot;worker queues&quot; within the application that have configurable priority through a maximum number of concurrent threads handling messages within that worker queue.</p>
 <p>Also, the worker queues can optionally be designated as &quot;durable,&quot; meaning that local, loopback messages would be persisted until they can be successfully processed to provide a guarantee that the message will be successfully processed in the case of the running application faulting or having been shut down prematurely (assuming that other nodes are running or it's restarted later of course).</p>
-<p>See <a href="/documentation/messaging/transports/durable">Durable Messaging</a> and <a href="/documentation/messaging/transports/loopback">Local Loopback Transport</a> for more information.</p>
+<p>See <a href="/documentation/messaging/transports/durable">Store and Forward Messaging</a> and <a href="/documentation/messaging/transports/loopback">Local Loopback Transport</a> for more information.</p>
 <p>Worker queue assignment and configuration can be made through the <code>JasperRegistry</code> fluent interface like so:</p>
 <pre><code class="language-csharp">&#xA;public class AppWithWorkerQueues : JasperRegistry&#xA;{&#xA;    public AppWithWorkerQueues()&#xA;    {&#xA;        // What if you want the StatusUpdated&#xA;        // messages to be handled one at a time&#xA;        // in the order in which they are received?&#xA;        Handlers.Worker(&quot;updates&quot;)&#xA;            .HandlesMessage&lt;StatusUpdated&gt;()&#xA;            .Sequential();&#xA;&#xA;        // Super important messages should get more threads&#xA;        Handlers.Worker(&quot;important&quot;)&#xA;            .HandlesMessage&lt;SuperImportantMessage&gt;()&#xA;            .MaximumParallelization(10); // the default is 5&#xA;&#xA;&#xA;        // Messages that are ephemeral should not&#xA;        // be durable&#xA;        Handlers.Worker(&quot;fireandforget&quot;)&#xA;            .HandleMessages(type =&gt; type.CanBeCastTo&lt;EphemeralMessage&gt;())&#xA;            .IsNotDurable();&#xA;&#xA;&#xA;        // Force messages assigned to a certain worker queue to be&#xA;        // durable&#xA;        Handlers.Worker(&quot;durable&quot;)&#xA;            .HandleMessages(x =&gt; x.CanBeCastTo&lt;DurableMessage&gt;())&#xA;            .IsDurable();&#xA;    }&#xA;}&#xA;</code></pre>
 <div class="alert alert-info"><b>Note!</b> By default, any incoming message would be handled within a "default" worker queue with a maximum thread count of 5 and local messages would not be durable.</div>

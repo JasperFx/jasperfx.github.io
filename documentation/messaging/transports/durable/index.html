@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Durable Messaging</title>
+		<title>JasperFx - Store and Forward Messaging</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -63,7 +63,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/transports">Messaging Transports</a></li><li class="active">Durable Messaging</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/transports">Messaging Transports</a></li><li class="active">Store and Forward Messaging</li></ol>
 		  	</nav>
 		  </div>
 
@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.7</h3>
+		      	<h3>JasperFx 0.9.8</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -88,13 +88,13 @@
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Durable Messaging<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/transports/durable.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Store and Forward Messaging<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/transports/durable.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title:Durable Messaging-->
-<p>Jasper supports durable message persistence using your application's database for &quot;<a href="https://en.wikipedia.org/wiki/Store_and_forward">store and forward</a>&quot; queueing with all possible Jasper transport options, including the built in <a href="/documentation/messaging/transports/durable">Durable Messaging</a>, <a href="/documentation/messaging/transports/rabbitmq">RabbitMQ Transport</a>. and <a href="/documentation/messaging/transports/azureservicebus">Azure Service Bus Transport</a>.</p>
+			      		<!--title:Store and Forward Messaging-->
+<p>Jasper supports durable message persistence using your application's database for &quot;<a href="https://en.wikipedia.org/wiki/Store_and_forward">store and forward</a>&quot; queueing with all possible Jasper transport options, including the built in <a href="/documentation/messaging/transports/durable">Store and Forward Messaging</a>, <a href="/documentation/messaging/transports/rabbitmq">RabbitMQ Transport</a>. and <a href="/documentation/messaging/transports/azureservicebus">Azure Service Bus Transport</a>.</p>
 <p>If a Jasper system that uses durable messaging goes down before all the messages are processed, the persisted messages will be loaded from
 storage and processed when the system is restarted. Jasper does not include any kind of persistence in the core Jasper library, so you'll have to use
 an extension library to add that behavior. Today the options are:</p>
