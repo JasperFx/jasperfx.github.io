@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.8</h3>
+		      	<h3>JasperFx 0.9.8.6</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -127,6 +127,8 @@ have been created in our test database before we run any tests.</p>
 <p>And lastly, if you just want to clear out any persisted incoming, outgoing, or scheduled messages in your application's database, use:</p>
 <pre><code>dotnet run -- storage clear
 </code></pre>
+<h2 id="durable-messaging-to-external-systems">Durable Messaging to External Systems</h2>
+<p>To utilize Jasper's durable messaging support and associated outbox support with other external systems, just utilize a Jasper message handler to do the actual integration with the external system. For example, you can send messages to an external web service by making the <code>HttpClient</code> call inside of a Jasper message handler through a durable <a href="/documentation/messaging/transports/loopback">loopback queue</a>.</p>
 
 			      	</div>
 

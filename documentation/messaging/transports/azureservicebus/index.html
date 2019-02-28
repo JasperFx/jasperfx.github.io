@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.8</h3>
+		      	<h3>JasperFx 0.9.8.6</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -94,7 +94,101 @@
 
 			      	<div id="main-pane">
 			      		<!--title:Azure Service Bus Transport-->
-<p>In development and coming soon...</p>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+For the moment, Jasper requires all queues and subscriptions in Azure Service Bus to be configured with <a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/message-sessions">sessions enabled</a>.</p>
+</div>
+<h2 id="quick-start">Quick Start</h2>
+<p>If you're starting a fresh project, you can quickly spin up a new Jasper project using Azure Service Bus with a <code>dotnet new</code> template.</p>
+<p>First install the <code>JasperTemplates</code> nuget like so:</p>
+<pre><code>dotnet new --install JasperTemplates
+</code></pre>
+<p>Then build out the directory for your intended project, and use:</p>
+<pre><code>dotnet new jasper.azureservicebus
+</code></pre>
+<p>Then check the <code>README.md</code> file in the generated directory for an overview of what was generated for you.</p>
+<h2 id="installing">Installing</h2>
+<p>The only thing you need to do is to install the <code>Jasper.AzureServiceBus</code> Nuget to your Jasper application. This will add the client libraries for Azure Service Bus access
+and add the transport to your application automatically.</p>
+<p>If Jasper is not auto-discovering the Azure Service Bus, you can also explicitly register the transport as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class AppWithAzureServiceBus : JasperRegistry&#xA;{&#xA;    public AppWithAzureServiceBus()&#xA;    {&#xA;        Include&lt;Jasper.AzureServiceBus.AzureServiceBusTransportExtension&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>In terms of configuration, there's a few things to worry about:</p>
+<ol>
+<li>Azure Service Bus connection strings, described in the next section</li>
+<li>Configuring Jasper listeners and publishing rules through Uri values, also described in this document</li>
+<li>Customizing the Azure Service Bus clients</li>
+<li>Overriding how Jasper maps Envelope properties to Azure Service Bus messages in the case of communicating with a non-Jasper application</li>
+</ol>
+<h2 id="configuring-azure-bus-service-connections">Configuring Azure Bus Service Connections</h2>
+<p>After installing the <code>Jasper.AzureServiceBus</code> Nuget, the next step is to supply the Azure Service Bus connection string(s) through configuration. You can do that all through
+JSON in your appsettings.json file like this sample that is adding a connection string named &quot;MyAsbConnection&quot;:</p>
+<pre><code>{
+    &quot;AzureServiceBus&quot;: {
+        &quot;MyAsbConnection&quot;: &quot;the connection string to your ASB namespace&quot;
+    }
+}
+</code></pre>
+<p>Or if you'd like to keep your appsettings.json file structure flat, you can also configure the connection string in your application's <code>Startup</code> class like so:</p>
+<pre><code class="language-csharp">&#xA;public class Startup&#xA;{&#xA;    // Both AzureServiceBusOptions and JasperOptions are registered services in your&#xA;    // Jasper application&#x27;s IoC container, so are available to be injected into Startup.Configure()&#xA;    public void Configure(IApplicationBuilder app, IConfiguration config, AzureServiceBusOptions asb, JasperOptions jasper)&#xA;    {&#xA;        // This code will add a new Azure Service Bus connection named &quot;azure&quot;&#xA;        asb.Connections.Add(&quot;azure&quot;, config[&quot;AzureServiceBusConnectionString&quot;]);&#xA;&#xA;        // Listen for messages from the &#x27;queue1&#x27; queue at the connection string&#xA;        // configured above&#xA;        jasper.ListenForMessagesFrom(&quot;azureservicebus://azure/queue/queue1&quot;);&#xA;    }&#xA;&#xA;    public void ConfigureServices(IServiceCollection services)&#xA;    {&#xA;        // add service registrations&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Then build your application with an <code>IWebHostBuilder</code> as shown in this example:</p>
+<pre><code class="language-csharp">&#xA;public static int Main(string[] args)&#xA;{&#xA;    return JasperHost.CreateDefaultBuilder()&#xA;        .UseJasper()&#xA;        .UseStartup&lt;Startup&gt;()&#xA;        .RunJasper(args);&#xA;}&#xA;</code></pre>
+<p>And if you really wanted to for simple proof of concept type or testing applications, you could quickly hard code the Azure Service Bus connection string, listeners,
+and related publishing rules as shown in this code:</p>
+<pre><code class="language-csharp">&#xA;public class HardCodedConnectionApp : JasperRegistry&#xA;{&#xA;    public HardCodedConnectionApp()&#xA;    {&#xA;        Settings&#xA;            .AddAzureServiceBusConnection(&quot;azure&quot;, &quot;some connection string&quot;);&#xA;&#xA;        Publish.AllMessagesTo(&quot;azureservicebus://azure/queue/outgoing&quot;);&#xA;&#xA;        Transports.ListenForMessagesFrom(&quot;azureservicebus://azure/queue/incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>For more information about Azure Service Bus connection strings, see <a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dotnet-how-to-use-topics-subscriptions">Get started with Service Bus queues</a>.</p>
+<h2 id="uri-structure">Uri Structure</h2>
+<p>Jasper uses Uri values to describe the transport endpoints of both publishing rules and subscriptions. For the Azure Service Bus transport, the base Uri pattern is:</p>
+<p><em>azureservicebus://[connection string name]/</em></p>
+<p>where the host of the Uri structure is the named connection string as shown in the previous section. The protocol &quot;azureservicebus&quot; tells Jasper to use the Azure Service Bus transport. The following sections will explain the Uri patterns for queues, subscriptions, and topics.</p>
+<h2 id="subscribe-and-publish-messages-to-a-named-queue">Subscribe and Publish Messages to a named Queue</h2>
+<p>To subscribe or publish to a queue in Azure Service Bus, use the Uri pattern <em>azureservicebus://[connection string name]/queue/[name of the queue]</em>. For example, if you strictly use your application's <em>appsettings.json</em> file to configure messaging, you can register both a listener to a queue named &quot;incoming&quot; and a rule to publish all messages to a queue named
+&quot;outgoing&quot; with a structure like this:</p>
+<pre><code>{
+    &quot;AzureServiceBus&quot;: {
+        &quot;MyAsbConnection&quot;: &quot;the connection string to your ASB namespace&quot;
+    },
+
+    &quot;Jasper&quot;: {
+        &quot;Listeners&quot;: [
+            &quot;azureservicebus://azure/queue/incoming&quot;
+        ],
+        &quot;Subscriptions&quot;: [
+            {
+                &quot;Scope&quot;: &quot;All&quot;,
+                &quot;Uri&quot;: &quot;azureservicebus://azure/queue/outgoing&quot;
+            }
+        ]
+    }
+}
+</code></pre>
+<h2 id="subscribe-to-messages-for-a-topic">Subscribe to Messages for a Topic</h2>
+<p>To subscribe to messages delivered to a specific topic, you'll need a Uri with both a topic and subscription name like this:</p>
+<p><em>azureservicebus://[name of connection string]/subscription/[name of subscription]/topic/[name of topic]</em></p>
+<p>Do note that both subscription and topic are required, but could be designated in any order.</p>
+<h2 id="publish-messages-for-a-topic">Publish Messages for a Topic</h2>
+<p>To simply publish messages to a topic, you only need to specify the topic name and connection name like this:</p>
+<p><em>azureservicebus://[name of connection string]/topic/[name of topic]</em></p>
+<h2 id="working-with-message-specific-topics">Working with Message Specific Topics</h2>
+<p>Jasper has a concept of <a href="/documentation/messaging/messages">message identity</a> that can be exploited to automatically publish or subscribe to
+topic names matching message types.</p>
+<p>In the case of publishing, the Uri pattern is <code>azureservicebus://[name of connection string]/topic/*</code>, where the '*' character is interpreted as meaning the message type name of the message being published. When a message is published to this kind of Uri, Jasper will use the message type name as the topic name.</p>
+<p>In the case of subscribing, the Uri pattern is <code>azureservicebus://[name of connection string]/subscription/myapp/topic/*</code>, where the '*' character is interpreted as meaning the message type name of the message being received. Behind the scenes, Jasper is building a separate listening agent for the message type names of all known message types handled by the application.</p>
+<p>Below is an example usage:</p>
+<pre><code class="language-csharp">&#xA;public class MessageSpecificTopicRoutingApp : JasperRegistry&#xA;{&#xA;    public MessageSpecificTopicRoutingApp()&#xA;    {&#xA;        // Publish all messages to Azure Service Bus using the configured connection&#xA;        // string named &#x27;azure&#x27; and use the message type name as the published&#xA;        // topic name&#xA;        Publish.AllMessagesTo(&quot;azureservicebus://azure/topic/*&quot;);&#xA;&#xA;&#xA;        // Make a subscription to all topic names that match known, handled message types&#xA;        // in this application using the configured connection string &#x27;azure&#x27; and the subscription&#xA;        // &#x27;appname&#x27;&#xA;        Transports.ListenForMessagesFrom(&quot;azureservicebus://azure/subscription/appname/topic/*&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="scheduled-messages">Scheduled Messages</h2>
+<p>Jasper happily uses Azure Service Bus <a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/message-sequencing">scheduled messaging</a> functionality behind the scenes
+when you use Jasper's <code>ScheduleSend()</code> functionality. See <a href="/documentation/messaging/publishing/delayed">Scheduled Message Delivery and Execution</a> for more information.</p>
+<h2 id="customizing-clients">Customizing Clients</h2>
+<p>Jasper tries to allow you to use any and all advanced configuration elements of its underlying transports. To that end, Jasper let's you configure
+advanced configuration against the underlying Azure Service Bus <code>Client</code> objects as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class CustomizedAzureServiceBusApp : JasperRegistry&#xA;{&#xA;    public CustomizedAzureServiceBusApp()&#xA;    {&#xA;        // There is another overload that will give you access&#xA;        // to the application&#x27;s IHostingEnvironment and IConfiguration as well&#xA;        // if you prefer putting this into the JasperRegistry rather than&#xA;        // using Startup.Configure()&#xA;        Settings.ConfigureAzureServiceBus(options =&gt;&#xA;        {&#xA;            // Configure a single endpoint&#xA;            options.ConfigureEndpoint(&quot;azureservicebus://azure/queue/incoming&quot;, endpoint =&gt;&#xA;            {&#xA;                // modify the endpoint&#xA;            });&#xA;&#xA;            // Configure all the endpoints related to a specific connection string&#xA;            options.ConfigureEndpoint(&quot;azure&quot;, endpoint =&gt;&#xA;            {&#xA;                endpoint.ReceiveMode = ReceiveMode.ReceiveAndDelete;&#xA;                endpoint.RetryPolicy = RetryPolicy.NoRetry;&#xA;                endpoint.TokenProvider = new ManagedServiceIdentityTokenProvider();&#xA;                endpoint.TransportType = TransportType.AmqpWebSockets;&#xA;&#xA;&#xA;                // Override the envelope to message mapping for usage with non-Jasper applications&#xA;                endpoint.Protocol = new MySpecialProtocol();&#xA;            });&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;// Or with Startup&#xA;&#xA;public class CustomizedStartup&#xA;{&#xA;    public void Configure(IApplicationBuilder app, AzureServiceBusOptions options)&#xA;    {&#xA;        // Configure a single endpoint&#xA;        options.ConfigureEndpoint(&quot;azureservicebus://azure/queue/incoming&quot;, endpoint =&gt;&#xA;        {&#xA;            // modify the endpoint&#xA;        });&#xA;&#xA;        // Configure all the endpoints related to a specific connection string&#xA;        options.ConfigureEndpoint(&quot;azure&quot;, endpoint =&gt;&#xA;        {&#xA;            endpoint.ReceiveMode = ReceiveMode.ReceiveAndDelete;&#xA;            endpoint.RetryPolicy = RetryPolicy.NoRetry;&#xA;            endpoint.TokenProvider = new ManagedServiceIdentityTokenProvider();&#xA;            endpoint.TransportType = TransportType.AmqpWebSockets;&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="connecting-to-non-jasper-applications">Connecting to non-Jasper Applications</h2>
+<p>Lastly, you may want to use the Azure Service Bus transport to integrate with other applications that aren't using Jasper. To make that work, you may need to do some
+mapping between Jasper's <code>Envelope</code> structure and Azure Service Bus's <code>Message</code> structure using a custom implementation of <code>Jasper.AzureServiceBus.IAzureServiceBusProtocol</code>.</p>
+<p>That interface is shown below:</p>
+<pre><code class="language-csharp">&#xA;public interface IAzureServiceBusProtocol&#xA;{&#xA;    Message WriteFromEnvelope(Envelope envelope);&#xA;&#xA;    Envelope ReadEnvelope(Message message);&#xA;}&#xA;</code></pre>
+<p>And here's what the default protocol looks like because it's likely easier to start with this than build something all new:</p>
+<pre><code class="language-csharp">&#xA;public class DefaultAzureServiceBusProtocol : IAzureServiceBusProtocol&#xA;{&#xA;    public Message WriteFromEnvelope(Envelope envelope)&#xA;    {&#xA;        var message = new Message&#xA;        {&#xA;            CorrelationId = envelope.SagaId,&#xA;            MessageId = envelope.Id.ToString(),&#xA;            Body = envelope.Data,&#xA;            ContentType = envelope.ContentType,&#xA;            ReplyTo = envelope.ReplyUri?.ToString(),&#xA;            ReplyToSessionId = envelope.CausationId.ToString(),&#xA;&#xA;        };&#xA;&#xA;        if (envelope.ExecutionTime.HasValue)&#xA;        {&#xA;            message.ScheduledEnqueueTimeUtc = envelope.ExecutionTime.Value.UtcDateTime;&#xA;        }&#xA;&#xA;        if (envelope.DeliverBy.HasValue)&#xA;        {&#xA;            message.TimeToLive = envelope.DeliverBy.Value.Subtract(DateTimeOffset.UtcNow);&#xA;        }&#xA;&#xA;        envelope.WriteToDictionary(message.UserProperties);&#xA;&#xA;&#xA;&#xA;        return message;&#xA;    }&#xA;&#xA;    public Envelope ReadEnvelope(Message message)&#xA;    {&#xA;        var envelope = new Envelope&#xA;        {&#xA;            Id = Guid.Parse(message.MessageId),&#xA;            SagaId = message.CorrelationId,&#xA;            Data = message.Body,&#xA;            ContentType = message.ContentType,&#xA;            ReplyUri = message.ReplyTo.IsNotEmpty() ? new Uri(message.ReplyTo) : null,&#xA;            CausationId = message.ReplyToSessionId.IsNotEmpty() ? Guid.Parse(message.ReplyToSessionId) : Guid.Empty&#xA;        };&#xA;&#xA;&#xA;        envelope.ReadPropertiesFromDictionary(message.UserProperties);&#xA;&#xA;        return envelope;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Lastly, to apply the protocol, use the mechanism shown in the previous section.</p>
 
 			      	</div>
 

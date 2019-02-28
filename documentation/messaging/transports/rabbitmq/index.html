@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.8</h3>
+		      	<h3>JasperFx 0.9.8.6</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -94,48 +94,110 @@
 
 			      	<div id="main-pane">
 			      		<!--title:RabbitMQ Transport-->
-<p>To use <a href="http://www.rabbitmq.com/">RabbitMQ</a> as a transport with Jasper, first install the <code>Jasper.RabbitMQ</code> library via nuget to your project. Behind the scenes, this package uses the <a href="https://www.rabbitmq.com/dotnet.html">RabbitMQ C# Client</a> to both send and receive
-messages from RabbitMQ.</p>
-<p>To listen for messages from RabbitMQ - assuming that another Jasper application is the original publisher - you simply specify that
-Jasper should listen to a specific RabbitMQ queue with a Uri like this:</p>
-<pre><code class="language-csharp">&#xA;public class AppListeningToRabbitMQ : JasperRegistry&#xA;{&#xA;    public AppListeningToRabbitMQ()&#xA;    {&#xA;        // Port is optional if you&#x27;re using the default RabbitMQ&#xA;        // port of 5672, but shown here for completeness&#xA;        Transports.ListenForMessagesFrom(&quot;rabbitmq://rabbitserver:5672/messages&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
-<p>Likewise, to publish messages to RabbitMQ, use syntax like this:</p>
-<pre><code class="language-csharp">&#xA;public class AppPublishingToRabbitMQ : JasperRegistry&#xA;{&#xA;    public AppPublishingToRabbitMQ()&#xA;    {&#xA;        Publish.AllMessagesTo(&quot;rabbitmq://rabbitserver:5672/messages&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
-<p>As with other transport types, the actual Uri values can be <a href="/documentation/bootstrapping/configuration">resolved from configuration</a>. By moving the Uri values to configuration, it also becomes possible to use one of Jasper's built in transports
-like the <a href="/documentation/messaging/transports/tcp">TCP Transport</a> when developing locally to debug interatiions between applications without
-having to have RabbitMQ running locally, but still use RabbitMQ in production without changing any of the application code.</p>
+<h2 id="quick-start">Quick Start</h2>
+<p>If you're starting a fresh project, you can quickly spin up a new Jasper project using Azure Service Bus with a <code>dotnet new</code> template.</p>
+<p>First install the <code>JasperTemplates</code> nuget like so:</p>
+<pre><code>dotnet new --install JasperTemplates
+</code></pre>
+<p>Then build out the directory for your intended project, and use:</p>
+<pre><code>dotnet new jasper.rabbitmq
+</code></pre>
+<p>Then check the <code>README.md</code> file in the generated directory for an overview of what was generated for you.</p>
+<h2 id="installing">Installing</h2>
+<p>To use <a href="http://www.rabbitmq.com/">RabbitMQ</a> as a transport with Jasper, first install the <code>Jasper.RabbitMQ</code> library via nuget to your project. Behind the scenes, this package uses the <a href="https://www.rabbitmq.com/dotnet.html">RabbitMQ C# Client</a> to both send and receive messages from RabbitMQ.</p>
+<p>If you are having any issues with Jasper not correctly auto-discovering the Rabbit MQ transport, you can explicitly register it as shown in this code:</p>
+<pre><code class="language-csharp">&#xA;public class AppWithRabbitMq : JasperRegistry&#xA;{&#xA;    public AppWithRabbitMq()&#xA;    {&#xA;        // This explicitly registers the Rabbit MQ transport&#xA;        Include&lt;Jasper.RabbitMQ.RabbitMqTransportExtension&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>In terms of configuration, there's a few things to worry about:</p>
+<ol>
+<li>Jasper's concept of Rabbit MQ connection strings, described in the next section</li>
+<li>Configuring Jasper listeners and publishing rules through Uri values, also described in this document</li>
+<li>Customizing the Rabbit MQ <code>ConnectionFactory</code> (if you need to)</li>
+<li>Overriding how Jasper maps Envelope properties to Rabbit MQ properties in the case of communicating with a non-Jasper application</li>
+</ol>
+<h2 id="configuring-rabbit-mq-connections">Configuring Rabbit MQ Connections</h2>
+<p>After installing the <code>Jasper.RabbitMq</code> Nuget, the next step is to supply the Rabbit Mq connection string(s) through configuration. You can do that all through
+JSON in your appsettings.json file like this sample that is adding a connection string named &quot;MyRabbitConnection&quot;:</p>
+<pre><code>{
+    &quot;RabbitMq&quot;: {
+        &quot;MyRabbitConnection&quot;: &quot;Host=RabbitServer;Port=5672;ExchangeType=fanout;ExchangeName=messaging&quot;
+    }
+}
+</code></pre>
+<p>The connection string format is key value pairs similar to an ADO.Net database connection string with the following keys:</p>
+<ul>
+<li><code>Host</code> - the server name. Required.</li>
+<li><code>Port</code> - optional port number for the connection to Rabbit MQ, and the default is 5672.</li>
+<li><code>ExchangeName</code> - optional exchange name. See the <a href="https://www.rabbitmq.com/tutorials/amqp-concepts.html">Rabbit MQ documentation</a> for more information.</li>
+<li><code>ExchangeType</code> - optional exchange type. The default is 'direct'. Value values are 'direct', 'topic', and 'fanout'. Header exchanges are not supported in Jasper (yet)</li>
+</ul>
+<p>Or if you'd like to keep your appsettings.json file structure flat, you can also configure the connection string in your application's <code>Startup</code> class like so:</p>
+<pre><code class="language-csharp">&#xA;public class Startup&#xA;{&#xA;    // Both RabbitMqOptions and JasperOptions are registered services in your&#xA;    // Jasper application&#x27;s IoC container, so are available to be injected into Startup.Configure()&#xA;    public void Configure(IApplicationBuilder app, IConfiguration config, RabbitMqOptions rabbit, JasperOptions jasper)&#xA;    {&#xA;        // This code will add a new Rabbit MQ connection named &quot;rabbit&quot;&#xA;        rabbit.Connections.Add(&quot;rabbit&quot;, config[&quot;RabbitMqConnectionString&quot;]);&#xA;&#xA;        // Listen for messages from the &#x27;queue1&#x27; queue at the connection string&#xA;        // configured above&#xA;        jasper.ListenForMessagesFrom(&quot;rabbitmq://rabbit/queue/queue1&quot;);&#xA;    }&#xA;&#xA;    public void ConfigureServices(IServiceCollection services)&#xA;    {&#xA;        // add service registrations&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Then build your application with an <code>IWebHostBuilder</code> as shown in this example:</p>
+<pre><code class="language-csharp">&#xA;public static int Main(string[] args)&#xA;{&#xA;    return JasperHost.CreateDefaultBuilder()&#xA;        .UseJasper()&#xA;        .UseStartup&lt;Startup&gt;()&#xA;        .RunJasper(args);&#xA;}&#xA;</code></pre>
+<p>And if you really wanted to for simple proof of concept type or testing applications, you could quickly hard code the Rabbit MQ connection string, listeners,
+and related publishing rules as shown in this code:</p>
+<pre><code class="language-csharp">&#xA;public class HardCodedConnectionApp : JasperRegistry&#xA;{&#xA;    public HardCodedConnectionApp()&#xA;    {&#xA;        // This adds a connection string to the host &quot;rabbitserver&quot; using&#xA;        // the default port&#xA;        Settings&#xA;            .AddRabbitMqHost(&quot;rabbitserver&quot;);&#xA;&#xA;        Publish.AllMessagesTo(&quot;rabbitmq://rabbitserver/queue/outgoing&quot;);&#xA;&#xA;        Transports.ListenForMessagesFrom(&quot;rabbitmq://rabbitserver/queue/incoming&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="uri-structure">Uri Structure</h2>
-<p>The Uri structure to identify a RabbitMQ queue to Jasper should follow this structure:</p>
-<p><code>rabbitmq://[host]:[port]/[durable]/[exchange type]/[exchange name]/[queue name]</code></p>
-<ul>
-<li><code>host</code> -- the name RabbitMQ host or possibly a load balancer name</li>
-<li><code>port</code> -- Optional. If specified, this will simply override the port number from the default 5672</li>
-<li><code>durable</code> -- Optional, but if the first segment is &quot;durable,&quot; this directs Jasper to use the <a href="/documentation/messaging/transports/durable">durable message persistence</a></li>
-<li><code>exchange type</code> -- Optional, but if it exists, this would specify the type of exchange to create or bind to, with the value options
-<em>direct</em>, <em>fanout</em>, <em>topic</em>, or <em>headers</em>. See the <a href="http://www.rabbitmq.com/tutorials/tutorial-four-dotnet.html">RabbitMQ C# Client documentation</a> for more information on these exchange types.</li>
-<li><code>exchange name</code> -- Optional, but must be present if you are specifying the exchange type</li>
-<li><code>queue name</code> -- The name of the RabbitMQ queue to bind to and send to. If there are additional segments, the queue name is
-determined by doing a join of the segments with the '/' character.</li>
-</ul>
-<p>Here are some examples:</p>
-<ul>
-<li><code>rabbitmq://localhost/messages</code> -- bind to your local machine at the default port to queue &quot;messages&quot;</li>
-<li><code>rabbitmq://rabbitserver1:5673/durable/messages</code> -- bind to a RabbitMQ instance on server &quot;rabbitserver1&quot; at port 5673
-to a queue named &quot;messages&quot; with durable, store and forward messaging applied.</li>
-<li><code>rabbitmq://rabbitserver1:5673/fanout/exchange1/messages</code> -- bind to a RabbitMQ instance on server &quot;rabbitserver1&quot; at port 5673
-to a queue named &quot;messages&quot; without durable messages, and using a &quot;fanout&quot; exchange named &quot;exchange1&quot;</li>
-<li><code>rabbitmq://rabbitserver1:5673/durable/fanout/exchange1/messages</code> -- same as above, but this time with the durable messaging
-applied to all incoming or outgoing messages</li>
-</ul>
-<h2 id="customizing-the-rabbitmq-behavior">Customizing the RabbitMQ Behavior</h2>
-<p>Definitely see the <a href="http://www.rabbitmq.com/tutorials/tutorial-one-dotnet.html">documentation for the RabbitMQ C# client</a> for
-much more information about all the possible configuration items, but just know that all of the client configuration is
-surfaced in Jasper through its <a href="/documentation/bootstrapping/configuration">&quot;Settings&quot; model</a> with the <code>RabbitMQSettings</code>
-object as shown below:</p>
-<pre><code class="language-csharp">&#xA;public class CustomizedRabbitMQApp : JasperRegistry&#xA;{&#xA;    public CustomizedRabbitMQApp()&#xA;    {&#xA;        Settings.Alter&lt;RabbitMqSettings&gt;(settings =&gt;&#xA;        {&#xA;            // Retrieve the Jasper &quot;agent&quot; by the full Uri:&#xA;            var agent = settings.For(&quot;rabbitmq://server1/queue1&quot;);&#xA;&#xA;            // Customize the underlying ConnectionFactory for security mechanisms,&#xA;            // timeouts, and many other settings&#xA;            agent.ConnectionFactory.ContinuationTimeout = TimeSpan.FromSeconds(5);&#xA;&#xA;&#xA;            // Customize how Jasper creates the connection from the connection factory&#xA;            agent.ConnectionActivator = factory =&gt; factory.CreateConnection(&quot;MyClientProvidedName&quot;);&#xA;&#xA;&#xA;            // Customize or change how Jasper maps Envelopes to and from&#xA;            // the RabbitMQ properties&#xA;            agent.EnvelopeMapping = new CustomEnvelopeMapping();&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;public class CustomEnvelopeMapping : DefaultEnvelopeMapper&#xA;{&#xA;    public override Envelope ReadEnvelope(byte[] data, IBasicProperties props)&#xA;    {&#xA;        // Customize the mappings from RabbitMQ headers to&#xA;        // Jasper&#x27;s Envelope values&#xA;        return base.ReadEnvelope(data, props);&#xA;    }&#xA;&#xA;    public override void WriteFromEnvelope(Envelope envelope, IBasicProperties properties)&#xA;    {&#xA;        // Customize how Jasper Envelope objects are mapped to&#xA;        // the outgoing RabbitMQ message structure&#xA;        base.WriteFromEnvelope(envelope, properties);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
-<p>If you need to integrate with a non-Jasper application using the RabbitMQ transport, you can use a custom <code>IEnvelopeMapper</code> and apply
-it to map a different RabbitMQ header structure or to translate message types so that Jasper can successfully handle the message. That interface looks like this:</p>
-<pre><code class="language-csharp">&#xA;public interface IEnvelopeMapper&#xA;{&#xA;    void WriteFromEnvelope(Envelope envelope, IBasicProperties properties);&#xA;    Envelope ReadEnvelope(byte[] body, IBasicProperties properties);&#xA;}&#xA;&#xA;</code></pre>
+<p>Jasper uses Uri values to describe the transport endpoints of both publishing rules and subscriptions. For the Rabbit MQ transport, the base Uri pattern is:</p>
+<p><em>rabbitmq://[connection string name]/</em></p>
+<p>where the host of the Uri structure is the named connection string as shown in the previous section. The protocol &quot;rabbitmq&quot; tells Jasper to use the Rabbit MQ transport. The following sections will explain the Uri patterns for queues, subscriptions, and topics.</p>
+<h2 id="subscribe-and-publish-messages-to-a-named-queue">Subscribe and Publish Messages to a named Queue</h2>
+<p>To subscribe or publish to a queue in Rabbit MQ, use the Uri pattern <em>rabbitmq://[connection string name]/queue/[name of the queue]</em>. For example, if you strictly use your application's <em>appsettings.json</em> file to configure messaging, you can register both a listener to a queue named &quot;incoming&quot; and a rule to publish all messages to a queue named
+&quot;outgoing&quot; with a structure like this:</p>
+<pre><code>{
+    &quot;RabbitMq&quot;: {
+        &quot;MyRabbitConnection&quot;: &quot;the connection string to your Rabbit MQ broker and exchange&quot;
+    },
+
+    &quot;Jasper&quot;: {
+        &quot;Listeners&quot;: [
+            &quot;rabbitmq://rabbit/queue/incoming&quot;
+        ],
+        &quot;Subscriptions&quot;: [
+            {
+                &quot;Scope&quot;: &quot;All&quot;,
+                &quot;Uri&quot;: &quot;rabbitmq://rabbit/queue/outgoing&quot;
+            }
+        ]
+    }
+}
+</code></pre>
+<h2 id="subscribe-or-publish-messages-for-a-topic">Subscribe or Publish Messages for a Topic</h2>
+<p>You will need to use a Rabbit MQ topic exchange if you wish to publish or subscribe to specific topics. Your connection string might look like:</p>
+<p><em>Host=server;ExchangeType=topic;ExchangeName=exchange1</em></p>
+<p>To subscribe or publish messages delivered to a specific topic, you'll need a Uri a topic and subscription name like this:</p>
+<p><em>rabbitmq://[name of connection string]/topic/[name of topic]</em></p>
+<h2 id="working-with-message-specific-topics">Working with Message Specific Topics</h2>
+<p>You will need to use a Rabbit MQ topic exchange if you wish to publish or subscribe to specific topics. Your connection string might look like:</p>
+<p><em>Host=server;ExchangeType=topic;ExchangeName=exchange1</em></p>
+<p>Jasper has a concept of <a href="/documentation/messaging/messages">message identity</a> that can be exploited to automatically publish or subscribe to
+topic names matching message types.</p>
+<p>In the case of publishing, the Uri pattern is <code>rabbitmq://[name of connection string]/topic/*</code>, where the '*' character is interpreted as meaning the message type name of the message being published. When a message is published to this kind of Uri, Jasper will use the message type name as the topic name.</p>
+<p>In the case of subscribing, the Uri pattern is <code>rabbitmq://[name of connection string]/topic/*</code>, where the '*' character is interpreted as meaning the message type name of the message being received. Behind the scenes, Jasper is building a separate listening agent for the message type names of all known message types handled by the application.</p>
+<p>Below is an example usage:</p>
+<pre><code class="language-csharp">&#xA;public class MessageSpecificTopicRoutingApp : JasperRegistry&#xA;{&#xA;    public MessageSpecificTopicRoutingApp()&#xA;    {&#xA;        // Publish all messages to Rabbit Mq using the configured connection&#xA;        // string named &#x27;rabbit&#x27; and use the message type name as the published&#xA;        // topic name&#xA;        Publish.AllMessagesTo(&quot;rabbitmq://rabbit/topic/*&quot;);&#xA;&#xA;&#xA;        // Make a subscription to all topic names that match known, handled message types&#xA;        // in this application using the configured connection string &#x27;rabbit&#x27;.&#xA;        Transports.ListenForMessagesFrom(&quot;rabbitmq://rabbit/topic/*&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="fanout-exchanges">Fanout Exchanges</h2>
+<p>For Rabbit MQ fanout exchanges, your connection string would look like this:</p>
+<p><em>Host=server;ExchangeType=fanout;ExchangeName=exchange1</em></p>
+<h2 id="using-rabbit-mq-routing-key">Using Rabbit Mq Routing Key</h2>
+<p>To publish or subscribe using the Rabbit MQ concept of a &quot;routing key&quot; with direct or fanout exchanges, you declare that in your Uri structure like so:</p>
+<p><em>rabbitmq://[name of connection string]/queue/[queue name]/routingkey/[name of routing key]</em></p>
+<h2 id="scheduled-messages">Scheduled Messages</h2>
+<p>Jasper does not at this time support Rabbit MQ's plugin for delayed delivery. When using Rabbit MQ, the scheduled delivery function is done by polling the
+configured message store by Jasper rather than depending on Rabbit MQ itself.</p>
+<p>See <a href="/documentation/messaging/publishing/delayed">Scheduled Message Delivery and Execution</a> for more information.</p>
+<h2 id="customizing-rabbit-mq-connections">Customizing Rabbit MQ Connections</h2>
+<p>Jasper tries to allow you to use any and all advanced configuration elements of its underlying transports. To that end, Jasper let's you configure
+advanced configuration against the underlying Rabbit MQ <code>ConnectionFactory</code> objects for concerns such as authentication as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class CustomizedRabbitMqApp : JasperRegistry&#xA;{&#xA;    public CustomizedRabbitMqApp()&#xA;    {&#xA;        // There is another overload that will give you access&#xA;        // to the application&#x27;s IHostingEnvironment and IConfiguration as well&#xA;        // if you prefer putting this into the JasperRegistry rather than&#xA;        // using Startup.Configure()&#xA;        Settings.ConfigureRabbitMq((options, hosting, config) =&gt;&#xA;        {&#xA;            // Configure a single endpoint&#xA;            options.ConfigureEndpoint(&quot;rabbitmq://rabbit/queue/incoming&quot;, endpoint =&gt;&#xA;            {&#xA;                // modify the endpoint&#xA;            });&#xA;&#xA;            // Configure all the endpoints related to a specific connection string&#xA;            options.ConfigureEndpoint(&quot;rabbit&quot;, endpoint =&gt;&#xA;            {&#xA;                // Customize the Rabbit MQ ConnectionFactory&#xA;                endpoint.ConnectionFactory.UserName = config[&quot;rabbit.user&quot;];&#xA;                endpoint.ConnectionFactory.Password = config[&quot;rabbit.password&quot;];&#xA;&#xA;&#xA;                // Override the envelope to message mapping for usage with non-Jasper applications&#xA;                endpoint.Protocol = new MySpecialProtocol();&#xA;            });&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;// Or with Startup&#xA;&#xA;public class CustomizedStartup&#xA;{&#xA;    public void Configure(IApplicationBuilder app, RabbitMqOptions options, IConfiguration config)&#xA;    {&#xA;        // Configure a single endpoint&#xA;        options.ConfigureEndpoint(&quot;rabbitmq://rabbit/queue/incoming&quot;, endpoint =&gt;&#xA;        {&#xA;            // modify the endpoint&#xA;        });&#xA;&#xA;        // Configure all the endpoints related to a specific connection string&#xA;        options.ConfigureEndpoint(&quot;rabbit&quot;, endpoint =&gt;&#xA;        {&#xA;            // Customize the Rabbit MQ ConnectionFactory&#xA;            endpoint.ConnectionFactory.UserName = config[&quot;rabbit.user&quot;];&#xA;            endpoint.ConnectionFactory.Password = config[&quot;rabbit.password&quot;];&#xA;&#xA;&#xA;            // Override the envelope to message mapping for usage with non-Jasper applications&#xA;            endpoint.Protocol = new MySpecialProtocol();&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="connecting-to-non-jasper-applications">Connecting to non-Jasper Applications</h2>
+<p>Lastly, you may want to use the Rabbit MQ transport to integrate with other applications that aren't using Jasper. To make that work, you may need to do some
+mapping between Jasper's <code>Envelope</code> structure and Rabbit MQ's structures using a custom implementation of <code>Jasper.RabbitMq.IRabbitMqProtocol</code>.</p>
+<p>That interface is shown below:</p>
+<pre><code class="language-csharp">&#xA;public interface IRabbitMqProtocol&#xA;{&#xA;    void WriteFromEnvelope(Envelope envelope, IBasicProperties properties);&#xA;&#xA;    Envelope ReadEnvelope(byte[] body, IBasicProperties properties);&#xA;}&#xA;&#xA;</code></pre>
+<p>And here's what the default protocol looks like because it's likely easier to start with this than build something all new:</p>
+<pre><code class="language-csharp">&#xA;public class DefaultRabbitMqProtocol : IRabbitMqProtocol&#xA;{&#xA;    public virtual Envelope ReadEnvelope(byte[] data, IBasicProperties props)&#xA;    {&#xA;        var envelope = new Envelope&#xA;        {&#xA;            Data = data,&#xA;            Source = props.AppId,&#xA;            ContentType = props.ContentType,&#xA;            MessageType = props.Type&#xA;        };&#xA;&#xA;&#xA;        if (props.Headers != null) envelope.ReadPropertiesFromDictionary(props.Headers);&#xA;&#xA;&#xA;        return envelope;&#xA;    }&#xA;&#xA;    public virtual void WriteFromEnvelope(Envelope envelope, IBasicProperties properties)&#xA;    {&#xA;        properties.CorrelationId = envelope.Id.ToString();&#xA;        properties.AppId = envelope.Source;&#xA;        properties.ContentType = envelope.ContentType;&#xA;        properties.Type = envelope.MessageType;&#xA;&#xA;        if (properties.Headers == null) properties.Headers = new Dictionary&lt;string, object&gt;();&#xA;&#xA;        envelope.WriteToDictionary(properties.Headers);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Lastly, to apply the protocol, use the mechanism shown in the previous section.</p>
 
 			      	</div>
 
