@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.8.6</h3>
+		      	<h3>JasperFx 0.9.9</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -96,7 +96,7 @@
 			      		<!--title:Sql Server Transaction Middleware-->
 <p>Assuming that the Jasper.Persistence.SqlServer Nuget is referenced by your project, you can use the <code>[Transactional]</code> attribute on message (or HTTP) handler methods to wrap the message handling inside
 a single Sql Server transaction like so:</p>
-<pre><code class="language-csharp">&#xA;public class ItemCreatedHandler&#xA;{&#xA;    [Transactional]&#xA;    public static async Task Handle(&#xA;        ItemCreated created,&#xA;        SqlConnection conn, // the connection for the container scope&#xA;        SqlTransaction tx, // the current transaction&#xA;        Jasper.Messaging.Tracking.MessageTracker tracker,&#xA;        Envelope envelope)&#xA;    {&#xA;        await conn.CreateCommand(tx, &quot;insert into receiver.item_created (id, name) values (@id, @name)&quot;)&#xA;            .With(&quot;id&quot;, created.Id)&#xA;            .With(&quot;name&quot;, created.Name)&#xA;            .ExecuteNonQueryAsync();&#xA;&#xA;        tracker.Record(created, envelope);&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class ItemCreatedHandler&#xA;{&#xA;    [Transactional]&#xA;    public static async Task Handle(&#xA;        ItemCreated created,&#xA;        SqlTransaction tx, // the current transaction&#xA;        Jasper.Messaging.Tracking.MessageTracker tracker,&#xA;        Envelope envelope)&#xA;    {&#xA;        // Using some extension method helpers inside of Jasper here&#xA;        await tx.CreateCommand(&quot;insert into receiver.item_created (id, name) values (@id, @name)&quot;)&#xA;            .With(&quot;id&quot;, created.Id)&#xA;            .With(&quot;name&quot;, created.Name)&#xA;            .ExecuteNonQueryAsync();&#xA;&#xA;        tracker.Record(created, envelope);&#xA;    }&#xA;}&#xA;</code></pre>
 <p>When you use this middleware, be sure to pull in the current <code>SqlTransaction</code> object as a parameter to your handler method.</p>
 
 			      	</div>

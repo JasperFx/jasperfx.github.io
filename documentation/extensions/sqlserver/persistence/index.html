@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.8.6</h3>
+		      	<h3>JasperFx 0.9.9</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -110,8 +110,8 @@
 <li><code>uspMarkOutgoingOwnership</code></li>
 </ol>
 <h2 id="managing-the-sql-server-schema">Managing the Sql Server Schema</h2>
-<p>In testing, you can build -- or rebuild -- the message storage in your system with this syntax:</p>
-<pre><code class="language-csharp">&#xA;theHost = JasperHost.For(_ =&gt;&#xA;{&#xA;    _.Settings.PersistMessagesWithSqlServer(Servers.SqlServerConnectionString);&#xA;});&#xA;&#xA;theHost.RebuildMessageStorage();&#xA;</code></pre>
+<p>In testing, you can build -- or rebuild -- the message storage in your system with a call to the <code>RebuildMessageStorage()</code> extension method off of either <code>IWebHost</code> or <code>IJasperHost</code> as shown below in a sample taken from xUnit integration testing with Jasper:</p>
+<pre><code class="language-csharp">&#xA;public class MyJasperAppFixture : IDisposable&#xA;{&#xA;    public MyJasperAppFixture()&#xA;    {&#xA;        Host = JasperHost.For&lt;MyJasperApp&gt;();&#xA;&#xA;        // This extension method will blow away any existing&#xA;        // schema items for message persistence in your configured&#xA;        // database and then rebuilds the message persistence objects&#xA;        // before the *first* integration test runs&#xA;        Host.RebuildMessageStorage();&#xA;    }&#xA;&#xA;    public IJasperHost Host { get;  }&#xA;&#xA;    public void Dispose()&#xA;    {&#xA;        Host?.Dispose();&#xA;    }&#xA;&#xA;&#xA;}&#xA;&#xA;// An xUnit test fixture that uses our MyJasperAppFixture&#xA;public class IntegrationTester : IClassFixture&lt;MyJasperAppFixture&gt;&#xA;{&#xA;    private readonly MyJasperAppFixture _fixture;&#xA;&#xA;    public IntegrationTester(MyJasperAppFixture fixture)&#xA;    {&#xA;        _fixture = fixture;&#xA;    }&#xA;}&#xA;</code></pre>
 <p>See <a href="https://github.com/JasperFx/jasper/issues/372">this GitHub issue</a> for some utilities to better manage the database objects.</p>
 
 			      	</div>

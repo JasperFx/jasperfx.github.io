@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.8.6</h3>
+		      	<h3>JasperFx 0.9.9</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -113,7 +113,7 @@ mix with the <code>UseJasper()</code> extension method as shown below:</p>
 </ol>
 <p>To control the order of where Jasper executes within your ASP.Net Core application pipeline, you can
 explicitly add the Jasper middleware like this:</p>
-<pre><code class="language-csharp">&#xA;var builder = new WebHostBuilder();&#xA;builder&#xA;    .UseKestrel()&#xA;    .UseUrls(&quot;http://localhost:3003&quot;)&#xA;    .ConfigureServices(s =&gt; s.AddMvc())&#xA;    .Configure(app =&gt;&#xA;    {&#xA;        app.UseMiddleware&lt;CustomMiddleware&gt;();&#xA;&#xA;        // Add the Jasper middleware&#xA;        app.UseJasper();&#xA;&#xA;        // Nothing stopping you from using Jasper *and*&#xA;        // MVC, NancyFx, or any other ASP.Net Core&#xA;        // compatible framework&#xA;        app.UseMvc();&#xA;    })&#xA;    .UseJasper&lt;SimpleJasperBusApp&gt;();&#xA;&#xA;&#xA;var host = builder.Build();&#xA;&#xA;host.Start();&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;var builder = new WebHostBuilder();&#xA;builder&#xA;    .UseKestrel(x =&gt; x.ListenLocalhost(3003))&#xA;    .UseUrls(&quot;http://localhost:3003&quot;)&#xA;    .ConfigureServices(s =&gt; s.AddMvc())&#xA;    .Configure(app =&gt;&#xA;    {&#xA;        app.UseMiddleware&lt;CustomMiddleware&gt;();&#xA;&#xA;        // Add the Jasper middleware&#xA;        app.UseJasper();&#xA;&#xA;        // Nothing stopping you from using Jasper *and*&#xA;        // MVC, NancyFx, or any other ASP.Net Core&#xA;        // compatible framework&#xA;        app.UseMvc();&#xA;    })&#xA;    .UseJasper&lt;SimpleJasperBusApp&gt;();&#xA;&#xA;&#xA;var host = builder.Build();&#xA;&#xA;host.Start();&#xA;</code></pre>
 
 			      	</div>
 

@@ -48,7 +48,7 @@
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/testing" title="Automated Testing Support">Previous</a></li>
-		      	<li><a href="/documentation/extensions/application_insights" title="Jasper.ApplicationInsights">Next</a></li>
+		      	<li><a href="/documentation/extensions/sqlserver" title="Jasper.Persistence.SqlServer">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -73,14 +73,14 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.8.6</h3>
+		      	<h3>JasperFx 0.9.9</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/application_insights">Jasper.ApplicationInsights</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/sqlserver">Jasper.Persistence.SqlServer</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/testing">Automated Testing Support</a></p>
 
 		        </ul>
@@ -109,7 +109,7 @@ can be altered by an <code>IJasperExtension</code>. Here's a contrived example:<
 <h2 id="auto-discovery-of-extensions">Auto Discovery of Extensions</h2>
 <p>When you build an extension, you also have the option to make a single extension be auto-discoverable from an external assembly. To make that concrete, here's an auto-discovered
 extension in the Jasper.Marten library that wires up integration with a <a href="https://jasperfx.github.io/marten">Marten</a> database:</p>
-<pre><code class="language-csharp">&#xA;[assembly: JasperModule(typeof(MartenExtension))]&#xA;&#xA;namespace Jasper.Persistence.Marten&#xA;{&#xA;    public class MartenExtension : IJasperExtension&#xA;    {&#xA;        public void Configure(JasperRegistry registry)&#xA;        {&#xA;            registry.Services.AddSingleton&lt;IDocumentStore&gt;(x =&gt;&#xA;            {&#xA;                var storeOptions = x.GetService&lt;StoreOptions&gt;();&#xA;                var documentStore = new DocumentStore(storeOptions);&#xA;                return documentStore;&#xA;            });&#xA;&#xA;            registry.Handlers.GlobalPolicy&lt;FineGrainedSessionCreationPolicy&gt;();&#xA;&#xA;&#xA;            registry.Services.AddScoped(c =&gt; c.GetService&lt;IDocumentStore&gt;().OpenSession());&#xA;            registry.Services.AddScoped(c =&gt; c.GetService&lt;IDocumentStore&gt;().QuerySession());&#xA;&#xA;            registry.CodeGeneration.Sources.Add(new SessionVariableSource());&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[assembly:JasperModule(typeof(MartenExtension))]&#xA;&#xA;namespace Jasper.Persistence.Marten&#xA;{&#xA;    public class MartenExtension : IJasperExtension&#xA;    {&#xA;        public void Configure(JasperRegistry registry)&#xA;        {&#xA;            registry.Services.AddSingleton&lt;IDocumentStore&gt;(x =&gt;&#xA;            {&#xA;                var storeOptions = x.GetService&lt;StoreOptions&gt;();&#xA;                var documentStore = new DocumentStore(storeOptions);&#xA;                return documentStore;&#xA;            });&#xA;&#xA;            registry.Handlers.GlobalPolicy&lt;FineGrainedSessionCreationPolicy&gt;();&#xA;&#xA;&#xA;            registry.Services.AddScoped(c =&gt; c.GetService&lt;IDocumentStore&gt;().OpenSession());&#xA;            registry.Services.AddScoped(c =&gt; c.GetService&lt;IDocumentStore&gt;().QuerySession());&#xA;&#xA;            registry.CodeGeneration.Sources.Add(new SessionVariableSource());&#xA;&#xA;            registry.Services.AddSingleton(x =&gt;&#xA;            {&#xA;                var options = x.GetRequiredService&lt;StoreOptions&gt;();&#xA;                return new PostgresqlSettings&#xA;                {&#xA;                    // Super hacky, look away!!!&#xA;                    ConnectionString = options.Tenancy.Default.CreateConnection().ConnectionString,&#xA;                    SchemaName = options.DatabaseSchemaName&#xA;                };&#xA;            });&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>When a Jasper application is being bootstrapped, it looks for any assemblies in the application's bin directory that are marked with the <code>[JasperModule]</code> attribute to determine the extension types that should be automatically applied to the application. In the case above, the
 Marten extension would be discovered at bootstrapping time and the <code>MartenExtension</code> would be
 applied to the application.</p>
@@ -127,7 +127,7 @@ applied to the application.</p>
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/extensions/application_insights">Jasper.ApplicationInsights</a>
+				        	<strong>Next: </strong><a href="/documentation/extensions/sqlserver">Jasper.Persistence.SqlServer</a>
 
 				        </span>
 			      	</nav>

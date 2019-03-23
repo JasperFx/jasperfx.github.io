@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Send Message with Eventual Reply</title>
+		<title>JasperFx - Outbox Usage with Postgresql</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -47,8 +47,8 @@
 		        <li>
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/documentation/messaging/publishing/pubsub" title="Publish / Subscribe">Previous</a></li>
-		      	<li><a href="/documentation/messaging/publishing/delayed" title="Scheduled Message Delivery and Execution">Next</a></li>
+		      	<li><a href="/documentation/extensions/postgresql/transactions" title="Postgresql Transaction Middleware">Previous</a></li>
+		      	<li><a href="/documentation/extensions/marten" title="Jasper.Persistence.Marten">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -63,7 +63,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/messaging">Messaging</a></li><li><a href="/documentation/messaging/publishing">Publishing Messages</a></li><li class="active">Send Message with Eventual Reply</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/extensions">Extensions</a></li><li><a href="/documentation/extensions/postgresql">Jasper.Persistence.Postgresql</a></li><li class="active">Outbox Usage with Postgresql</li></ol>
 		  	</nav>
 		  </div>
 
@@ -80,24 +80,26 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/messaging/publishing/delayed">Scheduled Message Delivery and Execution</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging/publishing/pubsub">Publish / Subscribe</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/marten">Jasper.Persistence.Marten</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/postgresql/transactions">Postgresql Transaction Middleware</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Send Message with Eventual Reply<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/messaging/publishing/expected_reply.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+			      	<h1>Outbox Usage with Postgresql<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/extensions/postgresql/outbox.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--title:Send Message with Eventual Reply-->
-<p>In some cases you will send a message and expect a reply at some point from the downstream system, but you
-don't need the response right away and you don't care which node in your application handles the eventual reply.
-For that scenario, Jasper provides this functionality with the syntax shown below:</p>
-<pre><code class="language-csharp">&#xA;internal async Task using_global_request_and_reply(IMessageContext messaging)&#xA;{&#xA;    // Send a question to another application, and request that the handling&#xA;    // service send back an answer&#xA;    await messaging.SendAndExpectResponseFor&lt;Answer&gt;(new Question());&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task invoke_expecting_a_response()&#xA;{&#xA;    StartTheReceiver(x =&gt; { x.Handlers.IncludeType&lt;QuestionAndAnswer&gt;(); });&#xA;&#xA;    var answer = await theReceiver.Messaging.Invoke&lt;Answer&gt;(new Question {One = 3, Two = 4});&#xA;&#xA;    answer.Sum.ShouldBe(7);&#xA;    answer.Product.ShouldBe(12);&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task invoke_with_expected_response_when_there_is_no_receiver()&#xA;{&#xA;    StartTheReceiver(x =&gt; { x.Handlers.IncludeType&lt;QuestionAndAnswer&gt;(); });&#xA;    await Should.ThrowAsync&lt;ArgumentOutOfRangeException&gt;(async () =&gt;&#xA;    {&#xA;        await theReceiver.Messaging.Invoke&lt;Answer&gt;(new QuestionWithNoHandler());&#xA;    });&#xA;}&#xA;&#xA;[Fact]&#xA;public async Task invoke_with_no_known_response_do_not_blow_up()&#xA;{&#xA;    StartTheReceiver(x =&gt; { x.Handlers.IncludeType&lt;QuestionAndAnswer&gt;(); });&#xA;    (await theReceiver.Messaging.Invoke&lt;Answer&gt;(new QuestionWithNoAnswer()))&#xA;        .ShouldBeNull();&#xA;}&#xA;&#xA;</code></pre>
+			      		<!--title: Outbox Usage with Postgresql-->
+<p>See <a href="https://jeremydmiller.com/2018/04/16/jaspers-outbox-pattern-support/">Jasper’s “Outbox” Pattern Support</a> for more context around why you would care about the &quot;outbox&quot; pattern.</p>
+<p>Jasper supports the <a href="https://jimmybogard.com/refactoring-towards-resilience-evaluating-coupling/">&quot;outbox&quot; pattern</a> with Postgresql connections. You can explicitly opt into this usage with code like this:</p>
+<pre><code class="language-csharp">&#xA;using (var conn = new NpgsqlConnection(Servers.PostgresConnectionString))&#xA;{&#xA;    await conn.OpenAsync();&#xA;&#xA;    var tx = conn.BeginTransaction();&#xA;&#xA;    // &quot;context&quot; is an IMessageContext object&#xA;    await context.EnlistInTransaction(tx);&#xA;&#xA;    await action(context);&#xA;&#xA;    tx.Commit();&#xA;&#xA;    await context.SendAllQueuedOutgoingMessages();&#xA;}&#xA;&#xA;</code></pre>
+<p>If you use the <code>[Transaction]</code> middleware in a message handler, the middleware will take care of some of the repetitive mechanics for you. In the code below, the <code>IMessageContext</code> is enrolled in the current transaction before the action runs, and the outgoing messages
+are flushed into the outgoing sending queue after the action runs.</p>
+<pre><code class="language-csharp">&#xA;[Transactional]&#xA;public async Task&lt;ItemCreatedEvent&gt; Handle(CreateItemCommand command, NpgsqlTransaction tx)&#xA;{&#xA;    var item = new Item {Name = command.Name};&#xA;&#xA;    // persist the new Item with the&#xA;    // current transaction&#xA;    await persist(tx, item);&#xA;&#xA;    return new ItemCreatedEvent {Item = item};&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -105,12 +107,12 @@ For that scenario, Jasper provides this functionality with the syntax shown belo
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/messaging/publishing/pubsub">Publish / Subscribe</a>
+				        	<strong>Previous: </strong><a href="/documentation/extensions/postgresql/transactions">Postgresql Transaction Middleware</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/messaging/publishing/delayed">Scheduled Message Delivery and Execution</a>
+				        	<strong>Next: </strong><a href="/documentation/extensions/marten">Jasper.Persistence.Marten</a>
 
 				        </span>
 			      	</nav>

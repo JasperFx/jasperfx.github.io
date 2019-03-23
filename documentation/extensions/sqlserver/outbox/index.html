@@ -48,7 +48,7 @@
 <a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
 		      	<li><a href="/documentation/extensions/sqlserver/transactions" title="Sql Server Transaction Middleware">Previous</a></li>
-		      	
+		      	<li><a href="/documentation/extensions/postgresql" title="Jasper.Persistence.Postgresql">Next</a></li>
 		      </ul>
 		      <div class="navbar-form navbar-left" role="search">
 		        <div class="form-group">
@@ -73,14 +73,14 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.8.6</h3>
+		      	<h3>JasperFx 0.9.9</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
 
 		        </ul>
 
-		        	
+		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/extensions/postgresql">Jasper.Persistence.Postgresql</a></p>
 		        	<h3 class="no-margin">Previous</h3><a href="/documentation/extensions/sqlserver/transactions">Sql Server Transaction Middleware</a></p>
 
 		        </ul>
@@ -97,7 +97,7 @@
 <p>See <a href="https://jeremydmiller.com/2018/04/16/jaspers-outbox-pattern-support/">Jasper’s “Outbox” Pattern Support</a> for more context around why you would care about the &quot;outbox&quot; pattern.</p>
 <p>Jasper supports the <a href="https://jimmybogard.com/refactoring-towards-resilience-evaluating-coupling/">&quot;outbox&quot; pattern</a> with Sql Server connections. You can explicitly opt into this usage with code like this:</p>
 <pre><code class="language-csharp">&#xA;using (var conn = new SqlConnection(Servers.SqlServerConnectionString))&#xA;{&#xA;    await conn.OpenAsync();&#xA;&#xA;    var tx = conn.BeginTransaction();&#xA;&#xA;    // &quot;context&quot; is an IMessageContext object&#xA;    await context.EnlistInTransaction(tx);&#xA;&#xA;    await action(context);&#xA;&#xA;    tx.Commit();&#xA;&#xA;    await context.SendAllQueuedOutgoingMessages();&#xA;}&#xA;&#xA;</code></pre>
-<p>If you use the <code>[SqlTransaction]</code> middleware in a message handler, the middleware will take care of some of the repetitive mechanics for you. In the code below, the <code>IMessageContext</code> is enrolled in the current transaction before the action runs, and the outgoing messages
+<p>If you use the <code>[Transaction]</code> middleware in a message handler, the middleware will take care of some of the repetitive mechanics for you. In the code below, the <code>IMessageContext</code> is enrolled in the current transaction before the action runs, and the outgoing messages
 are flushed into the outgoing sending queue after the action runs.</p>
 <pre><code class="language-csharp">&#xA;[Transactional]&#xA;public async Task&lt;ItemCreatedEvent&gt; Handle(CreateItemCommand command, SqlTransaction tx)&#xA;{&#xA;    var item = new Item {Name = command.Name};&#xA;&#xA;    // persist the new Item with the&#xA;    // current transaction&#xA;    await persist(tx, item);&#xA;&#xA;    return new ItemCreatedEvent {Item = item};&#xA;}&#xA;</code></pre>
 
@@ -112,7 +112,7 @@ are flushed into the outgoing sending queue after the action runs.</p>
 				        </span>
 				        <span class="pull-right">
 
-				        	
+				        	<strong>Next: </strong><a href="/documentation/extensions/postgresql">Jasper.Persistence.Postgresql</a>
 
 				        </span>
 			      	</nav>

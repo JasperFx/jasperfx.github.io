@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.8.6</h3>
+		      	<h3>JasperFx 0.9.9</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -104,7 +104,7 @@ arguments.</p>
 <p>Jasper uses a naming convention to scan through your application assembly (the assembly that holds either your ASP.Net Core <code>Startup</code> class or a <code>JasperRegistry</code> type) to find public methods that handle HTTP requests. Out of the box, the naming convention is:</p>
 <ul>
 <li>Public types that are named with the suffix &quot;Endpoint&quot; or &quot;Endpoints&quot; and public method names that start with an HTTP verb and an underscore, like
-&quot;get_something&quot; or &quot;post_something&quot;</li>
+&quot;get_something&quot; or &quot;post_something&quot; or public methods decorated with one of Jasper's routing attributes like <code>[JasperGet]</code> or <code>[JasperPost]</code></li>
 <li>Public classes named either <code>HomeEndpoint</code> or <code>ServiceEndpoint</code>, and methods named after HTTP verbs like <code>Get()</code> or <code>Delete()</code> or <code>Head()</code></li>
 </ul>
 <p>Endpoint classes can be static classes if you want to only lean on method injection, and that's a minor performance optimization because it reduces
@@ -124,6 +124,10 @@ Jasper's routing assumes <em>for the moment</em> that a single route only applie
 <li>Look for any segments that exactly match the name of an argument parameter to the action method. If so, this segment is assumed to be a route argument</li>
 </ol>
 <p>Do see the section on &quot;Spread&quot; routes below for a discussion about these special kinds of routes.</p>
+<h2 id="using-attributes">Using Attributes</h2>
+<p>As a late addition just prior to v1.0, Jasper also supports using attributes on methods to explicitly denote the Url pattern as shown below:</p>
+<pre><code class="language-csharp">&#xA;[JasperPost(&quot;one&quot;)]&#xA;public int Post1()&#xA;{&#xA;    return 200;&#xA;}&#xA;&#xA;[JasperGet(&quot;/one&quot;)]&#xA;public string Get1()&#xA;{&#xA;    return &quot;one&quot;;&#xA;}&#xA;&#xA;[JasperGet(&quot;/dog/{name}&quot;)]&#xA;public string GetDog(string name)&#xA;{&#xA;    return $&quot;the dog is {name}&quot;;&#xA;}&#xA;</code></pre>
+<p>In addition, if you can also pull in the <a href="/documentation/http/mvcextender">Jasper.MvcExtender</a> to use MVC Core's built in routing attributes as another alternative.</p>
 <h2 id="using-underscores-and-dashes-in-route-patterns">Using Underscores and Dashes in Route Patterns</h2>
 <p>Because somebody is going to ask, yes, it's possible to use underscores or dashes in your Url patterns. To prefix a route segment
 with an underscore, use 2 underscores. For a dash in any location in the Url pattern, use 3 underscores. Here's a sample:</p>
