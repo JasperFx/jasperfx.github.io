@@ -73,7 +73,7 @@
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.13</h3>
+		      	<h3>JasperFx 0.9.14</h3>
 		      	<br />
 
 				<ul class="nav nav-stacked affix" id="sidebar">
@@ -99,7 +99,7 @@ Jasper uses the ASP.Net Core <code>IWebHostBuilder</code> infrastructure interna
 bootstrapping.</p>
 </div>
 <p>All the examples in this page are using the default, &quot;in the box&quot; options for Jasper. To see what else can be configured or added to a Jasper application, see the folling topics:</p>
-<ul class="table-of-contents"><li><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a></li><li><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a></li><li><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a></li><li><a href="/documentation/bootstrapping/console">Jasper Command Line Support</a></li><li><a href="/documentation/bootstrapping/ioc">IoC Container Integration</a></li><li><a href="/documentation/bootstrapping/logging">Logging Integration</a></li><li><a href="/documentation/bootstrapping/ihostedservice">Long Running Processes with IHostedService</a></li><li><a href="/documentation/bootstrapping/environment_tests">Environment Tests</a></li><li><a href="/documentation/bootstrapping/middleware_and_codegen">Jasper Middleware and Policies</a></li></ul>
+<ul class="table-of-contents"><li><a href="/documentation/bootstrapping/configuring_jasper">Configuring Jasper Applications</a></li><li><a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a></li><li><a href="/documentation/bootstrapping/configuration">Application Configuration and Settings</a></li><li><a href="/documentation/bootstrapping/console">Jasper Command Line Support</a></li><li><a href="/documentation/bootstrapping/ioc">IoC Container Integration</a></li><li><a href="/documentation/bootstrapping/logging">Logging Integration</a></li><li><a href="/documentation/bootstrapping/ihostedservice">Long Running Processes with IHostedService</a></li><li><a href="/documentation/bootstrapping/middleware_and_codegen">Jasper Middleware and Policies</a></li></ul>
 <p>Even if running &quot;headless&quot; (i.e., without Kestrel), Jasper applications are effectively ASP.Net Core applications and use the ASP.Net Core <code>IWebHostBuilder</code> for all bootstrapping and application lifecycle events.</p>
 <p>In its simplest possible setup, you can fire up a Jasper application in memory like so:</p>
 <pre><code class="language-csharp">&#xA;var host = WebHost.CreateDefaultBuilder()&#xA;    .UseStartup&lt;Startup&gt;()&#xA;    .UseJasper() // Use Jasper with all its&#xA;                 // defaults&#xA;    .Start();&#xA;</code></pre>
