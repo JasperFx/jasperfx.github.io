@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>Jasper - Documentation</title>
+		<title>Jasper - Execution Pipeline</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -46,10 +46,10 @@
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
 					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
-					<li class="nav-item"><a class="nav-link" href="/" title="JasperFx">Previous</a></li>
-					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Next</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/bootstrapping" title="Bootstrapping & Configuration">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/execution/handlers" title="Writing Message Handlers">Next</a></li>
 					<li class="nav-item">
-						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/index.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/execution/index.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
 					</li>
 					
 				</ul>
@@ -72,7 +72,7 @@
 		<!--main-->
 		<div class="container">
 			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li class="active">Documentation</li></ol>
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Execution Pipeline</li></ol>
 				
 			</nav>
 			
@@ -90,8 +90,8 @@
 
 			  </ul>
 
-				  <h3 class="no-margin">Next</h3><p><a href="/documentation/getting_started">Getting Started</a></p>
-				  <h3 class="no-margin">Previous</h3><a href="/">JasperFx</a></p>
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/execution/handlers">Writing Message Handlers</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/bootstrapping">Bootstrapping & Configuration</a></p>
 
 			  </ul>
 		      </div><!--/left-->
@@ -99,14 +99,19 @@
 		      <!--right-->
 		      <div class="col-md-9">
 
-			      	<h1>Documentation</h1>
+			      	<h1>Execution Pipeline</h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
 
-			      		<!--title:Documentation-->
-<ul class="table-of-contents"><li><a href="/documentation/getting_started">Getting Started</a></li><li><a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a></li><li><a href="/documentation/execution">Execution Pipeline</a><ul><li><a href="/documentation/execution/handlers">Writing Message Handlers</a></li><li><a href="/documentation/execution/discovery">Message Handler Discovery</a></li><li><a href="/documentation/execution/errorhandling">Error Handling</a></li><li><a href="/documentation/execution/cascading">Cascading Messages</a></li><li><a href="/documentation/execution/unknown_messages">Handling an Unknown Message</a></li><li><a href="/documentation/execution/dead_letter_queue">Dead Letter Envelopes</a></li><li><a href="/documentation/execution/middleware_and_codegen">Jasper Middleware and Policies</a></li><li><a href="/documentation/execution/messages">Reading, Writing, and Versioning Messages, Commands, and Events</a></li><li><a href="/documentation/execution/sagas">Stateful Sagas</a></li></ul></li><li><a href="/documentation/mediator">Jasper as a Mediator</a></li><li><a href="/documentation/local">Local Worker Queues</a></li><li><a href="/documentation/integration">Messaging Between Systems</a><ul><li><a href="/documentation/integration/pubsub">Publishing and Sending</a></li><li><a href="/documentation/integration/expected_reply">Request / Reply</a></li><li><a href="/documentation/integration/customizing_envelopes">Working with Envelopes</a></li><li><a href="/documentation/integration/message_delivery_rules">Message Type Specific Delivery Rules</a></li><li><a href="/documentation/integration/correlation">Message Correlation</a></li><li><a href="/documentation/integration/transports">Messaging Transports</a><ul><li><a href="/documentation/integration/transports/tcp">TCP Transport</a></li><li><a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a></li><li><a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a></li></ul></li><li><a href="/documentation/integration/routing">Routing Messages</a></li><li><a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a></li></ul></li><li><a href="/documentation/durability">Durable Messaging and Command Processing</a><ul><li><a href="/documentation/durability/endpoints">Adding Durability to Senders or Listeners</a></li><li><a href="/documentation/durability/agent">Durability Agent</a></li><li><a href="/documentation/durability/managing">Message Storage Management</a></li><li><a href="/documentation/durability/sqlserver">Using Sql Server with Jasper</a></li><li><a href="/documentation/durability/postgresql">Using Postgresql with Jasper</a></li><li><a href="/documentation/durability/marten">Using Marten with Jasper</a></li><li><a href="/documentation/durability/efcore">Using Entity Framework Core with Jasper</a></li></ul></li><li><a href="/documentation/testing">Automated Testing Support</a></li><li><a href="/documentation/ioc">IoC Container Integration</a></li><li><a href="/documentation/console">Command Line Support</a></li><li><a href="/documentation/logging">Logging Integration</a></li><li><a href="/documentation/extensions">Extensions</a></li><li><a href="/documentation/samples">Sample Applications</a></li><li><a href="/documentation/jsoncommands">Message Json Schema Commands</a></li></ul>
+			      		<!--title:Execution Pipeline-->
+<p>Jasper's execution pipeline for handling messages is unique. Instead of forcing you to constrain your code to meet Jasper's
+interfaces, Jasper tries to adapt itself to <strong>your</strong> code. It does this by taking your <a href="/documentation/execution/handlers">Writing Message Handlers</a> and
+whatever <a href="/documentation/execution/middleware_and_codegen">Jasper Middleware and Policies</a>, then generating C# code to call your code in the most efficient way
+possible using Roslyn's ability to compile code at runtime.</p>
+<p>The following topics will help you understand how to build and customize Jasper message handlers:</p>
+<ul class="table-of-contents"><li><a href="/documentation/execution/handlers">Writing Message Handlers</a></li><li><a href="/documentation/execution/discovery">Message Handler Discovery</a></li><li><a href="/documentation/execution/errorhandling">Error Handling</a></li><li><a href="/documentation/execution/cascading">Cascading Messages</a></li><li><a href="/documentation/execution/unknown_messages">Handling an Unknown Message</a></li><li><a href="/documentation/execution/dead_letter_queue">Dead Letter Envelopes</a></li><li><a href="/documentation/execution/middleware_and_codegen">Jasper Middleware and Policies</a></li><li><a href="/documentation/execution/messages">Reading, Writing, and Versioning Messages, Commands, and Events</a></li><li><a href="/documentation/execution/sagas">Stateful Sagas</a></li></ul>
 
 			      	</div>
 
@@ -114,12 +119,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/">JasperFx</a>
+				        	<strong>Previous: </strong><a href="/documentation/bootstrapping">Bootstrapping & Configuration</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/getting_started">Getting Started</a>
+				        	<strong>Next: </strong><a href="/documentation/execution/handlers">Writing Message Handlers</a>
 
 				        </span>
 			      	</nav>

@@ -6,11 +6,10 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Automated Testing Support</title>
+		<title>Jasper - Automated Testing Support</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
 		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
 
 
 
@@ -20,81 +19,164 @@
         <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-
-        <!-- CSS code from Bootply.com editor -->
-        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
-    </head>
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
 
     <!-- HTML code from Bootply.com editor -->
 
     <body  >
 
 
-        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">JasperFx</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
-		        <li>
-		          <a href="/documentation/getting_started">Getting Started</a>
-		        </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
-		        <li>
-		        <li>
-<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/documentation/messaging" title="Messaging">Previous</a></li>
-		      	<li><a href="/documentation/testing/http_endpoints" title="Testing HTTP Endpoints with Alba">Next</a></li>
-		      </ul>
-		      <div class="navbar-form navbar-left" role="search">
-		        <div class="form-group">
-		          <input id="search" type="search" class="form-control" placeholder="Search">
-		        </div>
-		      </div>
 
-		    </nav>
 
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/durability" title="Durable Messaging and Command Processing">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/ioc" title="IoC Container Integration">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/testing.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
 		  </div>
+
 		</nav>
+	</header>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Automated Testing Support</li></ol>
-		  	</nav>
-		  </div>
+	<main role="main" style="margin-top:75px">
+
+
 
 		<!--main-->
 		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Automated Testing Support</li></ol>
+				
+			</nav>
+			
+
 			<div class="row">
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.14</h3>
-		      	<br />
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+				<br />
+				<br />
 
-		        </ul>
+			  <ul id="sidebar">
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/testing/http_endpoints">Testing HTTP Endpoints with Alba</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation/messaging">Messaging</a></p>
+			  </ul>
 
-		        </ul>
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/ioc">IoC Container Integration</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/durability">Durable Messaging and Command Processing</a></p>
+
+			  </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Automated Testing Support<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/testing/index.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<h1>Automated Testing Support</h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
+
 			      		<!--title:Automated Testing Support-->
-<ul class="table-of-contents"><li><a href="/documentation/testing/http_endpoints">Testing HTTP Endpoints with Alba</a></li><li><a href="/documentation/testing/storyteller">Using Storyteller against Jasper Systems</a></li><li><a href="/documentation/testing/message_tracking">Message Tracking</a></li><li><a href="/documentation/testing/stub">&quot;Stub&quot; Transport for Testing</a></li></ul>
+<p>Jasper was built intentionally with <a href="https://en.wikipedia.org/wiki/Software_testability">testability</a> as a first class design goal.</p>
+<h2 id="general-guidance">General Guidance</h2>
+<ul>
+<li>For any kind of integration testing, the Jasper team suggests bootstrapping your Jasper application to an <code>IHost</code> in
+a test harness as closely to the production application setup as you can -- minus inconvenient external dependencies</li>
+<li>To isolate your Jasper application from any kind of external transports that you might not want to access locally, use the
+transport stubbing explained in a section below</li>
+<li>If your message handlers do not use any kind of Jasper middleware, it might be easy enough to simply resolve your handler class from the underlying IoC container. Use <code>IHost.Services.GetRequiredService&lt;T&gt;()</code> to resolve the handler objects, and Lamar is able to figure out a construction strategy on the fly without any kind of prior registration.</li>
+<li>If your message handlers do not involve any kind of cascading messages, use <code>ICommandBus.Invoke()</code> to execute a message inline</li>
+<li>If your message handler <em>does</em> involve cascading messages, use the message tracking support explained in the next session</li>
+<li>If you are trying to coordinate a test across multiple Jasper applications, see the section on <em>Message Tracking across Systems</em></li>
+</ul>
+<h2 id="message-tracking">Message Tracking</h2>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+The message tracking adds a little bit of extra overhead to the logging in Jasper, and should <em>not</em> be used
+in production.</p>
+</div>
+<p>Jasper is a successor to a much earlier project called <a href="https://fubumvc.github.io">FubuMVC</a>. One of the genuinely successful
+parts of FubuMVC was a mechanism to coordinate automated testing of its messaging support as described in these blog posts:</p>
+<ul>
+<li><a href="https://jeremydmiller.com/2016/05/16/automated-testing-of-message-based-systems/">Automated Testing of Message Based Systems</a></li>
+<li><a href="https://jeremydmiller.com/2016/05/17/reliable-and-debuggable-automated-testing-of-message-based-systems-in-a-crazy-async-world/">Reliable and “Debuggable” Automated Testing of Message Based Systems in a Crazy Async World</a></li>
+</ul>
+<p>Jasper's version of this feature is much improved from FubuMVC, and comes out of the box to make testing scenarios easier.</p>
+<p>Automated testing against asynchronous processing applications can be very challenging. Let's say that when you're application handles a certain message it also sends out a couple cascading messages that in turn cause changes in state to the system
+that you want to verify in your automated tests. The tricky part is how to invoke the original message, but then waiting for the cascading operations to complete before letting the test harness proceed to verifying the system state. Using <code>Thread.Sleep()</code> is <em>one</em> alternative, but usually results in either unnecessarily slow or horrendously unreliable automated
+tests.</p>
+<p>To at least ameliorate the issues around timing, Jasper comes with the &quot;Message Tracking&quot; feature that can be used as a helper in automated testing. To enable that in your applications, just include the extension as shown below:</p>
+<pre><code class="language-csharp">&#xA;public class AppUsingMessageTracking : JasperOptions&#xA;{&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        if (hosting.IsDevelopment() || hosting.IsEnvironment(&quot;Testing&quot;))&#xA;        {&#xA;            // This is necessary to add the message tracking&#xA;            // to your Jasper application&#xA;            Extensions.UseMessageTrackingTestingSupport();&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Now, in testing you can use extension methods off of <code>IHost</code> that will execute an action with the service bus and
+wait until all the work started (messages sent should be received, cascading messages should be completed, etc.) has completed --
+or it times out in a reasonable time. <strong>The message tracking will throw an exception if it times out without completing</strong>, and the exception will list out all the detected activity to try to help trouble shoot where things went wrong.</p>
+<p>To use the message tracking, consider this skeleton of a test:</p>
+<pre><code class="language-csharp">&#xA;public async Task invoke_a_message()&#xA;{&#xA;    using (var host = JasperHost.For&lt;AppUsingMessageTracking&gt;())&#xA;    {&#xA;        await host.ExecuteAndWait(x =&gt; x.Invoke(new Message1()));&#xA;&#xA;        // check the change in system state after the original&#xA;        // message and all of its cascading messages&#xA;        // finish&#xA;    }&#xA;}&#xA;</code></pre>
+<p>The other usages of message tracking are shown below:</p>
+<pre><code class="language-csharp">&#xA;public async Task other_usages()&#xA;{&#xA;    using (var runtime = JasperHost.For&lt;AppUsingMessageTracking&gt;())&#xA;    {&#xA;        // Call IMessageContext.Invoke() and wait for all activity to finish&#xA;        await runtime.InvokeMessageAndWait(new Message1());&#xA;&#xA;        // Configurable timeouts&#xA;        await runtime.InvokeMessageAndWait(new Message1(),&#xA;            10000);&#xA;&#xA;        // More general usage to send a single message and wait&#xA;        // for all activity to complete&#xA;        await runtime.ExecuteAndWait(() =&gt; runtime.Send(new Message1()));&#xA;&#xA;&#xA;        // Using an isolated message context&#xA;        await runtime.ExecuteAndWait(c =&gt; c.Send(new Message1()));&#xA;&#xA;        // Assert that there were no exceptions during the processing&#xA;        // If there are, this will throw an AggregateException of&#xA;        // all encountered exceptions in the message processing&#xA;        var session = await runtime.ExecuteAndWait(c =&gt; c.Send(new Message1()));&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<p>All of these methods return an <code>ITrackedSession</code> object that gives you access to the tracked activity. Here's an example from Jasper's tests that uses <code>ITrackedSession</code>:</p>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task track_outgoing_to_tcp_when_stubbed()&#xA;{&#xA;    using (var host = JasperHost.For(options =&gt;&#xA;    {&#xA;        options.Endpoints.PublishAllMessages().ToPort(7777);&#xA;        options.Endpoints.StubAllExternallyOutgoingEndpoints();&#xA;        options.Extensions.UseMessageTrackingTestingSupport();&#xA;    }))&#xA;    {&#xA;        var message = new Message1();&#xA;&#xA;        // The session can be interrogated to see&#xA;        // what activity happened while the tracking was&#xA;        // ongoing&#xA;        var session = await host.SendMessageAndWait(message);&#xA;&#xA;        session.FindSingleTrackedMessageOfType&lt;Message1&gt;(EventType.Sent)&#xA;            .ShouldBeSameAs(message);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>The <code>ITrackedSession</code> interface looks like this:</p>
+<pre><code class="language-csharp">&#xA;public interface ITrackedSession&#xA;{&#xA;    TrackingStatus Status { get; }&#xA;&#xA;    T FindSingleTrackedMessageOfType&lt;T&gt;();&#xA;&#xA;    IEnumerable&lt;object&gt; UniqueMessages();&#xA;&#xA;    IEnumerable&lt;object&gt; UniqueMessages(EventType eventType);&#xA;&#xA;    T FindSingleTrackedMessageOfType&lt;T&gt;(EventType eventType);&#xA;&#xA;    EnvelopeRecord[] FindEnvelopesWithMessageType&lt;T&gt;(EventType eventType);&#xA;&#xA;    EnvelopeRecord[] FindEnvelopesWithMessageType&lt;T&gt;();&#xA;&#xA;    EnvelopeRecord[] AllRecordsInOrder();&#xA;&#xA;    bool HasNoRecordsOfAnyKind();&#xA;&#xA;    EnvelopeRecord[] AllRecordsInOrder(EventType eventType);&#xA;}&#xA;</code></pre>
+<h2 id="message-tracking-with-external-transports">Message Tracking with External Transports</h2>
+<p>By default, the message tracking runs in a &quot;local&quot; mode that logs any outgoing messages to external transports, but doesn't wait for
+any indication that those messages are completely received on the other end. To include tracking of activity from external transports
+even when you are testing one application, use this syntax shown in an internal Jasper test for the Azure Service Bus support:</p>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public async Task can_stop_and_start()&#xA;{&#xA;    using (var host = JasperHost.For&lt;ASBUsingApp&gt;())&#xA;    {&#xA;        await host&#xA;            // The TrackActivity() method starts a Fluent Interface&#xA;            // that gives you fine-grained control over the&#xA;            // message tracking&#xA;            .TrackActivity()&#xA;&#xA;            // Include the external transports in the determination&#xA;            // of &quot;completion&quot;&#xA;            .IncludeExternalTransports()&#xA;            .SendMessageAndWait(new ColorChosen {Name = &quot;Red&quot;});&#xA;&#xA;        var colors = host.Get&lt;ColorHistory&gt;();&#xA;&#xA;        colors.Name.ShouldBe(&quot;Red&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="stubbing-outgoing-external-transports">Stubbing Outgoing External Transports</h2>
+<p>Sometimes you'll need to develop on your Jasper application without your application having any access to external transports for one reason or another. Jasper still has you covered with the feature <code>JasperOptions.Endpoints.StubAllExternallyOutgoingEndpoints()</code> shown below:</p>
+<pre><code class="language-csharp">&#xA;public static IHostBuilder CreateHostBuilder() =&gt;&#xA;    Host.CreateDefaultBuilder()&#xA;&#xA;        // This adds Jasper with inline configuration&#xA;        // of JasperOptions&#xA;        .UseJasper((context, opts) =&gt;&#xA;        {&#xA;            // This is an example usage of the application&#x27;s&#xA;            // IConfiguration inside of Jasper bootstrapping&#xA;            var port = context.Configuration.GetValue&lt;int&gt;(&quot;ListenerPort&quot;);&#xA;            opts.Endpoints.ListenAtPort(port);&#xA;&#xA;            // If we&#x27;re running in development mode and you don&#x27;t&#xA;            // want to worry about having all the external messaging&#xA;            // dependencies up and running, stub them out&#xA;            if (context.HostingEnvironment.IsDevelopment())&#xA;            {&#xA;                // This will &quot;stub&quot; out all configured external endpoints&#xA;                opts.Endpoints.StubAllExternallyOutgoingEndpoints();&#xA;&#xA;                opts.Extensions.UseMessageTrackingTestingSupport();&#xA;            }&#xA;        });&#xA;</code></pre>
+<p>When this is active, Jasper will simply not start up any of the configured listeners or subscribers for external transports. Any messages published to these endpoints will simply be ignored at runtime -- but you can still use the message tracking feature shown above to capture the outgoing messages for automated testing.</p>
+<h2 id="integration-with-storyteller">Integration with Storyteller</h2>
+<p>Jasper comes with a pre-built recipe for doing integration or acceptance testing with <a href="http://storyteller.github.io">Storyteller</a> using
+the <em>Jasper.TestSupport.Storyteller</em> extension library.</p>
+<p>To get started with this package, create a new console application in your solution and add the <code>Jasper.TestSupport.Storyteller</code> Nuget dependency. Next,
+in the <code>Program.Main()</code> method, use this code to connect your application to Storyteller:</p>
+<pre><code class="language-csharp">&#xA;JasperStorytellerHost.Run&lt;MyJasperAppOptions&gt;(args);&#xA;</code></pre>
+<p>In this case, <code>MyJasperAppRegistry</code> would be the name of whatever the <code>JasperRegistry</code> class is for your application.</p>
+<p>If you want to hook into events during the Storyteller bootstrapping, teardown, or specification execution, you can subclass <code>JasperStorytellerHost&lt;T&gt;</code> like this:</p>
+<pre><code class="language-csharp">&#xA;public class MyJasperStorytellerHarness : JasperStorytellerHost&lt;MyJasperAppOptions&gt;&#xA;{&#xA;    public MyJasperStorytellerHarness()&#xA;    {&#xA;        // Customize the application by adding testing concerns,&#xA;        // extra logging, or maybe override service registrations&#xA;        // with stubs&#xA;        Registry.Services.AddSingleton&lt;ISomeService, ISomeService&gt;();&#xA;    }&#xA;&#xA;    protected override void beforeAll()&#xA;    {&#xA;        // Runs before any specification are executed one time&#xA;        // Perfect place to load any kind of static data&#xA;&#xA;        // Note that you have access to the JasperRuntime&#xA;        // of the running application here&#xA;        Host.Services.GetService&lt;ISomeService&gt;().StartUp();&#xA;    }&#xA;&#xA;    protected override void afterEach(ISpecContext context)&#xA;    {&#xA;        // Called immediately after each specification is executed&#xA;        Host.Services.GetService&lt;ISomeService&gt;().CleanUpTestRunData();&#xA;    }&#xA;&#xA;    protected override void beforeEach()&#xA;    {&#xA;        // Called immediately before each specification is executed&#xA;        Host.Services.GetService&lt;ISomeService&gt;().LoadTestingData();&#xA;    }&#xA;&#xA;    protected override void afterAll()&#xA;    {&#xA;        // Called right before shutting down the Storyteller harness&#xA;        Host.Services.GetService&lt;ISomeService&gt;().Shutdown();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Then, your bootstrapping changes slightly to:</p>
+<pre><code class="language-csharp">&#xA;StorytellerAgent.Run(args, new MyJasperStorytellerHarness());&#xA;</code></pre>
+<h2 id="messagingfixture">MessagingFixture</h2>
+<p>Jasper.Storyteller also comes with a <code>MessagingFixture</code> base class you can use to create Storyteller Fixtures that send messages to the running service bus with some facility to use
+the built in <p class="bg-warning" style="padding:5px"><b>Unknown topic key 'documentation/testing/message_tracking'</b><small> -- CTRL+SHIFT+R to force refresh the topic tree</small></p> to &quot;know&quot; when all the activity
+related to the message being sent has completed.</p>
+<p>Here's a sample <code>MessagingFixture</code> from the sample project:</p>
+<pre><code class="language-csharp">&#xA;public class TeamFixture : MessagingFixture&#xA;{&#xA;    [FormatAs(&quot;A new team {team} has joined the league&quot;)]&#xA;    public Task CreateNewTeam(string team)&#xA;    {&#xA;        // This method sends a message to the service bus and waits&#xA;        // until it can detect that the message has been fully processed&#xA;        // on the receiving side or timed out&#xA;        return Host.SendMessageAndWait(new TeamAdded {Name = team});&#xA;    }&#xA;&#xA;    [FormatAs(&quot;On {day}, the score was {homeTeam} {homeScore} vs. {visitorTeam} {visitorScore}&quot;)]&#xA;    public Task RecordGameResult(DateTime day, string homeTeam, int homeScore, string visitorTeam, int visitorScore)&#xA;    {&#xA;        var message = new GamePlayed&#xA;        {&#xA;            Date = day.Date,&#xA;            Home = new TeamResult {Name = homeTeam, Score = homeScore},&#xA;            Visitor = new TeamResult {Name = visitorTeam, Score = visitorScore}&#xA;        };&#xA;&#xA;        return Host.SendMessageAndWait(message);&#xA;    }&#xA;&#xA;    [FormatAs(&quot;Send an un-handled message&quot;)]&#xA;    public Task SendUnHandledMessage()&#xA;    {&#xA;        return Host.SendMessageAndWait(new UnhandledMessage());&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<h2 id="diagnostics">Diagnostics</h2>
+<p>If there is any messages sent or received by the service bus feature during a Storyteller specification, there will be a custom results tab called &quot;Messages&quot; in the Storyteller
+specification results that presents information about the message activity that will
+look like this:</p>
+<p><h5><strong>content/storyteller-messaging-log.png</strong></h5><img src="/content/storyteller-messaging-log.png" style="max-width:100%" /></p>
 
 			      	</div>
 
@@ -102,20 +184,23 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/documentation/messaging">Messaging</a>
+				        	<strong>Previous: </strong><a href="/documentation/durability">Durable Messaging and Command Processing</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/testing/http_endpoints">Testing HTTP Endpoints with Alba</a>
+				        	<strong>Next: </strong><a href="/documentation/ioc">IoC Container Integration</a>
 
 				        </span>
 			      	</nav>
 
 		      </div><!--/right-->
-		  	</div><!--/row-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
 		</div><!--/container-->
-
+	</main>
 <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
 $('#search').keyup(function(e){
@@ -138,17 +223,20 @@ $('#search').keyup(function(e){
 
 });
 
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
 </script>
     </body>
 
 
     <foot>
         <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
         <script type="text/javascript" src="/content/embed.js"></script>
         <script type="text/javascript" src="/content/prism.js"></script>
         <script type="text/javascript" src="/content/sidebar.js"></script>
-        <script type="text/javascript" src="/content/affix.js"></script>
     </foot>
 </html>

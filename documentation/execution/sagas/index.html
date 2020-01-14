@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - Stateful Sagas</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/execution/messages" title="Reading, Writing, and Versioning Messages, Commands, and Events">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/mediator" title="Jasper as a Mediator">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/execution/sagas.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/execution">Execution Pipeline</a></li><li class="active">Stateful Sagas</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar">
+
+			  </ul>
+
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/mediator">Jasper as a Mediator</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/execution/messages">Reading, Writing, and Versioning Messages, Commands, and Events</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>Stateful Sagas</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:Stateful Sagas-->
+<p>As is so common in these docs, I would direct you to this from the old &quot;EIP&quot; book: <a href="http://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html">Process Manager</a>. A stateful saga in Jasper is used
+to coordinate long running workflows or to break large, logical transactions into a series of smaller steps. A stateful saga
+consists of a couple parts:</p>
+<ol>
+<li>A saga state document type that is persisted between saga messages</li>
+<li>A saga message handler that inherits from <code>StatefulSagaOf&lt;T&gt;</code>, where the &quot;T&quot; is the saga state document type</li>
+<li>A saga persistence strategy registered in Jasper that knows how to load and persist the saga state documents</li>
+</ol>
+<p>Right now the options for saga persistence are</p>
+<ul>
+<li>The default in memory model</li>
+<li><a href="/documentation/durability/efcore">EF Core with either Sql Server or Postgresql</a></li>
+<li><a href="/documentation/durability/marten">Marten and Postgresql</a></li>
+</ul>
+<p>Inspired by <a href="https://lostechies.com/jimmybogard/2013/03/14/saga-implementation-patterns-controller/">Jimmy Bogard's example of ordering at a fast food restaurant</a>, let's say that we are building
+a Jasper system to manage filling the order of Happy Meals at McDonald's. When you place an order in our McDonald's, various folks gather up the various parts of the order until it is completed, then calls out to the customer that the order is ready. In our system,
+we want to build out a saga handler for this work that can parallelize and coordinate all the work necessary to deliver the Happy Meal
+to our customers.</p>
+<p>As a first step, let's say that the process of building out a Happy Meal starts with receiving this message shown below:</p>
+<pre><code class="language-csharp">&#xA;public class HappyMealOrder&#xA;{&#xA;    public string Drink { get; set; }&#xA;    public string Toy { get; set; }&#xA;    public string SideDish { get; set; }&#xA;    public string MainDish { get; set; }&#xA;}&#xA;</code></pre>
+<p>Next, we need to track the current state of our happy meal order with a new document type that will be persisted across different
+messages being handled by our saga:</p>
+<pre><code class="language-csharp">&#xA;public class HappyMealOrderState&#xA;{&#xA;    // Jasper wants you to make the saga state&#xA;    // document have an &quot;Id&quot; property, but&#xA;    // that can be overridden&#xA;    public int Id { get; set; }&#xA;    public HappyMealOrder Order { get; set; }&#xA;&#xA;    public bool DrinkReady { get; set; }&#xA;    public bool ToyReady { get; set; }&#xA;    public bool SideReady { get; set; }&#xA;    public bool MainReady { get; set; }&#xA;&#xA;    // The order is complete if *everything*&#xA;    // is complete&#xA;    public bool IsOrderComplete()&#xA;    {&#xA;        return DrinkReady &amp;&amp; ToyReady &amp;&amp; SideReady &amp;&amp; MainReady;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Finally, let's add a new saga handler for our new state document and a single message handler action to start the saga:</p>
+<pre><code class="language-csharp">&#xA;public class HappyMealSaga : StatefulSagaOf&lt;HappyMealOrderState&gt;&#xA;{&#xA;    private int _orderIdSequence;&#xA;&#xA;    // This is a little bit cute, but the HappyMealOrderState type&#xA;    // is known to be the saga state document, so it&#x27;ll be treated as&#xA;    // the state document, while the object[] will be treated as&#xA;    // cascading messages&#xA;    public (HappyMealOrderState, object[]) Starts(HappyMealOrder order)&#xA;    {&#xA;        var state = new HappyMealOrderState&#xA;        {&#xA;            Order = order,&#xA;            Id = &#x2B;&#x2B;_orderIdSequence&#xA;        };&#xA;&#xA;        return (state, chooseActions(order, state.Id).ToArray());&#xA;    }&#xA;&#xA;    private IEnumerable&lt;object&gt; chooseActions(HappyMealOrder order, int stateId)&#xA;    {&#xA;        // choose the outgoing messages to other systems -- or the local&#xA;        // system tracking all this -- to start having this happy meal&#xA;        // order put together&#xA;&#xA;        if (order.Drink == &quot;Soda&quot;) yield return new SodaRequested {OrderId = stateId};&#xA;&#xA;        // and others&#xA;    }&#xA;}&#xA;</code></pre>
+<p>There's a couple things to note about the <code>Starts()</code> method up above:</p>
+<ul>
+<li>When Jasper sees a method named <code>Start</code> or <code>Starts</code>, that indicates to Jasper that this is a possible beginning for a stateful saga and that the state document does not already exist</li>
+<li><code>HappyMealOrderState</code> is one of the types returned as a C# 7 tuple from this method, and Jasper will treat this as the state document
+for the saga and the saga persistence will save the document as part of executing that message. You could also just return the <code>HappyMealOrderState</code> and use <code>IMessageContext</code> to explicitly send other messages</li>
+<li>The <code>object[]</code> part of the tuple are just <a href="/documentation/execution/cascading">cascading messages</a> that would be sent out to initiate work like &quot;go fill the soda&quot; or &quot;go find the right toy the child asked for&quot;</li>
+</ul>
+<p>If you're uncomfortable with C# tuples or just don't like the magic, you can effect the same outgoing messages by using this alternative:</p>
+<pre><code class="language-csharp">&#xA;&#xA;public async Task&lt;HappyMealOrderState&gt; Starts(&#xA;    HappyMealOrder order, // The first argument is assumed to be the message type&#xA;    IMessageContext context) // Additional arguments are assumed to be services&#xA;{&#xA;    var state = new HappyMealOrderState&#xA;    {&#xA;        Order = order,&#xA;        Id = &#x2B;&#x2B;_orderIdSequence&#xA;    };&#xA;&#xA;    if (order.Drink == &quot;Soda&quot;) await context.Send(new SodaRequested {OrderId = state.Id});&#xA;&#xA;    // And other outgoing messages to coordinate gathering up the happy meal&#xA;&#xA;    return state;&#xA;}&#xA;&#xA;</code></pre>
+<p>Both the of the examples above assume that the <code>SodaRequested</code> messages will be sent to other systems, but it's perfectly possible
+to use a stateful saga to manage processing that's handled completely within your system like this:</p>
+<pre><code class="language-csharp">&#xA;&#xA;public async Task&lt;HappyMealOrderState&gt; Starts(&#xA;    HappyMealOrder order, // The first argument is assumed to be the message type&#xA;    IMessageContext context) // Additional arguments are assumed to be services&#xA;{&#xA;    var state = new HappyMealOrderState&#xA;    {&#xA;        Order = order,&#xA;        Id = &#x2B;&#x2B;_orderIdSequence&#xA;    };&#xA;&#xA;    if (order.Drink == &quot;Soda&quot;) await context.Enqueue(new SodaRequested {OrderId = state.Id});&#xA;&#xA;    // And other outgoing messages to coordinate gathering up the happy meal&#xA;&#xA;    return state;&#xA;}&#xA;&#xA;</code></pre>
+<h2 id="updating-and-completing-saga-state">Updating and Completing Saga State</h2>
+<p>As we saw above, methods named <code>Start</code> or <code>Starts</code> are assumed to create a brand new state document for a logical saga. The next step is to handle additional methods that perform additional work within the saga, update the state document, and potentially close out the saga.</p>
+<p>Related to the saga above, let's say that we receive a <code>SodaFetched</code> message that denotes that the soda we requested at the onset of the saga is ready. We'll need to update the state to mark that the drink is ready, and if all the parts of the happy meal are ready, we'll tell some kind of <code>IOrderService</code> to close the order and mark the saga as complete. That handler mthod could look like this:</p>
+<pre><code class="language-csharp">&#xA;public void Handle(&#xA;    SodaFetched soda, // The first argument is the message type&#xA;    HappyMealOrderState state, // This matches the state document type, so it will be the&#xA;    // state document matching the current saga identified by&#xA;    // the incoming message envelope&#xA;    IOrderService service // Additional arguments are injected services&#xA;)&#xA;{&#xA;    state.DrinkReady = true;&#xA;&#xA;    // Determine if the happy meal is completely ready&#xA;    if (state.IsOrderComplete())&#xA;    {&#xA;        // Maybe you need to remove this&#xA;        // order from some kind of screen display&#xA;        service.Close(state.Id);&#xA;&#xA;        // And we&#x27;re done here, so let&#x27;s mark the Saga as complete&#xA;        MarkCompleted();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Things to note in the sample up above:</p>
+<ul>
+<li>The method name can be any of the valid handler methods outlined in <a href="/documentation/execution/discovery">Message Handler Discovery</a></li>
+<li>The saga state document <code>HappyMealOrderState</code> is passed in as a method argument. The surrounding saga persistence in Jasper is
+loading that document for you based on either the incoming envelope metadata or the message as explained in the next section</li>
+<li>If the <code>StatefulSagaOf&lt;T&gt;.MarkCompleted()</code> method is called while handling the message, the state document will be deleted
+from storage after the message handler is called</li>
+</ul>
+<h2 id="saga-state-identity">Saga State Identity</h2>
+<p>One way or another, Jasper has to be able to correlate that the <code>SodaFetched</code> message coming in to the message handler above
+is related to a certain persisted state document by the id of that state document. Jasper has a couple ways to do that:</p>
+<p>If the message is being passed to the local system or exchanging messages with an external Jasper system, there's an <code>Envelope.SagaId</code> property that gets propagated on every message and response that Jasper can use automatically to do the state document to message correlation. For example, if the <code>SodaRequested</code> message is sent to another system running Jasper that replies to our system with
+a corresponding <code>SodaFetched</code> message in a handler like this:</p>
+<pre><code class="language-csharp">&#xA;// This message handler is in another system responsible for&#xA;// filling sodas&#xA;public class SodaHandler&#xA;{&#xA;    public SodaFetched Handle(SodaRequested requested)&#xA;    {&#xA;        // get the soda, then return the update message&#xA;        return new SodaFetched();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>If you are receiving messages from an external system or don't want to or can't depend on that envelope metadata, you can pass the identity of the saga state document in the message itself. Jasper always checks the <code>Envelope.SagaId</code> value first, but failing that it falls back to looking for a property named <code>SagaId</code> on the incoming message type like this:</p>
+<pre><code class="language-csharp">&#xA;public class BurgerReady&#xA;{&#xA;    // By default, Jasper is going to look for a property&#xA;    // called SagaId as the identifier for the stateful&#xA;    // document&#xA;    public int SagaId { get; set; }&#xA;}&#xA;</code></pre>
+<p>Or if you want to use a different property name, you can override that with an attribute like this:</p>
+<pre><code class="language-csharp">&#xA;public class ToyOnTray&#xA;{&#xA;    // There&#x27;s always *some* reason to deviate,&#xA;    // so you can use this attribute to tell Jasper&#xA;    // that this property refers to the Id of the&#xA;    // Saga state document&#xA;    [SagaIdentity] public int OrderId { get; set; }&#xA;}&#xA;</code></pre>
+<p>To add some context, let's see these two messages in context:</p>
+<pre><code class="language-csharp">&#xA;public void Handle(ToyOnTray toyReady, HappyMealOrderState state)&#xA;{&#xA;    state.ToyReady = true;&#xA;    if (state.IsOrderComplete()) MarkCompleted();&#xA;}&#xA;&#xA;public void Handle(BurgerReady burgerReady, HappyMealOrderState state)&#xA;{&#xA;    state.MainReady = true;&#xA;    if (state.IsOrderComplete()) MarkCompleted();&#xA;}&#xA;&#xA;</code></pre>
+<p>If you were using the <a href="/documentation/durability/marten">Marten-backed saga persistence</a>, the code above
+would result in the <code>HappyMealOrderState</code> document being loaded with the value in <code>BurgerReady.SagaId</code> or <code>ToyOnTray.OrderId</code> as the document id.</p>
+<p>Right now, Jasper supports the following types as valid saga state document identity types:</p>
+<ul>
+<li><code>int</code></li>
+<li><code>long</code></li>
+<li><code>System.Guid</code></li>
+<li><code>string</code></li>
+</ul>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/execution/messages">Reading, Writing, and Versioning Messages, Commands, and Events</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/mediator">Jasper as a Mediator</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>

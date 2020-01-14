@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - Message Storage Management</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/durability/agent" title="Durability Agent">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/durability/sqlserver" title="Using Sql Server with Jasper">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/durability/managing.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/durability">Durable Messaging and Command Processing</a></li><li class="active">Message Storage Management</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar">
+
+			  </ul>
+
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/durability/sqlserver">Using Sql Server with Jasper</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/durability/agent">Durability Agent</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>Message Storage Management</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:Message Storage Management-->
+<h2 id="from-the-command-line">From the Command Line</h2>
+<p>As of Jasper v0.9.5, Jasper comes with a built in command for adminstering database backed persistence. Assuming that you're using <a href="/documentation/console">Jasper's command line support</a>, you have the command <code>storage</code> with several options.</p>
+<p>At the command line in the root of your application, you can rebuild the message storage schema objects with:</p>
+<pre><code>dotnet run -- storage rebuild
+</code></pre>
+<p>You can also query the current counts of persisted input, output, and scheduled messages with:</p>
+<pre><code>dotnet run -- storage counts
+</code></pre>
+<p>You can dump the SQL to create the necessary database objects to a file for usage in database migration scripts with:</p>
+<pre><code>dotnet run -- storage script --file SomeFilePath.sql
+</code></pre>
+<p>And lastly, if you just want to clear out any persisted incoming, outgoing, or scheduled messages in your application's database, use:</p>
+<pre><code>dotnet run -- storage clear
+</code></pre>
+<h2 id="message-storage-in-testing">Message Storage in Testing</h2>
+<p>Let's say that we're all good developers who invest in automated testing of our applications. Now, let's say that we're building a Jasper application that uses Sql Server backed message persistence like so:</p>
+<pre><code class="language-csharp">&#xA;public class MyJasperApp : JasperOptions&#xA;{&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        // Enables Sql Server-backed message persistence using&#xA;        // a connection string from your application&#x27;s appsettings.json&#xA;        Extensions.PersistMessagesWithSqlServer(config.GetConnectionString(&quot;sqlserver&quot;));&#xA;&#xA;&#xA;        // If running in development mode, just rebuild the&#xA;        // message database storage objects on application startup&#xA;        if (hosting.IsDevelopment())&#xA;        {&#xA;            Advanced.StorageProvisioning = StorageProvisioning.Rebuild;&#xA;        }&#xA;    }&#xA;}&#xA;</code></pre>
+<p>If we write integration tests for our application above, we need to guarantee that as part of the test setup the necessary Sql Server schema objects have been created in our test database before we run any tests. If you notice in the code above, there's a property called
+<code>JasperOptions.Advanced.StorageProvisioning</code> that is defaulted to <code>None</code>, but can be overridden to either <code>Clear</code> to delete any persisted messages on application startup or <code>Rebuild</code> to completely drop and rebuild all message persistence storage objects in the database upon
+application startup.</p>
+<p>In addition to the <code>StorageProvisioning</code> property, there is also an extension method hanging off of <code>IJasperHost</code> called <code>RebuildMessageSchema()</code> that will completely rebuild all the necessary schema objects for message persistence. Below is an example of using an <a href="https://xunit.github.io/docs/shared-context">xUnit shared fixture</a> approach for integration tests of the <code>MyJasperApp</code> application.</p>
+<pre><code class="language-csharp">&#xA;public class MyJasperAppFixture : IDisposable&#xA;{&#xA;    public MyJasperAppFixture()&#xA;    {&#xA;        Host = JasperHost.For&lt;MyJasperApp&gt;();&#xA;&#xA;        // This extension method will blow away any existing&#xA;        // schema items for message persistence in your configured&#xA;        // database and then rebuilds the message persistence objects&#xA;        // before the *first* integration test runs&#xA;        Host.RebuildMessageStorage();&#xA;    }&#xA;&#xA;    public IHost Host { get;  }&#xA;&#xA;    public void Dispose()&#xA;    {&#xA;        Host?.Dispose();&#xA;    }&#xA;&#xA;&#xA;}&#xA;&#xA;// An xUnit test fixture that uses our MyJasperAppFixture&#xA;public class IntegrationTester : IClassFixture&lt;MyJasperAppFixture&gt;&#xA;{&#xA;    private readonly MyJasperAppFixture _fixture;&#xA;&#xA;    public IntegrationTester(MyJasperAppFixture fixture)&#xA;    {&#xA;        _fixture = fixture;&#xA;    }&#xA;}&#xA;</code></pre>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/durability/agent">Durability Agent</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/durability/sqlserver">Using Sql Server with Jasper</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>

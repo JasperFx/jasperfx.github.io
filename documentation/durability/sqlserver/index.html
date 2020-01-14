@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - Using Sql Server with Jasper</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/durability/managing" title="Message Storage Management">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/durability/postgresql" title="Using Postgresql with Jasper">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/durability/sqlserver.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/durability">Durable Messaging and Command Processing</a></li><li class="active">Using Sql Server with Jasper</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar">
+
+			  </ul>
+
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/durability/postgresql">Using Postgresql with Jasper</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/durability/managing">Message Storage Management</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>Using Sql Server with Jasper</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:Using Sql Server with Jasper-->
+<p>The Jasper.Persistence.SqlServer Nuget library provides Jasper users with a quick way to integrate Sql Server-backed persistence into their
+Jasper applications. To get started, just add the <em>Jasper.Persistence.SqlServer</em> Nuget to your project, and enable the persistence like this:</p>
+<pre><code class="language-csharp">&#xA;public class AppUsingSqlServer : JasperOptions&#xA;{&#xA;    public AppUsingSqlServer()&#xA;    {&#xA;        // If you know the connection string&#xA;        Extensions.PersistMessagesWithSqlServer(&quot;your connection string&quot;, &quot;my_app_schema&quot;);&#xA;&#xA;&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        // In this case, you need to work directly with the SqlServerBackedPersistence&#xA;        // to get access to all the advanced properties of the Sql Server-backed persistence&#xA;        Extensions.Include&lt;SqlServerBackedPersistence&gt;(x =&gt;&#xA;        {&#xA;            if (hosting.IsDevelopment())&#xA;            {&#xA;                // if so desired, the context argument gives you&#xA;                // access to both the IConfiguration and IHostingEnvironment&#xA;                // of the running application, so you could do&#xA;                // environment specific configuration here&#xA;            }&#xA;&#xA;            x.Settings.ConnectionString = config[&quot;sqlserver&quot;];&#xA;&#xA;            // If your application uses a schema besides &quot;dbo&quot;&#xA;            x.Settings.SchemaName = &quot;my_app_schema&quot;;&#xA;&#xA;            // If you&#x27;re using a database principal that is NOT &quot;dbo&quot;:&#xA;            x.Settings.DatabasePrincipal = &quot;not_dbo&quot;;&#xA;        });&#xA;&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<p>Enabling this configuration adds a couple things to your system:</p>
+<ul>
+<li>Service registrations in your IoC container for <code>DbConnection</code> and <code>SqlConnection</code>, with the <code>Scoped</code> lifecycle</li>
+<li>&quot;Outbox&quot; pattern usage with Sql Server as demonstrated below</li>
+<li>Message persistence using your application's Sql Server database, including outbox support with Sql Server and durable message persistence using Sql Server</li>
+<li>Support for the <code>[Transactional]</code> attribute as shown below</li>
+</ul>
+<h2 id="transactional-middleware">Transactional Middleware</h2>
+<p>Assuming that the Jasper.Persistence.SqlServer Nuget is referenced by your project, you can use the <code>[Transactional]</code> attribute on message (or HTTP) handler methods to wrap the message handling inside
+a single Sql Server transaction like so:</p>
+<pre><code class="language-csharp">&#xA;public class ItemCreatedHandler&#xA;{&#xA;    [Transactional]&#xA;    public static async Task Handle(&#xA;        ItemCreated created,&#xA;        SqlTransaction tx // the current transaction&#xA;    )&#xA;    {&#xA;        // Using some extension method helpers inside of Jasper here&#xA;        await tx.CreateCommand(&quot;insert into receiver.item_created (id, name) values (@id, @name)&quot;)&#xA;            .With(&quot;id&quot;, created.Id)&#xA;            .With(&quot;name&quot;, created.Name)&#xA;            .ExecuteNonQueryAsync();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>When you use this middleware, be sure to pull in the current <code>SqlTransaction</code> object as a parameter to your handler method.</p>
+<h2 id="outbox-pattern-usage">&quot;Outbox&quot; Pattern Usage</h2>
+<p>See <a href="https://jeremydmiller.com/2018/04/16/jaspers-outbox-pattern-support/">Jasper’s “Outbox” Pattern Support</a> for more context around why you would care about the &quot;outbox&quot; pattern.</p>
+<p>Jasper supports the <a href="https://jimmybogard.com/refactoring-towards-resilience-evaluating-coupling/">&quot;outbox&quot; pattern</a> with Sql Server connections. You can explicitly opt into this usage with code like this:</p>
+<pre><code class="language-csharp">&#xA;using (var conn = new SqlConnection(Servers.SqlServerConnectionString))&#xA;{&#xA;    await conn.OpenAsync();&#xA;&#xA;    var tx = conn.BeginTransaction();&#xA;&#xA;    // &quot;context&quot; is an IMessageContext object&#xA;    await context.EnlistInTransaction(tx);&#xA;&#xA;    await action(context);&#xA;&#xA;    tx.Commit();&#xA;&#xA;    await context.SendAllQueuedOutgoingMessages();&#xA;}&#xA;&#xA;</code></pre>
+<p>If you use the <code>[Transaction]</code> middleware in a message handler, the middleware will take care of some of the repetitive mechanics for you. In the code below, the <code>IMessageContext</code> is enrolled in the current transaction before the action runs, and the outgoing messages
+are flushed into the outgoing sending queue after the action runs.</p>
+<pre><code class="language-csharp">&#xA;[Transactional]&#xA;public async Task&lt;ItemCreatedEvent&gt; Handle(CreateItemCommand command, SqlTransaction tx)&#xA;{&#xA;    var item = new Item {Name = command.Name};&#xA;&#xA;    // persist the new Item with the&#xA;    // current transaction&#xA;    await persist(tx, item);&#xA;&#xA;    return new ItemCreatedEvent {Item = item};&#xA;}&#xA;</code></pre>
+<h2 id="message-persistence-schema">Message Persistence Schema</h2>
+<p>The message persistence requires and adds these tables to your schema:</p>
+<ol>
+<li><code>jasper_incoming_envelopes</code> - stores incoming and scheduled envelopes until they are successfully processed</li>
+<li><code>jasper_outgoing_envelopes</code> - stores outgoing envelopes until they are successfully sent through the transports</li>
+<li><code>jasper_dead_letters</code> - stores &quot;dead letter&quot; envelopes that could not be processed. See <a href="/documentation/execution/dead_letter_queue">Dead Letter Envelopes</a> for more information</li>
+<li><code>EnvelopeIdList</code> - table type that is used by some of the functions listed below</li>
+</ol>
+<p>and also these functions that are all used by the durable messaging in its &quot;message recovery&quot; functionality:</p>
+<ol>
+<li><code>uspDeleteIncomingEnvelopes</code></li>
+<li><code>uspDeleteOutgoingEnvelopes</code></li>
+<li><code>uspDiscardAndReassignOutgoing</code></li>
+<li><code>uspMarkIncomingOwnership</code></li>
+<li><code>uspMarkOutgoingOwnership</code></li>
+</ol>
+<h2 id="managing-the-sql-server-schema">Managing the Sql Server Schema</h2>
+<p>In testing, you can build -- or rebuild -- the message storage in your system with a call to the <code>RebuildMessageStorage()</code> extension method off of either <code>IWebHost</code> or <code>IJasperHost</code> as shown below in a sample taken from xUnit integration testing with Jasper:</p>
+<pre><code class="language-csharp">&#xA;public class MyJasperAppFixture : IDisposable&#xA;{&#xA;    public MyJasperAppFixture()&#xA;    {&#xA;        Host = JasperHost.For&lt;MyJasperApp&gt;();&#xA;&#xA;        // This extension method will blow away any existing&#xA;        // schema items for message persistence in your configured&#xA;        // database and then rebuilds the message persistence objects&#xA;        // before the *first* integration test runs&#xA;        Host.RebuildMessageStorage();&#xA;    }&#xA;&#xA;    public IHost Host { get;  }&#xA;&#xA;    public void Dispose()&#xA;    {&#xA;        Host?.Dispose();&#xA;    }&#xA;&#xA;&#xA;}&#xA;&#xA;// An xUnit test fixture that uses our MyJasperAppFixture&#xA;public class IntegrationTester : IClassFixture&lt;MyJasperAppFixture&gt;&#xA;{&#xA;    private readonly MyJasperAppFixture _fixture;&#xA;&#xA;    public IntegrationTester(MyJasperAppFixture fixture)&#xA;    {&#xA;        _fixture = fixture;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>See <a href="https://github.com/JasperFx/jasper/issues/372">this GitHub issue</a> for some utilities to better manage the database objects.</p>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/durability/managing">Message Storage Management</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/durability/postgresql">Using Postgresql with Jasper</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - Local Worker Queues</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/mediator" title="Jasper as a Mediator">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration" title="Messaging Between Systems">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/local.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Local Worker Queues</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar">
+
+			  </ul>
+
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration">Messaging Between Systems</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/mediator">Jasper as a Mediator</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>Local Worker Queues</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:Local Worker Queues-->
+<p>Jasper's <a href="/documentation/execution">Execution Pipeline</a> can be consumed from in memory queues within your application. The queueing is all based around <a href="https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-perform-action-when-a-dataflow-block-receives-data">ActionBlock</a> objects from the <a href="https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library">TPL Dataflow</a> library. As such, you have a fair amount of control over parallelization and even some back pressure. These local queues can be used directly, or as a <a href="/documentation/integration/transports">transport</a> that uses the application's <a href="/documentation/integration/routing">message routing rules</a>.</p>
+<h2 id="enqueueing-messages-locally">Enqueueing Messages Locally</h2>
+<div class="alert-info alert"><p><strong>Note!</strong>
+The <code>IMessagePublisher</code> and <code>IMessageContext</code> interfaces both implement the <code>ICommandBus</code> interface, and truth be told,
+it's just one underlying concrete class and the interfaces just expose narrower or broader options.</p>
+</div>
+<p>Using the <code>ICommandBus.Enqueue()</code> method, you can queue up messages to be executed asynchronously:</p>
+<pre><code class="language-csharp">&#xA;public static async Task enqueue_locally(ICommandBus bus)&#xA;{&#xA;    // Enqueue a message to the local worker queues&#xA;    await bus.Enqueue(new Message1());&#xA;&#xA;}&#xA;&#xA;</code></pre>
+<p>This feature is useful for asynchronous processing in web applications or really any kind of application where you need some parallelization or concurrency.</p>
+<p>Some things to know about the local queues:</p>
+<ul>
+<li>Local worker queues can be durable, meaning that the enqueued messages are persisted first so that they aren't lost if the application is shut down before they're processed. More on that below.</li>
+<li>You can use any number of named local queues, and they don't even have to be declared upfront (might want to be careful with that though)</li>
+<li>Local worker queues utilize Jasper's <a href="/documentation/execution/errorhandling">Error Handling</a> policies to selectively handle any detected exceptions from the <a href="/documentation/execution/handlers">message handlers</a></li>
+<li>You can control the priority and parallelization of each individual local queue</li>
+<li>Message types can be routed to particular queues</li>
+<li><a href="/documentation/execution/cascading">Cascading messages</a> can be used with the local queues</li>
+<li>The local queues can be used like any other message transport and be the target of routing rules</li>
+</ul>
+<h2 id="default-queues">Default Queues</h2>
+<p>Out of the box, each Jasper application has a default queue named &quot;default&quot;. In the absence of any
+other routing rules, all messages enqueued to <code>ICommandBus</code> will be published to this queue.</p>
+<h2 id="local-message-routing">Local Message Routing</h2>
+<p>In the absence of any kind of routing rules, any message enqueued with <code>ICommandBus.Enqueue()</code> will just be handled by the
+<em>default</em> local queue. To override that choice on a message type by message type basis, you can use the <code>[LocalQueue]</code> attribute
+on a message type:</p>
+<pre><code class="language-csharp">&#xA;&#xA;// This message type would go to the &quot;important&quot;&#xA;// named queue&#xA;[LocalQueue(&quot;important&quot;)]&#xA;public class ImportantMessage&#xA;{&#xA;&#xA;}&#xA;</code></pre>
+<p>Otherwise, you can take advantage of the routing rules on the <code>JasperOptions.Endpoints.Publish()</code> method like this:</p>
+<pre><code class="language-csharp">&#xA;public class LocalTransportApp : JasperOptions&#xA;{&#xA;    public LocalTransportApp()&#xA;    {&#xA;        // Publish the message Message2 the &quot;important&quot;&#xA;        // local queue&#xA;        Endpoints.Publish(x =&gt;&#xA;        {&#xA;            x.Message&lt;Message2&gt;();&#xA;            x.ToLocalQueue(&quot;important&quot;);&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<p>The routing rules and/or <code>[LocalQueue]</code> routing is also honored for cascading messages, meaning that any message that is handled inside a Jasper system could publish cascading messages to the local worker queues.</p>
+<h2 id="durable-local-messages">Durable Local Messages</h2>
+<p>The local worker queues can optionally be designated as &quot;durable,&quot; meaning that local messages would be persisted until they can be successfully processed to provide a guarantee that the message will be successfully processed in the case of the running application faulting or having been shut down prematurely (assuming that other nodes are running or it's restarted later of course).</p>
+<p>Here is an example of configuring a local queue to be durable:</p>
+<pre><code class="language-csharp">&#xA;public class LocalDurableTransportApp : JasperOptions&#xA;{&#xA;    public LocalDurableTransportApp()&#xA;    {&#xA;        // Make the default local queue durable&#xA;        Endpoints.DefaultLocalQueue.Durable();&#xA;&#xA;        // Or do just this by name&#xA;        Endpoints&#xA;            .LocalQueue(&quot;important&quot;)&#xA;            .Durable();&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<p>See <a href="/documentation/durability">Durable Messaging and Command Processing</a> for more information.</p>
+<h2 id="scheduling-local-execution">Scheduling Local Execution</h2>
+<p>The &quot;scheduled execution&quot; feature can be used with local execution within the same application. See <a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a> for more information. Use the <code>ICommandBus.Schedule()</code> methods like this:</p>
+<pre><code class="language-csharp">&#xA;public async Task ScheduleLocally(IMessageContext bus, Guid invoiceId)&#xA;{&#xA;    var message = new ValidateInvoiceIsNotLate&#xA;    {&#xA;        InvoiceId = invoiceId&#xA;    };&#xA;&#xA;    // Schedule the message to be processed in a certain amount&#xA;    // of time&#xA;    await bus.Schedule(message, 30.Days());&#xA;&#xA;    // Schedule the message to be processed at a certain time&#xA;    await bus.Schedule(message, DateTime.UtcNow.AddDays(30));&#xA;}&#xA;</code></pre>
+<h2 id="configuring-parallelization-and-execution-properties">Configuring Parallelization and Execution Properties</h2>
+<p>The queues are built on top of the TPL Dataflow library, so it's pretty easy to configure parallelization (how many concurrent messages could be handled by a queue). Here's an example of how to establish this:</p>
+<pre><code class="language-csharp">&#xA;public class LocalQueuesApp : JasperOptions&#xA;{&#xA;    public LocalQueuesApp()&#xA;    {&#xA;        // Force a local queue to be&#xA;        // strictly first in, first out&#xA;        // with no more than a single&#xA;        // thread handling messages enqueued&#xA;        // here&#xA;&#xA;        // Use this option if message ordering is&#xA;        // important&#xA;        Endpoints&#xA;            .LocalQueue(&quot;one&quot;)&#xA;            .Durable()&#xA;            .Sequential();&#xA;&#xA;&#xA;        Endpoints&#xA;            .LocalQueue(&quot;two&quot;)&#xA;            .MaximumThreads(5);&#xA;&#xA;&#xA;        // Or just edit the ActionBlock directly&#xA;        Endpoints.LocalQueue(&quot;three&quot;)&#xA;            .ConfigureExecution(options =&gt;&#xA;            {&#xA;                options.MaxDegreeOfParallelism = 5;&#xA;                options.BoundedCapacity = 1000;&#xA;            });&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="explicitly-enqueue-to-a-specific-local-queue">Explicitly Enqueue to a Specific Local Queue</h2>
+<p>If you want to enqueue a message locally to a specific worker queue, you can use this syntax:</p>
+<pre><code class="language-csharp">&#xA;public Task EnqueueToQueue(IMessageContext bus)&#xA;{&#xA;    var @event = new InvoiceCreated&#xA;    {&#xA;        Time = DateTime.UtcNow,&#xA;        Purchaser = &quot;Guy Fieri&quot;,&#xA;        Amount = 112.34,&#xA;        Item = &quot;Cookbook&quot;&#xA;    };&#xA;&#xA;    // Put this message in a local worker&#xA;    // queue named &#x27;highpriority&#x27;&#xA;    return bus.Enqueue(@event, &quot;highpriority&quot;);&#xA;}&#xA;</code></pre>
+<h2 id="local-queues-as-a-messaging-transport">Local Queues as a Messaging Transport</h2>
+<div class="alert-info alert"><p><strong>Note!</strong>
+The local transport is used underneath the covers by Jasper for retrying
+locally enqueued messages or scheduled messages that may have initially failed.</p>
+</div>
+<p>In the sample Jasper configuration shown below:</p>
+<pre><code class="language-csharp">&#xA;public class LocalTransportApp : JasperOptions&#xA;{&#xA;    public LocalTransportApp()&#xA;    {&#xA;        // Publish the message Message2 the &quot;important&quot;&#xA;        // local queue&#xA;        Endpoints.Publish(x =&gt;&#xA;        {&#xA;            x.Message&lt;Message2&gt;();&#xA;            x.ToLocalQueue(&quot;important&quot;);&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<p>Calling <code>IMessagePublisher.Send(new Message2())</code> would publish the message to the local &quot;important&quot; queue.</p>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/mediator">Jasper as a Mediator</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/integration">Messaging Between Systems</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>

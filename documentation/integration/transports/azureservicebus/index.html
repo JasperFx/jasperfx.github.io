@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - Azure Service Bus Transport</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/transports/tcp" title="TCP Transport">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/transports/rabbitmq" title="RabbitMQ Transport">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/integration/transports/azureservicebus.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/integration">Messaging Between Systems</a></li><li><a href="/documentation/integration/transports">Messaging Transports</a></li><li class="active">Azure Service Bus Transport</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar">
+
+			  </ul>
+
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/integration/transports/tcp">TCP Transport</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>Azure Service Bus Transport</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:Azure Service Bus Transport-->
+<div class="alert-warning alert"><p><strong>Note!</strong>
+For the moment, Jasper requires all queues and subscriptions in Azure Service Bus to be configured with <a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/message-sessions">sessions enabled</a>.</p>
+</div>
+<h2 id="quick-start">Quick Start</h2>
+<div class="alert-info alert"><p><strong>Note!</strong>
+Jasper uses the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.servicebus?view=azure-dotnet">Microsoft.Azure.ServiceBus</a> Nuget library for accessing Azure Service Bus.</p>
+</div>
+<p>If you're starting a fresh project, you can quickly spin up a new Jasper project using <a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview">Azure Service Bus</a> with a <code>dotnet new</code> template.</p>
+<p>First install the <code>JasperTemplates</code> nuget like so:</p>
+<pre><code>dotnet new --install JasperTemplates
+</code></pre>
+<p>Then build out the directory for your intended project, and use:</p>
+<pre><code>dotnet new jasper.azureservicebus
+</code></pre>
+<p>Then check the <code>README.md</code> file in the generated directory for an overview of what was generated for you.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>All the sample code in this section is <a href="https://github.com/JasperFx/JasperSamples/tree/master/PingPongWithAzureServiceBus">available on GitHub in the sample projects</a>.</p>
+<p>The only thing you need to do is to install the <code>Jasper.AzureServiceBus</code> Nuget to your Jasper application. This will add the client libraries for Azure Service Bus access and add the transport to your application automatically.</p>
+<p>In terms of configuration, there's a few things to worry about:</p>
+<ol>
+<li>The Azure Service Bus connection string</li>
+<li>Configuring Jasper listeners and subscribers</li>
+<li>Optionally, you can also override how Jasper maps Envelope properties to Azure Service Bus messages in the case of communicating with a non-Jasper application</li>
+</ol>
+<p>Here's a sample of a basic ping/pong application that uses Jasper's Azure Service Bus support:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig : JasperOptions&#xA;{&#xA;    public JasperConfig()&#xA;    {&#xA;        // Publish all messages to an Azure Service Bus queue&#xA;        Endpoints&#xA;            .PublishAllMessages()&#xA;            .ToAzureServiceBusQueue(&quot;pings&quot;);&#xA;&#xA;        // Listen to incoming messages from an Azure Service Bus&#xA;        // queue&#xA;        Endpoints.ListenToAzureServiceBusQueue(&quot;pongs&quot;);&#xA;&#xA;        // Because Jasper rides on top of the built in&#xA;        // .Net Core generic host, you can use the&#xA;        // IHostedService&#xA;        Services.AddHostedService&lt;PingerService&gt;();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>For more information about Azure Service Bus connection strings, see <a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dotnet-how-to-use-topics-subscriptions">Get started with Service Bus queues</a>.</p>
+<p>The Azure Service Bus connection string is the only required configuration, but you can also exert some fine grained control over the
+underlying Azure Service Bus client objects like so:</p>
+<pre><code class="language-csharp">&#xA;public class JasperWithAzureServiceBusApp : JasperOptions&#xA;{&#xA;    public JasperWithAzureServiceBusApp()&#xA;    {&#xA;        Endpoints.ConfigureAzureServiceBus(asb =&gt;&#xA;        {&#xA;&#xA;            asb.ConnectionString = &quot;an Azure Service Bus connection string&quot;;&#xA;&#xA;            // The following properties would be set on all&#xA;            // TopicClient, QueueClient, or SubscriptionClient&#xA;            // objects created at runtime&#xA;            asb.TransportType = TransportType.AmqpWebSockets;&#xA;            asb.TokenProvider = new ManagedServiceIdentityTokenProvider();&#xA;            asb.ReceiveMode = ReceiveMode.ReceiveAndDelete;&#xA;            asb.RetryPolicy = RetryPolicy.NoRetry;&#xA;        });&#xA;&#xA;        // Configure endpoints&#xA;        Endpoints.PublishAllMessages().ToAzureServiceBusQueue(&quot;outgoing&quot;);&#xA;        Endpoints.ListenToAzureServiceBusQueue(&quot;incoming&quot;);&#xA;    }&#xA;&#xA;&#xA;}&#xA;</code></pre>
+<p>If all you care about is the Azure Service Bus connection string, there is an overload shortcut like this example:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig : JasperOptions&#xA;{&#xA;    public JasperConfig()&#xA;    {&#xA;        // Publish all messages to an Azure Service Bus queue&#xA;        Endpoints&#xA;            .PublishAllMessages()&#xA;            .ToAzureServiceBusQueue(&quot;pings&quot;)&#xA;&#xA;            // Optionally use the store and forward&#xA;            // outbox mechanics against this endpoint&#xA;            .Durably();&#xA;&#xA;        // Listen to incoming messages from an Azure Service Bus&#xA;        // queue&#xA;        Endpoints&#xA;            .ListenToAzureServiceBusQueue(&quot;pongs&quot;);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        var connectionString = config.GetConnectionString(&quot;azureservicebus&quot;);&#xA;        Endpoints.ConfigureAzureServiceBus(connectionString);&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="subscribe-and-publish-messages-to-a-named-queue">Subscribe and Publish Messages to a named Queue</h2>
+<p>Below is a sample of configuring both a listener and a publisher endpoint to a named Azure Service Bus queue:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig : JasperOptions&#xA;{&#xA;    public JasperConfig()&#xA;    {&#xA;        // Publish all messages to an Azure Service Bus queue&#xA;        Endpoints&#xA;            .PublishAllMessages()&#xA;            .ToAzureServiceBusQueue(&quot;pings&quot;)&#xA;&#xA;            // Optionally use the store and forward&#xA;            // outbox mechanics against this endpoint&#xA;            .Durably();&#xA;&#xA;        // Listen to incoming messages from an Azure Service Bus&#xA;        // queue&#xA;        Endpoints&#xA;            .ListenToAzureServiceBusQueue(&quot;pongs&quot;);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        var connectionString = config.GetConnectionString(&quot;azureservicebus&quot;);&#xA;        Endpoints.ConfigureAzureServiceBus(connectionString);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Alternatively, you <em>could</em> use <code>Uri</code> values instead like so:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig2 : JasperOptions&#xA;{&#xA;    public JasperConfig2()&#xA;    {&#xA;        // Publish all messages to an Azure Service Bus queue&#xA;        Endpoints&#xA;            .PublishAllMessages()&#xA;            .To(&quot;asb://queue/pings&quot;);&#xA;&#xA;&#xA;        // Listen to incoming messages from an Azure Service Bus&#xA;        // queue&#xA;        Endpoints&#xA;            .ListenForMessagesFrom(&quot;asb://queue/pongs&quot;)&#xA;            .UseForReplies();&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        var connectionString = config.GetConnectionString(&quot;azureservicebus&quot;);&#xA;        Endpoints.ConfigureAzureServiceBus(connectionString);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Just note that there are some Azure Service Bus specific settings for listeners and senders that won't be exposed through
+the generic register by <code>Uri</code> mechanisms.</p>
+<h2 id="subscribe-and-publish-messages-for-a-specific-topic">Subscribe and Publish Messages for a specific Topic</h2>
+<p>To publish or subscribe to a specific, named Azure Service Bus topic, use the syntax shown below:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig3 : JasperOptions&#xA;{&#xA;    public JasperConfig3()&#xA;    {&#xA;        // Publish all messages to an Azure Service Bus queue&#xA;        Endpoints&#xA;            .PublishAllMessages()&#xA;            .ToAzureServiceBusTopic(&quot;pings&quot;)&#xA;&#xA;            // Optionally use the store and forward&#xA;            // outbox mechanics against this endpoint&#xA;            .Durably();&#xA;&#xA;        // Listen to incoming messages from an Azure Service Bus&#xA;        // queue&#xA;        Endpoints&#xA;            .ListenToAzureServiceBusTopic(&quot;pongs&quot;, &quot;pong-subscription&quot;);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        var connectionString = config.GetConnectionString(&quot;azureservicebus&quot;);&#xA;        Endpoints.ConfigureAzureServiceBus(connectionString);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Alternatively, you <em>could</em> use <code>Uri</code> values instead like so:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig4 : JasperOptions&#xA;{&#xA;    public JasperConfig4()&#xA;    {&#xA;        // Publish all messages to an Azure Service Bus queue&#xA;        Endpoints&#xA;            .PublishAllMessages()&#xA;            .To(&quot;asb://topic/pings&quot;);&#xA;&#xA;&#xA;        // Listen to incoming messages from an Azure Service Bus&#xA;        // queue&#xA;        Endpoints&#xA;            .ListenForMessagesFrom(&quot;asb://topic/pongs/subscription/pong-subscription&quot;)&#xA;            .UseForReplies();&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        var connectionString = config.GetConnectionString(&quot;azureservicebus&quot;);&#xA;        Endpoints.ConfigureAzureServiceBus(connectionString);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Just note again that there are some Azure Service Bus specific settings for listeners and senders that won't be exposed through
+the generic register by <code>Uri</code> mechanisms.</p>
+<p>See <a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dotnet-how-to-use-topics-subscriptions">Get started with Service Bus topics</a> for more information;</p>
+<h2 id="scheduled-messages">Scheduled Messages</h2>
+<p>Jasper happily uses Azure Service Bus <a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/message-sequencing">scheduled messaging</a> functionality behind the scenes
+when you use Jasper's <code>ScheduleSend()</code> functionality. See <a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a> for more information.</p>
+<h2 id="connecting-to-non-jasper-applications">Connecting to non-Jasper Applications</h2>
+<p>Lastly, you may want to use the Azure Service Bus transport to integrate with other applications that aren't using Jasper. To make that work, you may need to do some
+mapping between Jasper's <code>Envelope</code> structure and Azure Service Bus's <code>Message</code> structure using a custom implementation of <code>Jasper.AzureServiceBus.IAzureServiceBusProtocol</code>.</p>
+<p>That interface is shown below:</p>
+<pre><code class="language-csharp">&#xA;public interface IAzureServiceBusProtocol&#xA;{&#xA;    Message WriteFromEnvelope(Envelope envelope);&#xA;&#xA;    Envelope ReadEnvelope(Message message);&#xA;}&#xA;</code></pre>
+<p>And here's what the default protocol looks like because it's likely easier to start with this than build something all new:</p>
+<pre><code class="language-csharp">&#xA;&#xA;public class SpecialAzureServiceBusProtocol : DefaultAzureServiceBusProtocol&#xA;{&#xA;    public override Message WriteFromEnvelope(Envelope envelope)&#xA;    {&#xA;        var message = base.WriteFromEnvelope(envelope);&#xA;&#xA;        // Override some properties from how&#xA;        // Jasper itself would write them out&#xA;        message.ReplyTo = &quot;replies&quot;;&#xA;&#xA;        return message;&#xA;    }&#xA;&#xA;    public override Envelope ReadEnvelope(Message message)&#xA;    {&#xA;        var envelope = base.ReadEnvelope(message);&#xA;&#xA;        if (message.ReplyTo.IsNotEmpty())&#xA;        {&#xA;            var uriString = &quot;asb://topic/&quot; &#x2B; message.ReplyTo;&#xA;        }&#xA;&#xA;        return envelope;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Lastly, to apply the protocol, use the mechanism shown below:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig5 : JasperOptions&#xA;{&#xA;    public JasperConfig5()&#xA;    {&#xA;        // Publish all messages to an Azure Service Bus queue&#xA;        Endpoints&#xA;            .PublishAllMessages()&#xA;            .ToAzureServiceBusTopic(&quot;pings&quot;)&#xA;&#xA;            // Override the Azure Service Bus protocol&#xA;            // because it&#x27;s not a Jasper application on the other end&#xA;            .Protocol&lt;SpecialAzureServiceBusProtocol&gt;()&#xA;&#xA;            // Optionally use the store and forward&#xA;            // outbox mechanics against this endpoint&#xA;            .Durably();&#xA;&#xA;        // Listen to incoming messages from an Azure Service Bus&#xA;        // queue&#xA;        Endpoints&#xA;            .ListenToAzureServiceBusTopic(&quot;pongs&quot;, &quot;pong-subscription&quot;);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        var connectionString = config.GetConnectionString(&quot;azureservicebus&quot;);&#xA;        Endpoints.ConfigureAzureServiceBus(connectionString);&#xA;    }&#xA;}&#xA;</code></pre>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/integration/transports/tcp">TCP Transport</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>

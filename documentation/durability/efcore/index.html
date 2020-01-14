@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - Using Entity Framework Core with Jasper</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/durability/marten" title="Using Marten with Jasper">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/testing" title="Automated Testing Support">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/durability/efcore.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/durability">Durable Messaging and Command Processing</a></li><li class="active">Using Entity Framework Core with Jasper</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar">
+
+			  </ul>
+
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/testing">Automated Testing Support</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/durability/marten">Using Marten with Jasper</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>Using Entity Framework Core with Jasper</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:Using Entity Framework Core with Jasper-->
+<p>The <code>Jasper.Persistence.EntityFrameworkCore</code> Nuget can be used with a Jasper application to add support for
+using <a href="https://docs.microsoft.com/en-us/ef/core/">Entity Framework Core</a> in the Jasper:</p>
+<ul>
+<li><code>[Transactional]</code> middleware</li>
+<li><a href="https://microservices.io/patterns/data/transactional-outbox.html">Outbox</a> support</li>
+<li><a href="/documentation/execution/sagas">Saga persistence</a></li>
+</ul>
+<p>Note that you will <strong>also</strong> need
+to use one of the database backed message persistence mechanisms like <a href="/documentation/durability/sqlserver">Jasper.Persistence.SqlServer</a> or <a href="/documentation/durability/postgresql">Jasper.Persistence.Postgresql</a> in conjunction with the EF Core integration.</p>
+<p>As an example of using the EF Core integration with Sql Server inside a Jasper application,
+see the <a href="https://github.com/JasperFx/JasperSamples/tree/master/InMemoryMediator">the InMemoryMediator sample project</a>.</p>
+<p>Assuming that <code>Jasper.Persistence.EntityFrameworkCore</code> is referenced by your application, here's a custom
+<a href="">DbContext</a> type from the <a href="https://github.com/JasperFx/JasperSamples/tree/master/InMemoryMediator">sample project</a>:</p>
+<pre><code class="language-csharp">&#xA;public class ItemsDbContext : DbContext&#xA;{&#xA;    public ItemsDbContext(DbContextOptions&lt;ItemsDbContext&gt; options) : base(options)&#xA;    {&#xA;    }&#xA;&#xA;    public DbSet&lt;Item&gt; Items { get; set; }&#xA;&#xA;    protected override void OnModelCreating(ModelBuilder modelBuilder)&#xA;    {&#xA;        // This adds the Jasper Envelope storage mapping to&#xA;        // this DbContext type. This enables the EF Core &quot;outbox&quot;&#xA;        // support with Jasper&#xA;        modelBuilder.MapEnvelopeStorage();&#xA;&#xA;        // Your normal EF Core mapping&#xA;        modelBuilder.Entity&lt;Item&gt;(map =&gt;&#xA;        {&#xA;            map.ToTable(&quot;items&quot;);&#xA;            map.HasKey(x =&gt; x.Id);&#xA;            map.Property(x =&gt; x.Name);&#xA;        });&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Most of this is just standard EF Core. The only Jasper specific thing is the call
+to <code>modelBuilder.MapEnvelopeStorage()</code> in the <code>OnModelCreating()</code> method. This adds mappings
+to Jasper's <a href="/documentation/durability">message persistence</a> and allowing
+the <code>ItemsDbContext</code> objects to enroll in Jasper outbox transactions.</p>
+<p>Now, to wire up EF Core into our Jasper application and add Sql Server-backed message persistence, use
+this <a href="/documentation/bootstrapping">JasperOptions</a> class:</p>
+<pre><code class="language-csharp">&#xA;public class JasperConfig : JasperOptions&#xA;{&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        if (hosting.IsDevelopment())&#xA;        {&#xA;            // In development mode, we&#x27;re just going to have the message persistence&#xA;            // schema objects dropped and rebuilt on app startup so you&#x27;re&#xA;            // always starting from a clean slate&#xA;            Advanced.StorageProvisioning = StorageProvisioning.Rebuild;&#xA;        }&#xA;&#xA;        // Just the normal work to get the connection string out of&#xA;        // application configuration&#xA;        var connectionString = config.GetConnectionString(&quot;sqlserver&quot;);&#xA;&#xA;        // Setting up Sql Server-backed message persistence&#xA;        // This requires a reference to Jasper.Persistence.SqlServer&#xA;        Extensions.PersistMessagesWithSqlServer(connectionString);&#xA;&#xA;        // Register the EF Core DbContext&#xA;        Services.AddDbContext&lt;ItemsDbContext&gt;(&#xA;            x =&gt; x.UseSqlServer(connectionString),&#xA;&#xA;            // This is important! Using Singleton scoping&#xA;            // of the options allows Jasper &#x2B; Lamar to significantly&#xA;            // optimize the runtime pipeline of the handlers that&#xA;            // use this DbContext type&#xA;            optionsLifetime:ServiceLifetime.Singleton);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>There's a couple things to note in the code above:</p>
+<ul>
+<li>The call to <code>Extensions.PersistMessagesWithSqlServer()</code> sets up the Sql Server backed message persistence</li>
+<li>The <code>AddDbContext&lt;ItemsDbContext&gt;()</code> call is just the normal EF Core set up, with one difference. <strong>It's
+a possibly significant performance optimization to mark <code>optionsLifetime</code> as singleton scoped</strong> because
+Jasper will be able to generate more efficient handler pipeline code for message handlers that use
+your EF Core <code>DbContext</code>.</li>
+</ul>
+<h2 id="transactional-support-and-outbox-usage">Transactional Support and Outbox Usage</h2>
+<p>First, let's look at using the EF Core-backed outbox usage in the following MVC controller method that:</p>
+<ol>
+<li>Starts an outbox transaction with <code>ItemsDbContext</code> and <code>IMessageContext</code> (Jasper's main entrypoint for messaging)</li>
+<li>Accepts a <code>CreateItemCommand</code> command input</li>
+<li>Creates and saves a new <code>Item</code> entity with <code>ItemsDbContext</code></li>
+<li>Also creates and publishes a matching <code>ItemCreated</code> event for any interested subscribers</li>
+<li>Commits the unit of work</li>
+<li>Flushes out the newly persisted <code>ItemCreated</code> outgoing message to Jasper's sending agents</li>
+</ol>
+<pre><code class="language-csharp">&#xA;// This controller does all the transactional work and business&#xA;// logic all by itself&#xA;public class DoItAllMyselfItemController : ControllerBase&#xA;{&#xA;    private readonly IMessageContext _messaging;&#xA;    private readonly ItemsDbContext _db;&#xA;&#xA;    public DoItAllMyselfItemController(IMessageContext messaging, ItemsDbContext db)&#xA;    {&#xA;        _messaging = messaging;&#xA;        _db = db;&#xA;    }&#xA;&#xA;    [HttpPost(&quot;/items/create&quot;)]&#xA;    public async Task Create([FromBody] CreateItemCommand command)&#xA;    {&#xA;        // Start the &quot;Outbox&quot; transaction&#xA;        await _messaging.EnlistInTransaction(_db);&#xA;&#xA;        // Create a new Item entity&#xA;        var item = new Item&#xA;        {&#xA;            Name = command.Name&#xA;        };&#xA;&#xA;        // Add the item to the current&#xA;        // DbContext unit of work&#xA;        _db.Items.Add(item);&#xA;&#xA;        // Publish an event to anyone&#xA;        // who cares that a new Item has&#xA;        // been created&#xA;        var @event = new ItemCreated&#xA;        {&#xA;            Id = item.Id&#xA;        };&#xA;&#xA;        // Because the message context is enlisted in an&#xA;        // &quot;outbox&quot; transaction, these outgoing messages are&#xA;        // held until the ongoing transaction completes&#xA;        await _messaging.Send(@event);&#xA;&#xA;        // Commit the unit of work. This will persist&#xA;        // both the Item entity we created above, and&#xA;        // also a Jasper Envelope for the outgoing&#xA;        // ItemCreated message&#xA;        await _db.SaveChangesAsync();&#xA;&#xA;        // After the DbContext transaction succeeds, kick out&#xA;        // the persisted messages in the context &quot;outbox&quot;&#xA;        await _messaging.SendAllQueuedOutgoingMessages();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Outside of a Jasper <a href="/documentation/execution/handlers">message handler</a>, you will have to explicitly
+<em>enlist</em> a Jasper <code>IMessageContext</code> in a <code>DbContext</code> unit of work through the <code>EnlistInTransaction(DbContext)</code>
+extension method. Secondly, after calling <code>DbContext.SaveChangesAsync()</code>, you'll need to manually call
+<code>IMessageContext.SendAllQueuedOutgoingMessages()</code> to actually release the newly persisted <code>ItemCreated</code>
+event message to be be sent. If your application somehow manages to crash between the successful call
+to <code>SaveChangesAsync()</code> and the <code>ItemCreated</code> message actually being delivered by Jasper to wherever it
+was supposed to go, not to worry. The outgoing message is persisted and will be sent either by restarting
+the application or by failing over to another running node of your application.</p>
+<p>Alright, that was some busy code, so let's see how this can be cleaner running inside a Jasper message
+handler that takes advantage of the <code>[Transactional]</code> middleware:</p>
+<pre><code class="language-csharp">&#xA;public class ItemHandler&#xA;{&#xA;    // This attribute applies Jasper&#x27;s EF Core transactional&#xA;    // middleware&#xA;    [Transactional]&#xA;    public static ItemCreated Handle(&#xA;        // This would be the message&#xA;        CreateItemCommand command,&#xA;&#xA;        // Any other arguments are assumed&#xA;        // to be service dependencies&#xA;        ItemsDbContext db)&#xA;    {&#xA;        // Create a new Item entity&#xA;        var item = new Item&#xA;        {&#xA;            Name = command.Name&#xA;        };&#xA;&#xA;        // Add the item to the current&#xA;        // DbContext unit of work&#xA;        db.Items.Add(item);&#xA;&#xA;        // This event being returned&#xA;        // by the handler will be automatically sent&#xA;        // out as a &quot;cascading&quot; message&#xA;        return new ItemCreated&#xA;        {&#xA;            Id = item.Id&#xA;        };&#xA;    }&#xA;}&#xA;</code></pre>
+<p>The code above effectively does the same thing as the <code>DoItAllMyselfItemController</code> shown earlier,
+but Jasper is generating some middleware code around the <code>ItemHandler.Handle()</code> method to enlist
+the scoped <code>IMessageContext</code> object into the scoped <code>ItemsDbContext</code> unit of work. That same middleware is
+coming behind the call to <code>Item.Handler()</code> and both saving the changes in <code>ItemsDbContext</code> and pushing out
+any newly persisted cascading messages.</p>
+<h2 id="saga-persistence">Saga Persistence</h2>
+<p>If the <code>Jasper.Persistence.EntityFrameworkCore</code> Nuget is referenced, your Jasper application can use custom <code>DbContext</code> types
+as the <a href="/documentation/execution/sagas">saga persistence mechanism</a>. There's just a couple things to know:</p>
+<ol>
+<li>The primary key / identity for the state document has to be either an <code>int</code>, <code>long</code>, <code>string</code>, or <code>System.Guid</code></li>
+<li>Jasper analyzes the dependency tree of your <code>StatefulSagaOf&lt;TState&gt;</code> handler class for a Lamar dependency that inherits
+from <code>DbContext</code>, and if it finds exactly 1 dependency, that is assumed to be used for persisting the state</li>
+<li>All saga message handlers are automatically wrapped with the transactional middleware</li>
+<li>You will have to have EF Core mapping for the .Net state type of your saga handler</li>
+</ol>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/durability/marten">Using Marten with Jasper</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/testing">Automated Testing Support</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>

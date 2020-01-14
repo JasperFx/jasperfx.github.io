@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - RabbitMQ Transport</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/transports/azureservicebus" title="Azure Service Bus Transport">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/routing" title="Routing Messages">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/integration/transports/rabbitmq.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/integration">Messaging Between Systems</a></li><li><a href="/documentation/integration/transports">Messaging Transports</a></li><li class="active">RabbitMQ Transport</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar">
+
+			  </ul>
+
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration/routing">Routing Messages</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>RabbitMQ Transport</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:RabbitMQ Transport-->
+<div class="alert-info alert"><p><strong>Note!</strong>
+Jasper uses the <a href="https://www.rabbitmq.com/dotnet.html">Rabbit MQ .Net Client</a> to connect to Rabbit MQ.</p>
+</div>
+<h2 id="quick-start">Quick Start</h2>
+<p>If you're starting a fresh project, you can quickly spin up a new Jasper project using Rabbit MQ with a <code>dotnet new</code> template.</p>
+<p>First install the <code>JasperTemplates</code> nuget like so:</p>
+<pre><code>dotnet new --install JasperTemplates
+</code></pre>
+<p>Then build out the directory for your intended project, and use:</p>
+<pre><code>dotnet new jasper.rabbitmq
+</code></pre>
+<p>Then check the <code>README.md</code> file in the generated directory for an overview of what was generated for you.</p>
+<h2 id="installing">Installing</h2>
+<p>All the code samples in this section are from the <a href="https://github.com/JasperFx/JasperSamples/tree/master/PingPongWithRabbitMQ">Ping/Pong with Rabbit MQ sample project</a>.</p>
+<p>To use <a href="http://www.rabbitmq.com/">RabbitMQ</a> as a transport with Jasper, first install the <code>Jasper.RabbitMQ</code> library via nuget to your project. Behind the scenes, this package uses the <a href="https://www.rabbitmq.com/dotnet.html">RabbitMQ C# Client</a> to both send and receive messages from RabbitMQ.</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig : JasperOptions&#xA;{&#xA;    public JasperConfig()&#xA;    {&#xA;        Endpoints&#xA;            .ListenToRabbitQueue(&quot;pongs&quot;)&#xA;&#xA;            // With the Rabbit MQ transport, you probably&#xA;            // want to explicitly designate a specific queue or topic&#xA;            // for replies&#xA;            .UseForReplies();&#xA;&#xA;        Endpoints.PublishAllMessages().ToRabbit(&quot;pings&quot;);&#xA;&#xA;        // Configure Rabbit MQ connections and optionally declare Rabbit MQ&#xA;        // objects through an extension method on JasperOptions.Endpoints&#xA;        Endpoints.ConfigureRabbitMq(rabbit =&gt;&#xA;        {&#xA;            // Using a local installation of Rabbit MQ&#xA;            // via a running Docker image&#xA;            rabbit.ConnectionFactory.HostName = &quot;localhost&quot;;&#xA;&#xA;            // This directs Jasper to try to create any&#xA;            // missing Rabbit MQ objects that are declared&#xA;            // in this JasperOptions class&#xA;            rabbit.AutoProvision = true;&#xA;&#xA;            rabbit.DeclareQueue(&quot;pongs&quot;);&#xA;            rabbit.DeclareQueue(&quot;pings&quot;);&#xA;        });&#xA;&#xA;        // You an register additional IoC services&#xA;        // directly in the JasperOptions with either&#xA;        // Lamar specific registrations or in this case,&#xA;        // the built in DI abstractions in .Net Core&#xA;&#xA;        // Because Jasper rides on top of the built in&#xA;        // .Net Core generic host, you can use the&#xA;        // IHostedService&#xA;        Services.AddHostedService&lt;PingerService&gt;();&#xA;    }&#xA;&#xA;}&#xA;</code></pre>
+<p>See the <a href="https://www.rabbitmq.com/dotnet-api-guide.html#connecting">Rabbit MQ .Net Client documentation</a> for more information about configuring the <code>ConnectionFactory</code> to connect to Rabbit MQ.</p>
+<p>All the calls to <code>Declare*****()</code> are optional helpers for auto-provisioning Rabbit MQ objects on application startup. This is probably only useful for development or testing, but it's there.</p>
+<h2 id="subscribe-and-publish-messages-to-a-named-queue-or-routing-key">Subscribe and Publish Messages to a named Queue or Routing Key</h2>
+<p>In terms of publishing or listening to a specific, named queue (or publish to a routing key), use the syntax shown below:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig : JasperOptions&#xA;{&#xA;    public JasperConfig()&#xA;    {&#xA;        Endpoints&#xA;            // Listen for messages incoming on a specific&#xA;            // named queue&#xA;            .ListenToRabbitQueue(&quot;pongs&quot;)&#xA;&#xA;            // With the Rabbit MQ transport, you probably&#xA;            // want to explicitly designate a specific queue or topic&#xA;            // for replies&#xA;            .UseForReplies();&#xA;&#xA;        Endpoints.PublishAllMessages()&#xA;&#xA;            // The argument here can be either a queue&#xA;            // name or a routing key. It&#x27;s the same as far&#xA;            // as the Rabbit MQ .Net Client is concerned&#xA;            .ToRabbit(&quot;pings&quot;);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        Endpoints.ConfigureRabbitMq(rabbit =&gt;&#xA;        {&#xA;            rabbit.ConnectionFactory.Uri = config.GetValue&lt;Uri&gt;(&quot;rabbit&quot;);&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Or if you want to do this by <code>Uri</code>:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig2 : JasperOptions&#xA;{&#xA;    public JasperConfig2()&#xA;    {&#xA;        Endpoints&#xA;            // Listen for messages incoming on a specific&#xA;            // named queue&#xA;            .ListenToRabbitQueue(&quot;rabbitmq://queue/pongs&quot;)&#xA;&#xA;&#xA;&#xA;            // With the Rabbit MQ transport, you probably&#xA;            // want to explicitly designate a specific queue or topic&#xA;            // for replies&#xA;            .UseForReplies();&#xA;&#xA;&#xA;        Endpoints.PublishAllMessages()&#xA;            // To a specific queue&#xA;            .To(&quot;rabbitmq://queue/pings&quot;);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        Endpoints.ConfigureRabbitMq(rabbit =&gt;&#xA;        {&#xA;            rabbit.ConnectionFactory.Uri = config.GetValue&lt;Uri&gt;(&quot;rabbit&quot;);&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Please note that you will lose the option to configure Rabbit MQ-specific options by endpoint if you use the generic
+<code>Uri</code> approach.</p>
+<h2 id="publish-messages-to-a-specific-topic">Publish Messages to a specific Topic</h2>
+<p>Publishing to a specific topic can be done with this syntax:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig3 : JasperOptions&#xA;{&#xA;    public JasperConfig3()&#xA;    {&#xA;        Endpoints&#xA;            // Listen for messages incoming on a specific&#xA;            // named queue&#xA;            .ListenToRabbitQueue(&quot;pongs&quot;)&#xA;&#xA;            // With the Rabbit MQ transport, you probably&#xA;            // want to explicitly designate a specific queue or topic&#xA;            // for replies&#xA;            .UseForReplies();&#xA;&#xA;        Endpoints.PublishAllMessages()&#xA;&#xA;            // The argument here can be either a queue&#xA;            // name or a routing key. It&#x27;s the same as far&#xA;            // as the Rabbit MQ .Net Client is concerned&#xA;            .ToRabbit(&quot;pings&quot;, &quot;topics&quot;);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        Endpoints.ConfigureRabbitMq(rabbit =&gt;&#xA;        {&#xA;            rabbit.ConnectionFactory.Uri = config.GetValue&lt;Uri&gt;(&quot;rabbit&quot;);&#xA;&#xA;            if (hosting.IsDevelopment())&#xA;            {&#xA;                rabbit.AutoProvision = true;&#xA;            }&#xA;&#xA;            // This is optional, but does help for local development&#xA;            rabbit.DeclareExchange(&quot;topics&quot;, exchange =&gt;&#xA;            {&#xA;                exchange.ExchangeType = ExchangeType.Topic;&#xA;            });&#xA;&#xA;            rabbit.DeclareQueue(&quot;incoming-pings&quot;, q =&gt;&#xA;            {&#xA;                // Just showing that it&#x27;s possible to further configure&#xA;                // the queue&#xA;                q.IsDurable = true;&#xA;            });&#xA;&#xA;            // This would more likely be on the listener side,&#xA;            // but just showing you what can be done&#xA;            rabbit.DeclareBinding(new Binding&#xA;            {&#xA;                BindingKey = &quot;pings&quot;,&#xA;                ExchangeName = &quot;topics&quot;,&#xA;                QueueName = &quot;incoming-pings&quot;&#xA;            });&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<p><strong>Please note</strong> that in the call to <code>Endpoints.Publish****().ToRabbitMq()</code>, the second argument refers to the Rabbit MQ exchange name
+and this must be specified to publish to a named topic.</p>
+<h2 id="fanout-exchanges">Fanout Exchanges</h2>
+<p>Jasper.RabbitMQ supports using <a href="https://www.tutlane.com/tutorial/rabbitmq/csharp-rabbitmq-fanout-exchange">Rabbit MQ <em>fanout</em> exchanges</a> as shown below:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig4 : JasperOptions&#xA;{&#xA;    public JasperConfig4()&#xA;    {&#xA;        Endpoints&#xA;            // Listen for messages incoming on a specific&#xA;            // named queue&#xA;            .ListenToRabbitQueue(&quot;pongs&quot;)&#xA;&#xA;            // With the Rabbit MQ transport, you probably&#xA;            // want to explicitly designate a specific queue or topic&#xA;            // for replies&#xA;            .UseForReplies();&#xA;&#xA;        // Publish to the exchange name&#xA;        Endpoints.PublishAllMessages()&#xA;            .ToRabbitExchange(&quot;fan&quot;);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        Endpoints.ConfigureRabbitMq(rabbit =&gt;&#xA;        {&#xA;            rabbit.ConnectionFactory.Uri = config.GetValue&lt;Uri&gt;(&quot;rabbit&quot;);&#xA;&#xA;            if (hosting.IsDevelopment())&#xA;            {&#xA;                rabbit.AutoProvision = true;&#xA;            }&#xA;&#xA;            // This is optional&#xA;            rabbit.DeclareExchange(&quot;fan&quot;, exchange =&gt;&#xA;            {&#xA;                exchange.ExchangeType = ExchangeType.Fanout;&#xA;            });&#xA;&#xA;            // This would more likely be on the listener side,&#xA;            // but just showing you what can be done&#xA;            rabbit.DeclareBinding(new Binding&#xA;            {&#xA;                BindingKey = &quot;pings&quot;,&#xA;                ExchangeName = &quot;fan&quot;,&#xA;                QueueName = &quot;incoming-pings&quot;&#xA;            });&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+<h2 id="scheduled-messages">Scheduled Messages</h2>
+<p>Jasper does not at this time support Rabbit MQ's plugin for delayed delivery. When using Rabbit MQ, the scheduled delivery function is done by polling the
+configured message store by Jasper rather than depending on Rabbit MQ itself.</p>
+<p>See <a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a> for more information.</p>
+<h2 id="connecting-to-non-jasper-applications">Connecting to non-Jasper Applications</h2>
+<p>Lastly, you may want to use the Rabbit MQ transport to integrate with other applications that aren't using Jasper. To make that work, you may need to do some
+mapping between Jasper's <code>Envelope</code> structure and Rabbit MQ's structures using a custom implementation of <code>Jasper.RabbitMq.IRabbitMqProtocol</code>.</p>
+<p>That interface is shown below:</p>
+<pre><code class="language-csharp">&#xA;public interface IRabbitMqProtocol&#xA;{&#xA;    void WriteFromEnvelope(Envelope envelope, IBasicProperties properties);&#xA;&#xA;    Envelope ReadEnvelope(byte[] body, IBasicProperties properties);&#xA;}&#xA;&#xA;</code></pre>
+<p>And here's what the default protocol looks like because it's likely easier to start with this than build something all new:</p>
+<pre><code class="language-csharp">&#xA;public class DefaultRabbitMqProtocol : IRabbitMqProtocol&#xA;{&#xA;    public virtual Envelope ReadEnvelope(byte[] data, IBasicProperties props)&#xA;    {&#xA;        var envelope = new Envelope&#xA;        {&#xA;            Data = data,&#xA;            Source = props.AppId,&#xA;            ContentType = props.ContentType,&#xA;            MessageType = props.Type,&#xA;            ReplyUri = props.ReplyTo.IsEmpty() ? null : new Uri(props.ReplyTo)&#xA;        };&#xA;&#xA;        if (Guid.TryParse(props.CorrelationId, out var id))&#xA;        {&#xA;            envelope.Id = id;&#xA;        }&#xA;&#xA;        if (props.Headers != null) envelope.ReadPropertiesFromDictionary(props.Headers);&#xA;&#xA;        return envelope;&#xA;    }&#xA;&#xA;    public virtual void WriteFromEnvelope(Envelope envelope, IBasicProperties properties)&#xA;    {&#xA;        properties.CorrelationId = envelope.Id.ToString();&#xA;        properties.AppId = envelope.Source;&#xA;        properties.ContentType = envelope.ContentType;&#xA;        properties.Type = envelope.MessageType;&#xA;        if (envelope.ReplyUri != null) properties.ReplyTo = envelope.ReplyUri.ToString();&#xA;&#xA;        if (properties.Headers == null) properties.Headers = new Dictionary&lt;string, object&gt;();&#xA;&#xA;        envelope.WriteToDictionary(properties.Headers);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Lastly, to apply the protocol, use the mechanism shown in the previous section.</p>
+<h2 id="auto-provisioning-rabbit-mq-objects-at-application-startup">Auto-Provisioning Rabbit MQ Objects at Application Startup</h2>
+<p>One of the best things about developing against Rabbit MQ is how easy it is to set up your environment for local development. Run Rabbit MQ in a Docker container and spin up queues, exchanges, and bindings on the fly. Jasper.RabbitMQ uses a combination of the <code>Declare***()</code> methods and the <code>AutoProvision</code> property to direct Jasper to create any missing Rabbit MQ objects at application start up time.</p>
+<p>Here's a sample usage:</p>
+<pre><code class="language-csharp">&#xA;internal class JasperConfig3 : JasperOptions&#xA;{&#xA;    public JasperConfig3()&#xA;    {&#xA;        Endpoints&#xA;            // Listen for messages incoming on a specific&#xA;            // named queue&#xA;            .ListenToRabbitQueue(&quot;pongs&quot;)&#xA;&#xA;            // With the Rabbit MQ transport, you probably&#xA;            // want to explicitly designate a specific queue or topic&#xA;            // for replies&#xA;            .UseForReplies();&#xA;&#xA;        Endpoints.PublishAllMessages()&#xA;&#xA;            // The argument here can be either a queue&#xA;            // name or a routing key. It&#x27;s the same as far&#xA;            // as the Rabbit MQ .Net Client is concerned&#xA;            .ToRabbit(&quot;pings&quot;, &quot;topics&quot;);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        Endpoints.ConfigureRabbitMq(rabbit =&gt;&#xA;        {&#xA;            rabbit.ConnectionFactory.Uri = config.GetValue&lt;Uri&gt;(&quot;rabbit&quot;);&#xA;&#xA;            if (hosting.IsDevelopment())&#xA;            {&#xA;                rabbit.AutoProvision = true;&#xA;            }&#xA;&#xA;            // This is optional, but does help for local development&#xA;            rabbit.DeclareExchange(&quot;topics&quot;, exchange =&gt;&#xA;            {&#xA;                exchange.ExchangeType = ExchangeType.Topic;&#xA;            });&#xA;&#xA;            rabbit.DeclareQueue(&quot;incoming-pings&quot;, q =&gt;&#xA;            {&#xA;                // Just showing that it&#x27;s possible to further configure&#xA;                // the queue&#xA;                q.IsDurable = true;&#xA;            });&#xA;&#xA;            // This would more likely be on the listener side,&#xA;            // but just showing you what can be done&#xA;            rabbit.DeclareBinding(new Binding&#xA;            {&#xA;                BindingKey = &quot;pings&quot;,&#xA;                ExchangeName = &quot;topics&quot;,&#xA;                QueueName = &quot;incoming-pings&quot;&#xA;            });&#xA;        });&#xA;    }&#xA;}&#xA;</code></pre>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/integration/routing">Routing Messages</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>

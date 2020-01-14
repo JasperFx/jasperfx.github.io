@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - Durable Messaging and Command Processing</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration" title="Messaging Between Systems">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/durability/endpoints" title="Adding Durability to Senders or Listeners">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/durability/index.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Durable Messaging and Command Processing</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar">
+
+			  </ul>
+
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/durability/endpoints">Adding Durability to Senders or Listeners</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/integration">Messaging Between Systems</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>Durable Messaging and Command Processing</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:Durable Messaging and Command Processing-->
+<p>One of Jasper's most important features is durable message persistence using your application's database for reliable &quot;<a href="https://en.wikipedia.org/wiki/Store_and_forward">store and forward</a>&quot; queueing with all possible Jasper transport options, including the lightweight <a href="/documentation/integration/transports/tcp">TCP Transport</a> and external transports like <a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a> or and <a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a>.</p>
+<p>It's a chaotic world out when high volume systems need to interact with other systems. Your system may fail, other systems may be down,
+there's network hiccups, occasional failures -- and you still need your systems to get to a consistent state without messages just
+getting lost en route.</p>
+<p>To that end, Jasper relies on message persistence within your application database as it's implementation of the <a href="https://microservices.io/patterns/data/transactional-outbox.html">Transactional Outbox</a> pattern. Using the &quot;outbox&quot; pattern is a way to avoid the need for problematic
+and slow <a href="https://en.wikipedia.org/wiki/Distributed_transaction">distributed transactions</a> while still maintaining eventual consistency between database changes and the outgoing messages that are part of the logical transaction. Jasper implementation of the outbox pattern
+also includes a separate <em>message relay</em> process that will send the persisted outgoing messages in background processes (it's done by marshalling the outgoing message envelopes through <a href="https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library">TPL Dataflow</a> queues if you're curious.)</p>
+<p>If a Jasper system that uses durable messaging goes down before all the messages are processed, the persisted messages will be loaded from
+storage and processed when the system is restarted. Jasper does not include any kind of persistence in the core Jasper library, so you'll have to use
+an extension library to add that behavior.</p>
+<p>Today the options are:</p>
+<ol>
+<li>A <a href="/documentation/durability/postgresql">Postgresql backed option</a></li>
+<li>A <a href="/documentation/durability/sqlserver">Sql Server backed option</a></li>
+</ol>
+<div class="alert-info alert"><p><strong>Note!</strong>
+You will need to be using some kind of database-backed message persistence in order to make the <a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a> or <a href="/documentation/local">scheduled local execution</a> function durably.</p>
+</div>
+<p>Note that the <a href="/documentation/durability/marten">Using Marten with Jasper</a> support relies on the Postgresql backed persistence, and the
+<a href="/documentation/durability/efcore">Using Entity Framework Core with Jasper</a> support will need to be used in conjunction with either the Sql Server or Postgresql backed
+message persistence.</p>
+<p>The message durability also applies to the <a href="/documentation/local">local worker queues</a>.</p>
+<p>Also see the following topics to learn more about using, managing, and configuring the durable message persistence:</p>
+<ul class="table-of-contents"><li><a href="/documentation/durability/endpoints">Adding Durability to Senders or Listeners</a></li><li><a href="/documentation/durability/agent">Durability Agent</a></li><li><a href="/documentation/durability/managing">Message Storage Management</a></li><li><a href="/documentation/durability/sqlserver">Using Sql Server with Jasper</a></li><li><a href="/documentation/durability/postgresql">Using Postgresql with Jasper</a></li><li><a href="/documentation/durability/marten">Using Marten with Jasper</a></li><li><a href="/documentation/durability/efcore">Using Entity Framework Core with Jasper</a></li></ul>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/integration">Messaging Between Systems</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/durability/endpoints">Adding Durability to Senders or Listeners</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>

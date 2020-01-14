@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - Jasper as a Mediator</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/execution" title="Execution Pipeline">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/local" title="Local Worker Queues">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/mediator.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Jasper as a Mediator</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar">
+
+			  </ul>
+
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/local">Local Worker Queues</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/execution">Execution Pipeline</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>Jasper as a Mediator</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:Jasper as a Mediator-->
+<div class="alert-info alert"><p><strong>Note!</strong>
+All of the code on this page is from <a href="https://github.com/JasperFx/JasperSamples/tree/master/InMemoryMediator">the InMemoryMediator sample project</a>.</p>
+</div>
+<p>Recently there's been some renewed interest in the old <a href="https://en.wikipedia.org/wiki/Mediator_pattern">Gof Mediator pattern</a> as a way to isolate
+the actual functionality of web services and applications from the mechanics of HTTP request handling. In more concrete terms for .Net developers,
+a mediator tool allows you to keep MVC Core code ceremony out of your application business logic and service layer. It wasn't the original motivation of the project,
+but Jasper can be used as a full-featured mediator.</p>
+<p>Let's jump into a sample project. Let's say that your system creates and tracks <em>Items</em> of some sort. One of the API requirements is to expose an HTTP
+endpoint that can accept an input that will create and persist a new <code>Item</code>, while also publishing an <code>ItemCreated</code> event message to any other system
+(or internal listener within the same system). For the technology stack, let's use:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/overview?view=aspnetcore-3.1">MVC Core</a> as the Web API framework</li>
+<li>Jasper as our mediator of course!</li>
+<li>Sql Server as the backing database store, using <a href="/documentation/durability/sqlserver">Jasper's Sql Server message persistence</a></li>
+<li><a href="https://docs.microsoft.com/en-us/ef/core/">EF Core</a> as the persistence mechanism</li>
+</ul>
+<p>First off, let's start a new project with the <code>dotnet new webapi</code> template. Next, let's put all the Jasper configuration into a
+custom <a href="/documentation/bootstrapping">JasperOptions</a> class like this:</p>
+<pre><code class="language-csharp">&#xA;public class JasperConfig : JasperOptions&#xA;{&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        if (hosting.IsDevelopment())&#xA;        {&#xA;            // In development mode, we&#x27;re just going to have the message persistence&#xA;            // schema objects dropped and rebuilt on app startup so you&#x27;re&#xA;            // always starting from a clean slate&#xA;            Advanced.StorageProvisioning = StorageProvisioning.Rebuild;&#xA;        }&#xA;&#xA;        // Just the normal work to get the connection string out of&#xA;        // application configuration&#xA;        var connectionString = config.GetConnectionString(&quot;sqlserver&quot;);&#xA;&#xA;        // Setting up Sql Server-backed message persistence&#xA;        // This requires a reference to Jasper.Persistence.SqlServer&#xA;        Extensions.PersistMessagesWithSqlServer(connectionString);&#xA;&#xA;        // Register the EF Core DbContext&#xA;        Services.AddDbContext&lt;ItemsDbContext&gt;(&#xA;            x =&gt; x.UseSqlServer(connectionString),&#xA;&#xA;            // This is important! Using Singleton scoping&#xA;            // of the options allows Jasper &#x2B; Lamar to significantly&#xA;            // optimize the runtime pipeline of the handlers that&#xA;            // use this DbContext type&#xA;            optionsLifetime:ServiceLifetime.Singleton);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>From there, we'll slightly modify the <code>Program</code> file generated by the <code>webapi</code> template to add Jasper and opt
+into Jasper's <a href="/documentation/console">extended command line support</a>:</p>
+<pre><code class="language-csharp">&#xA;public class Program&#xA;{&#xA;    // Change the return type to Task&lt;int&gt; to communicate&#xA;    // success/failure codes&#xA;    public static Task&lt;int&gt; Main(string[] args)&#xA;    {&#xA;        return CreateHostBuilder(args)&#xA;&#xA;            // This replaces Build().Start() from the default&#xA;            // dotnet new templates&#xA;            .RunJasper(args);&#xA;    }&#xA;&#xA;    public static IHostBuilder CreateHostBuilder(string[] args) =&gt;&#xA;        Host.CreateDefaultBuilder(args)&#xA;&#xA;            // This by itself is enough to add Jasper to an&#xA;            // existing ASP.Net Core system as an in process&#xA;            // mediator library&#xA;            .UseJasper(opts =&gt;&#xA;            {&#xA;                // configure Jasper if you need to, or this&#xA;                // Lambda can be omitted entirely if the defaults&#xA;                // are suitable&#xA;            })&#xA;&#xA;            .ConfigureWebHostDefaults(webBuilder =&gt;&#xA;            {&#xA;                webBuilder.UseStartup&lt;Startup&gt;();&#xA;            });&#xA;}&#xA;</code></pre>
+<p>Now, let's add a Jasper message handler that will:</p>
+<ol>
+<li>Handle a new <code>CreateItemCommand</code> message</li>
+<li>Create a new <code>Item</code> entity and persist that with a new <code>ItemsDbContext</code> custom EF Core <code>DbContext</code></li>
+<li>Create and publish a new <code>ItemCreated</code> event message reflecting the new <code>Item</code></li>
+</ol>
+<p>Using idiomatic Jasper, that handler looks like this:</p>
+<pre><code class="language-csharp">&#xA;public class ItemHandler&#xA;{&#xA;    // This attribute applies Jasper&#x27;s EF Core transactional&#xA;    // middleware&#xA;    [Transactional]&#xA;    public static ItemCreated Handle(&#xA;        // This would be the message&#xA;        CreateItemCommand command,&#xA;&#xA;        // Any other arguments are assumed&#xA;        // to be service dependencies&#xA;        ItemsDbContext db)&#xA;    {&#xA;        // Create a new Item entity&#xA;        var item = new Item&#xA;        {&#xA;            Name = command.Name&#xA;        };&#xA;&#xA;        // Add the item to the current&#xA;        // DbContext unit of work&#xA;        db.Items.Add(item);&#xA;&#xA;        // This event being returned&#xA;        // by the handler will be automatically sent&#xA;        // out as a &quot;cascading&quot; message&#xA;        return new ItemCreated&#xA;        {&#xA;            Id = item.Id&#xA;        };&#xA;    }&#xA;}&#xA;</code></pre>
+<p><strong>Note</strong>, as long as this handler class is public and in the main application assembly, Jasper is going
+to find it and wire it up inside its execution pipeline. There's no explicit code or funky IoC registration necessary.</p>
+<p>Now, moving up to the controller layer, we can add a controller like this:</p>
+<pre><code class="language-csharp">&#xA;public class UseJasperAsMediatorController : ControllerBase&#xA;{&#xA;    private readonly ICommandBus _bus;&#xA;&#xA;    public UseJasperAsMediatorController(ICommandBus bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    [HttpPost(&quot;/items/create&quot;)]&#xA;    public Task Create([FromBody] CreateItemCommand command)&#xA;    {&#xA;        // Using Jasper as a Mediator&#xA;        return _bus.Invoke(command);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>There isn't much to this code -- and that's the entire point! When Jasper registers itself into
+a .Net Core application, it adds the <code>ICommandBus</code> service to the underlying system IoC container
+so it can be injected into controller classes as a constructor argument or as a method argument
+if you prefer to use the <code>[FromServices]</code> attribute and method injection. The <code>ICommandBus.Invoke(message)</code>
+method takes the message passed in, finds the correct execution path for the message type, and
+executes the correct Jasper handler(s) as well as any of the registered <a href="/documentation/execution/middleware_and_codegen">Jasper Middleware and Policies</a>.</p>
+<div class="alert-warning alert"><p><strong>Note!</strong>
+This execution happens inline, and does not involve any of Jasper's <a href="/documentation/execution/errorhandling">Error Handling</a>
+functionality that would apply to enqueued messages.</p>
+</div>
+<p>See also:</p>
+<ul>
+<li><a href="/documentation/execution/cascading">Cascading Messages</a> for a better explanation of how the <code>ItemCreated</code>
+event message is automatically published if the handler success.</li>
+<li><a href="/documentation/execution">Execution Pipeline</a> for the details of how to write Jasper message handlers and how they
+are discovered</li>
+</ul>
+<p>As a contrast, here's what the same functionality looks like if you write all the functionality out
+explicitly in a controller action:</p>
+<pre><code class="language-csharp">&#xA;// This controller does all the transactional work and business&#xA;// logic all by itself&#xA;public class DoItAllMyselfItemController : ControllerBase&#xA;{&#xA;    private readonly IMessageContext _messaging;&#xA;    private readonly ItemsDbContext _db;&#xA;&#xA;    public DoItAllMyselfItemController(IMessageContext messaging, ItemsDbContext db)&#xA;    {&#xA;        _messaging = messaging;&#xA;        _db = db;&#xA;    }&#xA;&#xA;    [HttpPost(&quot;/items/create&quot;)]&#xA;    public async Task Create([FromBody] CreateItemCommand command)&#xA;    {&#xA;        // Start the &quot;Outbox&quot; transaction&#xA;        await _messaging.EnlistInTransaction(_db);&#xA;&#xA;        // Create a new Item entity&#xA;        var item = new Item&#xA;        {&#xA;            Name = command.Name&#xA;        };&#xA;&#xA;        // Add the item to the current&#xA;        // DbContext unit of work&#xA;        _db.Items.Add(item);&#xA;&#xA;        // Publish an event to anyone&#xA;        // who cares that a new Item has&#xA;        // been created&#xA;        var @event = new ItemCreated&#xA;        {&#xA;            Id = item.Id&#xA;        };&#xA;&#xA;        // Because the message context is enlisted in an&#xA;        // &quot;outbox&quot; transaction, these outgoing messages are&#xA;        // held until the ongoing transaction completes&#xA;        await _messaging.Send(@event);&#xA;&#xA;        // Commit the unit of work. This will persist&#xA;        // both the Item entity we created above, and&#xA;        // also a Jasper Envelope for the outgoing&#xA;        // ItemCreated message&#xA;        await _db.SaveChangesAsync();&#xA;&#xA;        // After the DbContext transaction succeeds, kick out&#xA;        // the persisted messages in the context &quot;outbox&quot;&#xA;        await _messaging.SendAllQueuedOutgoingMessages();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>So one, there's just more going on in the <code>Create()</code> method above because you're needing to do a little bit of
+additional work that Jasper can do for you inside of its execution pipeline (the outbox mechanics, the cascading message getting published, transaction management).
+Also though, you're now mixing up MVC controller stuff like the <code>[HttpPost]</code> attribute to control the
+Url for the endpoint and the service application code that exercises the data and domain model layers.</p>
+<h2 id="getting-a-response">Getting a Response</h2>
+<p>The controller methods above would both return an empty response body and the default <code>200 OK</code> status code.
+But what if you want to return some kind of response body that gave the client of the web service some
+kind of contextual information about the newly created <code>Item</code>.</p>
+<p>To that end, let's write a different controller action that will relay the body of the <code>ItemCreated</code>
+output of the message handler to the HTTP response body (and assume we'll use JSON because that makes the
+example code simpler):</p>
+<pre><code class="language-csharp">&#xA;public class WithResponseController : ControllerBase&#xA;{&#xA;    private readonly ICommandBus _bus;&#xA;&#xA;    public WithResponseController(ICommandBus bus)&#xA;    {&#xA;        _bus = bus;&#xA;    }&#xA;&#xA;    [HttpPost(&quot;/items/create&quot;)]&#xA;    public Task&lt;ItemCreated&gt; Create([FromBody] CreateItemCommand command)&#xA;    {&#xA;        // Using Jasper as a Mediator, and receive the&#xA;        // expected response from Jasper&#xA;        return _bus.Invoke&lt;ItemCreated&gt;(command);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Using the <code>ICommandBus.Invoke&lt;T&gt;(message)</code> overload, the returned <code>ItemCreated</code> response
+of the message handler is returned from the <code>Invoke()</code> message. To be perfectly clear, this only
+works if the message handler method returns a cascading message of the exact same type of the
+designated <code>T</code> parameter.</p>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/execution">Execution Pipeline</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/local">Local Worker Queues</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>

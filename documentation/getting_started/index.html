@@ -6,11 +6,10 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>JasperFx - Getting Started</title>
+		<title>Jasper - Getting Started</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/JasperFx.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
 		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
 
 
 
@@ -20,98 +19,108 @@
         <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-
-        <!-- CSS code from Bootply.com editor -->
-        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
-    </head>
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
 
     <!-- HTML code from Bootply.com editor -->
 
     <body  >
 
 
-        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">JasperFx</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
-		        <li>
-		          <a href="/documentation/getting_started">Getting Started</a>
-		        </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
-		        <li>
-		        <li>
-<a href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/documentation" title="Documentation">Previous</a></li>
-		      	<li><a href="/documentation/tutorials" title="Jasper Tutorials">Next</a></li>
-		      </ul>
-		      <div class="navbar-form navbar-left" role="search">
-		        <div class="form-group">
-		          <input id="search" type="search" class="form-control" placeholder="Search">
-		        </div>
-		      </div>
 
-		    </nav>
 
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/bootstrapping" title="Bootstrapping & Configuration">Next</a></li>
+					<li class="nav-item">
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/getting_started.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+					
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					
+					<a class="nav-item" href="https://gitter.im/JasperFx/jasper?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/JasperFx/https://github.com/JasperFx/jasper" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;margin-right: 30px;"></a>
+				  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+				</form>
 		  </div>
+
 		</nav>
+	</header>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Getting Started</li></ol>
-		  	</nav>
-		  </div>
+	<main role="main" style="margin-top:75px">
+
+
 
 		<!--main-->
 		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Getting Started</li></ol>
+				
+			</nav>
+			
+
 			<div class="row">
 		      <!--left-->
 
 		      <div class="col-md-3" id="leftCol">
-		      	<h3>JasperFx 0.9.14</h3>
-		      	<br />
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+				<br />
+				<br />
 
-		        </ul>
+			  <ul id="sidebar">
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/documentation/tutorials">Jasper Tutorials</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/documentation">Documentation</a></p>
+			  </ul>
 
-		        </ul>
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/bootstrapping">Bootstrapping & Configuration</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation">Documentation</a></p>
+
+			  </ul>
 		      </div><!--/left-->
 
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Getting Started<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/getting_started.md"  class="text-muted small pull-right" style="margin-top: 10px"><i class="fa fa-github"></i> Edit on GitHub</a></h1>
+
+			      	<h1>Getting Started</h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
+
 			      		<!--title: Getting Started-->
 <div class="alert-info alert"><p><strong>Note!</strong>
-Jasper only targets Netstandard 2.0 at this time.</p>
+Jasper only targets Netstandard 2.1 at this time and supports .Net Core 3.* runtimes.</p>
 </div>
-<p>Jasper is a framework for building services on .Net Core. The killer feature of Jasper (we think) is its very efficient command execution
+<p>Jasper is a toolset for command execution and message handling within .Net Core applications. The killer feature of Jasper (<em>we</em> think) is its very efficient command execution
 pipeline that can be used as:</p>
 <ol>
-<li>An alternative for building HTTP services with ASP.Net Core</li>
-<li>A &quot;mediator&quot; type pipeline or an in memory messaging bus within a different framework like ASP.Net Core</li>
+<li>A &quot;mediator&quot; type pipeline or an in memory messaging bus and command executor within .Net Core 3.* applications</li>
 <li>When used in conjunction with low level messaging infrastructure tools like <a href="https://www.rabbitmq.com/">RabbitMQ</a>, a full fledged asynchronous messaging platform for robust communication and interaction between services</li>
-<li>A lightweight service bus using its own transport mechanism</li>
-<li>Any combination of the above</li>
 </ol>
-<p>Jasper tries very hard to be a good citizen within the greater ASP.Net Core ecosystem and even when used in &quot;headless&quot; services, uses many elements of ASP.Net Core (logging, configuration, bootstrapping, hosted services) rather than try to reinvent something new.</p>
+<p>Jasper tries very hard to be a good citizen within the greater ASP.Net Core ecosystem and even when used in &quot;headless&quot; services, uses many elements of ASP.Net Core (logging, configuration, bootstrapping, hosted services) rather than try to reinvent something new. As of v1.0, Jasper utilizes the new <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.1">.Net Generic Host</a> for bootstrapping and application teardown. This makes Jasper relatively easy to use in combination with many of the most popular .Net Core tools.</p>
 <h2 id="standalone-jasper-application">Standalone Jasper Application</h2>
-<p>To create a standalone, headless Jasper service with no exposed HTTP endpoints, the quickest thing to do is to use a <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new?tabs=netcore21">dotnet new</a> template. First, install the latest <code>JasperTemplates</code> with this command:</p>
+<p>To create a standalone, headless Jasper service with no exposed HTTP endpoints, the quickest thing to do is to use a <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new?tabs=netcore21">dotnet new</a> template. First, install the latest <code>JasperTemplates</code> Nuget with this command:</p>
 <pre><code>dotnet new --install JasperTemplates
 </code></pre>
-<p>Next, build a new application using the <code>jasper</code> template in this case called &quot;JasperApp&quot; with this command:</p>
+<p>Next, build a new application using the <code>jasper.service</code> template in this case called &quot;JasperApp&quot; with this command:</p>
 <pre><code>dotnet new jasper.service -o JasperApp
 </code></pre>
 <p>Finally, if you run this new application with this command:</p>
@@ -123,34 +132,26 @@ dotnet run
 Application Assembly: JasperApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 Hosting environment: Production
 Content root path: /SomeDirectory/JasperApp/bin/Debug/netcoreapp2.1/
-Hosted Service: Jasper.Messaging.MessagingActivator
-Hosted Service: Jasper.Messaging.Logging.MetricsCollector
-Hosted Service: Jasper.Messaging.BackPressureAgent
-Listening for loopback messages
-
-Active sending agent to loopback://retries/
 
 Application started. Press Ctrl+C to shut down.
 </code></pre>
-<p>Your new Jasper service isn't actually <em>doing</em> anything useful, but you're got a working skeleton. To learn more about what you can do with Jasper, see the <a href="/documentation/tutorials">Jasper Tutorials</a> page. See <a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a> for more information about idiomatic Jasper bootstrapping.</p>
+<p>Your new Jasper service isn't actually <em>doing</em> anything useful, but you're got a working skeleton. To learn more about what you can do with Jasper, see the <a href="/documentation/samples">Sample Applications</a> page. See <a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a> for more information about idiomatic Jasper bootstrapping.</p>
 <p>That covers bootstrapping Jasper by itself, but next let's see how you can add Jasper
 to an idiomatic ASP.Net Core application.</p>
 <h2 id="adding-jasper-to-an-asp.net-core-application">Adding Jasper to an ASP.Net Core Application</h2>
 <p>While you may certainly build headless services with Jasper, it's pretty likely that you will also want to integrate Jasper into
 ASP.Net Core applications.</p>
-<p>If you prefer to use typical ASP.Net Core bootstrapping or want to add Jasper messaging support to an existing project, you can use the <code>UseJasper&lt;T&gt;()</code> extension method on ASP.Net Core's <code>IWebHostBuilder</code> as shown below:</p>
-<pre><code class="language-csharp">&#xA;var host = WebHost.CreateDefaultBuilder()&#xA;    .UseStartup&lt;Startup&gt;()&#xA;&#xA;    // Adds Jasper to your ASP.Net Core application&#xA;    // with default configuration&#xA;    .UseJasper()&#xA;    .Start();&#xA;&#xA;</code></pre>
-<p>See <a href="/documentation/bootstrapping/aspnetcore">Adding Jasper to an ASP.Net Core Application</a> for more information about configuring Jasper through ASP.Net Core hosting.</p>
-<h2 id="your-first-http-endpoint">Your First HTTP Endpoint</h2>
-<p>The obligatory &quot;Hello World&quot; http endpoint is just this:</p>
-<pre><code class="language-csharp">&#xA;public class HomeEndpoint&#xA;{&#xA;    public string Get()&#xA;    {&#xA;        return &quot;Hello, world.&quot;;&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
-<p>As long as that class is in the main application assembly, Jasper will find it and make the &quot;Get&quot; method handle the root url of your application.</p>
-<p>See <a href="/documentation/http">HTTP Services</a> for more information about Jasper's HTTP handling features.</p>
+<p>If you prefer to use typical ASP.Net Core bootstrapping or want to add Jasper messaging support to an existing project, you can use the <code>UseJasper&lt;T&gt;()</code> extension method on ASP.Net Core's <code>IHostBuilder</code> as shown below:</p>
+<pre><code class="language-csharp">&#xA;var host = await Host.CreateDefaultBuilder()&#xA;    // Adds Jasper to your .Net Core application&#xA;    // with its default configuration&#xA;    .UseJasper()&#xA;    .StartAsync();&#xA;&#xA;</code></pre>
+<p>See <a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a> for more information about configuring Jasper through the unified .Net Core <code>IHostBuilder</code>.</p>
 <h2 id="your-first-message-handler">Your First Message Handler</h2>
 <p>Let's say you're building an invoicing application and your application should handle an
 <code>InvoiceCreated</code> event. The skeleton for the message handler for that event would look like this:</p>
 <pre><code class="language-csharp">&#xA;public class InvoiceCreated&#xA;{&#xA;    public Guid InvoiceId { get; set; }&#xA;}&#xA;&#xA;public class InvoiceHandler&#xA;{&#xA;    public void Handle(InvoiceCreated created)&#xA;    {&#xA;        // do something here with the created variable...&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
-<p>See <a href="/documentation/messaging/handling/handlers">Message Handlers</a> for more information on message handler actions.</p>
+<p>As long as this <strong>public</strong> class is inside of your main application assembly, Jasper is going to find this automatically and write this handler up to its execution pipeline.</p>
+<p>And don't worry, you're more than able to author asynchronous message handlers, and probably should in any case involving calls to external systems, but Jasper
+is able to adapt to <strong>your</strong> code rather than making you shoehorn your code into a framework adapter interface.</p>
+<p>See <a href="/documentation/execution/handlers">Writing Message Handlers</a> for more information on message handler actions.</p>
 
 			      	</div>
 
@@ -163,15 +164,18 @@ ASP.Net Core applications.</p>
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/tutorials">Jasper Tutorials</a>
+				        	<strong>Next: </strong><a href="/documentation/bootstrapping">Bootstrapping & Configuration</a>
 
 				        </span>
 			      	</nav>
 
 		      </div><!--/right-->
-		  	</div><!--/row-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
 		</div><!--/container-->
-
+	</main>
 <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
 $('#search').keyup(function(e){
@@ -194,17 +198,20 @@ $('#search').keyup(function(e){
 
 });
 
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
 </script>
     </body>
 
 
     <foot>
         <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
         <script type="text/javascript" src="/content/embed.js"></script>
         <script type="text/javascript" src="/content/prism.js"></script>
         <script type="text/javascript" src="/content/sidebar.js"></script>
-        <script type="text/javascript" src="/content/affix.js"></script>
     </foot>
 </html>

@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>Jasper - Documentation</title>
+		<title>Jasper - Messaging Transports</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -46,10 +46,10 @@
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
 					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
-					<li class="nav-item"><a class="nav-link" href="/" title="JasperFx">Previous</a></li>
-					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Next</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/correlation" title="Message Correlation">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/transports/tcp" title="TCP Transport">Next</a></li>
 					<li class="nav-item">
-						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/index.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/integration/transports/index.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
 					</li>
 					
 				</ul>
@@ -72,7 +72,7 @@
 		<!--main-->
 		<div class="container">
 			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li class="active">Documentation</li></ol>
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/integration">Messaging Between Systems</a></li><li class="active">Messaging Transports</li></ol>
 				
 			</nav>
 			
@@ -90,8 +90,8 @@
 
 			  </ul>
 
-				  <h3 class="no-margin">Next</h3><p><a href="/documentation/getting_started">Getting Started</a></p>
-				  <h3 class="no-margin">Previous</h3><a href="/">JasperFx</a></p>
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration/transports/tcp">TCP Transport</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/integration/correlation">Message Correlation</a></p>
 
 			  </ul>
 		      </div><!--/left-->
@@ -99,14 +99,24 @@
 		      <!--right-->
 		      <div class="col-md-9">
 
-			      	<h1>Documentation</h1>
+			      	<h1>Messaging Transports</h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
 
-			      		<!--title:Documentation-->
-<ul class="table-of-contents"><li><a href="/documentation/getting_started">Getting Started</a></li><li><a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a></li><li><a href="/documentation/execution">Execution Pipeline</a><ul><li><a href="/documentation/execution/handlers">Writing Message Handlers</a></li><li><a href="/documentation/execution/discovery">Message Handler Discovery</a></li><li><a href="/documentation/execution/errorhandling">Error Handling</a></li><li><a href="/documentation/execution/cascading">Cascading Messages</a></li><li><a href="/documentation/execution/unknown_messages">Handling an Unknown Message</a></li><li><a href="/documentation/execution/dead_letter_queue">Dead Letter Envelopes</a></li><li><a href="/documentation/execution/middleware_and_codegen">Jasper Middleware and Policies</a></li><li><a href="/documentation/execution/messages">Reading, Writing, and Versioning Messages, Commands, and Events</a></li><li><a href="/documentation/execution/sagas">Stateful Sagas</a></li></ul></li><li><a href="/documentation/mediator">Jasper as a Mediator</a></li><li><a href="/documentation/local">Local Worker Queues</a></li><li><a href="/documentation/integration">Messaging Between Systems</a><ul><li><a href="/documentation/integration/pubsub">Publishing and Sending</a></li><li><a href="/documentation/integration/expected_reply">Request / Reply</a></li><li><a href="/documentation/integration/customizing_envelopes">Working with Envelopes</a></li><li><a href="/documentation/integration/message_delivery_rules">Message Type Specific Delivery Rules</a></li><li><a href="/documentation/integration/correlation">Message Correlation</a></li><li><a href="/documentation/integration/transports">Messaging Transports</a><ul><li><a href="/documentation/integration/transports/tcp">TCP Transport</a></li><li><a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a></li><li><a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a></li></ul></li><li><a href="/documentation/integration/routing">Routing Messages</a></li><li><a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a></li></ul></li><li><a href="/documentation/durability">Durable Messaging and Command Processing</a><ul><li><a href="/documentation/durability/endpoints">Adding Durability to Senders or Listeners</a></li><li><a href="/documentation/durability/agent">Durability Agent</a></li><li><a href="/documentation/durability/managing">Message Storage Management</a></li><li><a href="/documentation/durability/sqlserver">Using Sql Server with Jasper</a></li><li><a href="/documentation/durability/postgresql">Using Postgresql with Jasper</a></li><li><a href="/documentation/durability/marten">Using Marten with Jasper</a></li><li><a href="/documentation/durability/efcore">Using Entity Framework Core with Jasper</a></li></ul></li><li><a href="/documentation/testing">Automated Testing Support</a></li><li><a href="/documentation/ioc">IoC Container Integration</a></li><li><a href="/documentation/console">Command Line Support</a></li><li><a href="/documentation/logging">Logging Integration</a></li><li><a href="/documentation/extensions">Extensions</a></li><li><a href="/documentation/samples">Sample Applications</a></li><li><a href="/documentation/jsoncommands">Message Json Schema Commands</a></li></ul>
+			      		<!--title:Messaging Transports-->
+<p>A <em>transport</em> is a queueing or communication mechanism that Jasper knows how to use to both deliver and receive messages to
+and from other systems. The <em>transport</em> can take care of mapping your message objects and the Jasper <code>Envelope</code> to each transport's
+particular usage. Using Jasper should mostly make the choice of underlying transport be opaque to your application code (except for the bootstrapping of course). That being said though, Jasper tries to enable as much of the advanced usage of your underlying transport
+as possible.</p>
+<h2 id="configuring-listener-or-sending-endpoints">Configuring Listener or Sending Endpoints</h2>
+<p>All of the transport types can be configured by using meaningful <code>Uri</code> values specific to each transport type. You'll probably find it easier to use the specific configuration helpers for each transport type, but let's look at the generic Uri configuration mechanism first.</p>
+<p>All listener or sender endpoints are registered from the <code>JasperOptions.Endpoints</code> property like this:</p>
+<pre><code class="language-csharp">&#xA;public class SenderAndListener : JasperOptions&#xA;{&#xA;    public SenderAndListener()&#xA;    {&#xA;        // All messages get published via TCP&#xA;        // to port 5555 on the local box&#xA;        Endpoints&#xA;            .PublishAllMessages()&#xA;            .To(&quot;tcp://localhost:5555&quot;);&#xA;&#xA;&#xA;        // Listen for incoming messages at&#xA;        // port 6666&#xA;        Endpoints&#xA;            .ListenForMessagesFrom(&quot;tcp://localhost:6666&quot;);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>It is important to note that all of the transport endpoint types can be used in either a lightweight <a href="http://www.enterpriseintegrationpatterns.com/patterns/conversation/FireAndForget.html">fire and forget</a> with limited retries, or with durable, <a href="https://en.wikipedia.org/wiki/Store_and_forward">store and forward messaging</a> or <a href="http://www.enterpriseintegrationpatterns.com/patterns/messaging/GuaranteedMessaging.html">guaranteed delivery</a>. For durable messaging.</p>
+<p>For more information about specific transports, see:</p>
+<ul class="table-of-contents"><li><a href="/documentation/integration/transports/tcp">TCP Transport</a></li><li><a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a></li><li><a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a></li></ul>
 
 			      	</div>
 
@@ -114,12 +124,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/">JasperFx</a>
+				        	<strong>Previous: </strong><a href="/documentation/integration/correlation">Message Correlation</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/getting_started">Getting Started</a>
+				        	<strong>Next: </strong><a href="/documentation/integration/transports/tcp">TCP Transport</a>
 
 				        </span>
 			      	</nav>

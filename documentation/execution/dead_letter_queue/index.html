@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>Jasper - Documentation</title>
+		<title>Jasper - Dead Letter Envelopes</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -46,10 +46,10 @@
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
 					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
-					<li class="nav-item"><a class="nav-link" href="/" title="JasperFx">Previous</a></li>
-					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Next</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/execution/unknown_messages" title="Handling an Unknown Message">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/execution/middleware_and_codegen" title="Jasper Middleware and Policies">Next</a></li>
 					<li class="nav-item">
-						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/index.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/execution/dead_letter_queue.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
 					</li>
 					
 				</ul>
@@ -72,7 +72,7 @@
 		<!--main-->
 		<div class="container">
 			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li class="active">Documentation</li></ol>
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/execution">Execution Pipeline</a></li><li class="active">Dead Letter Envelopes</li></ol>
 				
 			</nav>
 			
@@ -90,8 +90,8 @@
 
 			  </ul>
 
-				  <h3 class="no-margin">Next</h3><p><a href="/documentation/getting_started">Getting Started</a></p>
-				  <h3 class="no-margin">Previous</h3><a href="/">JasperFx</a></p>
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/execution/middleware_and_codegen">Jasper Middleware and Policies</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/execution/unknown_messages">Handling an Unknown Message</a></p>
 
 			  </ul>
 		      </div><!--/left-->
@@ -99,14 +99,22 @@
 		      <!--right-->
 		      <div class="col-md-9">
 
-			      	<h1>Documentation</h1>
+			      	<h1>Dead Letter Envelopes</h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
 
-			      		<!--title:Documentation-->
-<ul class="table-of-contents"><li><a href="/documentation/getting_started">Getting Started</a></li><li><a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a></li><li><a href="/documentation/execution">Execution Pipeline</a><ul><li><a href="/documentation/execution/handlers">Writing Message Handlers</a></li><li><a href="/documentation/execution/discovery">Message Handler Discovery</a></li><li><a href="/documentation/execution/errorhandling">Error Handling</a></li><li><a href="/documentation/execution/cascading">Cascading Messages</a></li><li><a href="/documentation/execution/unknown_messages">Handling an Unknown Message</a></li><li><a href="/documentation/execution/dead_letter_queue">Dead Letter Envelopes</a></li><li><a href="/documentation/execution/middleware_and_codegen">Jasper Middleware and Policies</a></li><li><a href="/documentation/execution/messages">Reading, Writing, and Versioning Messages, Commands, and Events</a></li><li><a href="/documentation/execution/sagas">Stateful Sagas</a></li></ul></li><li><a href="/documentation/mediator">Jasper as a Mediator</a></li><li><a href="/documentation/local">Local Worker Queues</a></li><li><a href="/documentation/integration">Messaging Between Systems</a><ul><li><a href="/documentation/integration/pubsub">Publishing and Sending</a></li><li><a href="/documentation/integration/expected_reply">Request / Reply</a></li><li><a href="/documentation/integration/customizing_envelopes">Working with Envelopes</a></li><li><a href="/documentation/integration/message_delivery_rules">Message Type Specific Delivery Rules</a></li><li><a href="/documentation/integration/correlation">Message Correlation</a></li><li><a href="/documentation/integration/transports">Messaging Transports</a><ul><li><a href="/documentation/integration/transports/tcp">TCP Transport</a></li><li><a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a></li><li><a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a></li></ul></li><li><a href="/documentation/integration/routing">Routing Messages</a></li><li><a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a></li></ul></li><li><a href="/documentation/durability">Durable Messaging and Command Processing</a><ul><li><a href="/documentation/durability/endpoints">Adding Durability to Senders or Listeners</a></li><li><a href="/documentation/durability/agent">Durability Agent</a></li><li><a href="/documentation/durability/managing">Message Storage Management</a></li><li><a href="/documentation/durability/sqlserver">Using Sql Server with Jasper</a></li><li><a href="/documentation/durability/postgresql">Using Postgresql with Jasper</a></li><li><a href="/documentation/durability/marten">Using Marten with Jasper</a></li><li><a href="/documentation/durability/efcore">Using Entity Framework Core with Jasper</a></li></ul></li><li><a href="/documentation/testing">Automated Testing Support</a></li><li><a href="/documentation/ioc">IoC Container Integration</a></li><li><a href="/documentation/console">Command Line Support</a></li><li><a href="/documentation/logging">Logging Integration</a></li><li><a href="/documentation/extensions">Extensions</a></li><li><a href="/documentation/samples">Sample Applications</a></li><li><a href="/documentation/jsoncommands">Message Json Schema Commands</a></li></ul>
+			      		<!--title:Dead Letter Envelopes-->
+<div class="alert-warning alert"><p><strong>Note!</strong>
+You will need to use some kind of <a href="/documentation/durability">Durable Messaging and Command Processing</a> to have the <em>dead letter queue</em> be persisted.</p>
+</div>
+<p>If a message cannot be processed after all its retries or if your <a href="/documentation/execution/errorhandling">error handling policies</a> explicitly use the <code>MoveToErrorQueue()</code> functionality, those envelopes are moved out of the active queues and saved
+off to the side in your envelope storage.</p>
+<h2 id="retrieve-an-error-report">Retrieve an Error Report</h2>
+<p>It should be easy to browse the dead letter queue tables in your Postgresql database (<code>mt_doc_errorreport</code>) or your Sql Server database (<code>jasper_dead_letters</code>). If you know the envelope id of a dead letter envelope, you can use the <code>IEnvelopePersistor</code> interface in the IoC container of your application to
+fetch the entire error report like this:</p>
+<pre><code class="language-csharp">&#xA;public async Task load_error_report(IEnvelopePersistence persistence, Guid envelopeId)&#xA;{&#xA;    var report = await persistence.Admin.LoadDeadLetterEnvelope(envelopeId);&#xA;&#xA;    // The Id&#xA;    Console.WriteLine(report.Id);&#xA;&#xA;    // Why it was moved out&#xA;    Console.WriteLine(report.Explanation);&#xA;&#xA;    // The underlying message typ&#xA;    Console.WriteLine(report.MessageType);&#xA;&#xA;&#xA;    // Reconstitute the original Envelope&#xA;    // Envelope.Data would have the raw data here&#xA;    var envelope = report.RebuildEnvelope();&#xA;&#xA;    // The name ofthe system that sent the message&#xA;    Console.WriteLine(report.Source);&#xA;&#xA;    // The .Net Exception type name&#xA;    Console.WriteLine(report.ExceptionType);&#xA;&#xA;    // Just the message of the exception&#xA;    Console.WriteLine(report.ExceptionMessage);&#xA;&#xA;    // JUST SHOW ME THE FULL STACKTRACE ALREADY!!!!&#xA;    Console.WriteLine(report.ExceptionText);&#xA;}&#xA;&#xA;</code></pre>
 
 			      	</div>
 
@@ -114,12 +122,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/">JasperFx</a>
+				        	<strong>Previous: </strong><a href="/documentation/execution/unknown_messages">Handling an Unknown Message</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/getting_started">Getting Started</a>
+				        	<strong>Next: </strong><a href="/documentation/execution/middleware_and_codegen">Jasper Middleware and Policies</a>
 
 				        </span>
 			      	</nav>

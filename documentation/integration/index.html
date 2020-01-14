@@ -6,7 +6,7 @@
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link rel=icon href=/content/images/favicon.ico>
-		<title>Jasper - Documentation</title>
+		<title>Jasper - Messaging Between Systems</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
@@ -46,10 +46,10 @@
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
 					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
-					<li class="nav-item"><a class="nav-link" href="/" title="JasperFx">Previous</a></li>
-					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Next</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/local" title="Local Worker Queues">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/pubsub" title="Publishing and Sending">Next</a></li>
 					<li class="nav-item">
-						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/index.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+						<a href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/integration/index.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
 					</li>
 					
 				</ul>
@@ -72,7 +72,7 @@
 		<!--main-->
 		<div class="container">
 			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li class="active">Documentation</li></ol>
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li class="active">Messaging Between Systems</li></ol>
 				
 			</nav>
 			
@@ -90,8 +90,8 @@
 
 			  </ul>
 
-				  <h3 class="no-margin">Next</h3><p><a href="/documentation/getting_started">Getting Started</a></p>
-				  <h3 class="no-margin">Previous</h3><a href="/">JasperFx</a></p>
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration/pubsub">Publishing and Sending</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/local">Local Worker Queues</a></p>
 
 			  </ul>
 		      </div><!--/left-->
@@ -99,14 +99,17 @@
 		      <!--right-->
 		      <div class="col-md-9">
 
-			      	<h1>Documentation</h1>
+			      	<h1>Messaging Between Systems</h1>
 
 			      	<hr />
 
 			      	<div id="main-pane">
 
-			      		<!--title:Documentation-->
-<ul class="table-of-contents"><li><a href="/documentation/getting_started">Getting Started</a></li><li><a href="/documentation/bootstrapping">Bootstrapping &amp; Configuration</a></li><li><a href="/documentation/execution">Execution Pipeline</a><ul><li><a href="/documentation/execution/handlers">Writing Message Handlers</a></li><li><a href="/documentation/execution/discovery">Message Handler Discovery</a></li><li><a href="/documentation/execution/errorhandling">Error Handling</a></li><li><a href="/documentation/execution/cascading">Cascading Messages</a></li><li><a href="/documentation/execution/unknown_messages">Handling an Unknown Message</a></li><li><a href="/documentation/execution/dead_letter_queue">Dead Letter Envelopes</a></li><li><a href="/documentation/execution/middleware_and_codegen">Jasper Middleware and Policies</a></li><li><a href="/documentation/execution/messages">Reading, Writing, and Versioning Messages, Commands, and Events</a></li><li><a href="/documentation/execution/sagas">Stateful Sagas</a></li></ul></li><li><a href="/documentation/mediator">Jasper as a Mediator</a></li><li><a href="/documentation/local">Local Worker Queues</a></li><li><a href="/documentation/integration">Messaging Between Systems</a><ul><li><a href="/documentation/integration/pubsub">Publishing and Sending</a></li><li><a href="/documentation/integration/expected_reply">Request / Reply</a></li><li><a href="/documentation/integration/customizing_envelopes">Working with Envelopes</a></li><li><a href="/documentation/integration/message_delivery_rules">Message Type Specific Delivery Rules</a></li><li><a href="/documentation/integration/correlation">Message Correlation</a></li><li><a href="/documentation/integration/transports">Messaging Transports</a><ul><li><a href="/documentation/integration/transports/tcp">TCP Transport</a></li><li><a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a></li><li><a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a></li></ul></li><li><a href="/documentation/integration/routing">Routing Messages</a></li><li><a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a></li></ul></li><li><a href="/documentation/durability">Durable Messaging and Command Processing</a><ul><li><a href="/documentation/durability/endpoints">Adding Durability to Senders or Listeners</a></li><li><a href="/documentation/durability/agent">Durability Agent</a></li><li><a href="/documentation/durability/managing">Message Storage Management</a></li><li><a href="/documentation/durability/sqlserver">Using Sql Server with Jasper</a></li><li><a href="/documentation/durability/postgresql">Using Postgresql with Jasper</a></li><li><a href="/documentation/durability/marten">Using Marten with Jasper</a></li><li><a href="/documentation/durability/efcore">Using Entity Framework Core with Jasper</a></li></ul></li><li><a href="/documentation/testing">Automated Testing Support</a></li><li><a href="/documentation/ioc">IoC Container Integration</a></li><li><a href="/documentation/console">Command Line Support</a></li><li><a href="/documentation/logging">Logging Integration</a></li><li><a href="/documentation/extensions">Extensions</a></li><li><a href="/documentation/samples">Sample Applications</a></li><li><a href="/documentation/jsoncommands">Message Json Schema Commands</a></li></ul>
+			      		<!--title:Messaging Between Systems-->
+<p>Jasper is hopefully plenty useful within a single application as a <a href="/documentation/mediator">mediator</a>
+and as a <a href="/documentation/local">local command bus</a>, but Jasper was meant to be a strong foundation for
+integration between systems through asynchronous messaging.</p>
+<ul class="table-of-contents"><li><a href="/documentation/integration/pubsub">Publishing and Sending</a></li><li><a href="/documentation/integration/expected_reply">Request / Reply</a></li><li><a href="/documentation/integration/customizing_envelopes">Working with Envelopes</a></li><li><a href="/documentation/integration/message_delivery_rules">Message Type Specific Delivery Rules</a></li><li><a href="/documentation/integration/correlation">Message Correlation</a></li><li><a href="/documentation/integration/transports">Messaging Transports</a><ul><li><a href="/documentation/integration/transports/tcp">TCP Transport</a></li><li><a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a></li><li><a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a></li></ul></li><li><a href="/documentation/integration/routing">Routing Messages</a></li><li><a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a></li></ul>
 
 			      	</div>
 
@@ -114,12 +117,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/">JasperFx</a>
+				        	<strong>Previous: </strong><a href="/documentation/local">Local Worker Queues</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/getting_started">Getting Started</a>
+				        	<strong>Next: </strong><a href="/documentation/integration/pubsub">Publishing and Sending</a>
 
 				        </span>
 			      	</nav>
