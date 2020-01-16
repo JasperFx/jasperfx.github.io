@@ -37,7 +37,7 @@
 
 
 	<header>
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="nav">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary" id="nav">
 			<a href="/" class="navbar-brand">Jasper v0.9.16</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
@@ -124,6 +124,8 @@ Why didn't we just use <a href="https://www.hangfire.io/">Hangfire</a>? We looke
 <p>This same functionality is used for the <code>ICommandBus.Schedule()</code> functionality as shown below:</p>
 <pre><code class="language-csharp">&#xA;public async Task ScheduleLocally(IMessageContext bus, Guid invoiceId)&#xA;{&#xA;    var message = new ValidateInvoiceIsNotLate&#xA;    {&#xA;        InvoiceId = invoiceId&#xA;    };&#xA;&#xA;    // Schedule the message to be processed in a certain amount&#xA;    // of time&#xA;    await bus.Schedule(message, 30.Days());&#xA;&#xA;    // Schedule the message to be processed at a certain time&#xA;    await bus.Schedule(message, DateTime.UtcNow.AddDays(30));&#xA;}&#xA;</code></pre>
 <p>In the case above though, the message is executed locally at the designated time.</p>
+<p>The locally scheduled messages are handled in the local &quot;durable&quot; queue. You can fine tune the parallelization of this <a href="/documentation/local">local worker queue</a> through this syntax:</p>
+<pre><code class="language-csharp">&#xA;public class ConfigureDurableLocalQueueApp : JasperOptions&#xA;{&#xA;    public ConfigureDurableLocalQueueApp()&#xA;    {&#xA;        Endpoints.DurableScheduledMessagesLocalQueue&#xA;&#xA;            // Allow no more than 3 scheduled messages&#xA;            // to execute at one time&#xA;            .MaximumThreads(3);&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="schedule-execution-from-cascading-messages">Schedule Execution From Cascading Messages</h2>
 <p>To schedule a message to another system as a <a href="/documentation/execution/cascading">cascading message</a> from a message handler,
 you can return the <code>ScheduledResponse</code> object like this:</p>
