@@ -90,7 +90,7 @@
 			  <ul id="sidebar" class="list-group" style="padding-bottom: 20px;">
 
 			  </ul>
-			  	  <h3 class="no-margin">Version</h3><p>0.9.16</p>
+			  	  <h3 class="no-margin">Version</h3><p>1.0.0</p>
 				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration/message_delivery_rules">Message Type Specific Delivery Rules</a></p>
 				  <h3 class="no-margin">Previous</h3><a href="/documentation/integration/expected_reply">Request / Reply</a></p>
 
@@ -108,7 +108,7 @@
 
 			      		<!--title:Working with Envelopes-->
 <p>The <code>IMessageContext.SendEnvelope(Envelope)</code> method allows you to override how a Jasper message is sent and even processed by directly altering the <code>Envelope</code> object that is created for you behind the scenes by <code>IMessageContext.Send()</code> or <code>IMessageContext.Publish()</code>. Here are some sample customizations of <code>Envelope</code> to control how a message is published:</p>
-<pre><code class="language-csharp">&#xA;public Task CustomizingEnvelope(IMessageContext bus)&#xA;{&#xA;    var envelope = new Envelope(new SomeMessage())&#xA;    {&#xA;        // Override the message routing by a Uri&#xA;        Destination = new Uri(&quot;tcp://server1:2000&quot;),&#xA;&#xA;        // Force Jasper to send the message serialized&#xA;        // with a certain content-type&#xA;        ContentType = &quot;application/xml&quot;,&#xA;&#xA;        // Make this a scheduled message&#xA;        ExecutionTime = DateTime.UtcNow.AddDays(1),&#xA;&#xA;        // Direct the receiver that the sender is interested in any response&#xA;        // with this message type&#xA;&#xA;        // Probably easier to use this extension method though&#xA;        ReplyRequested = &quot;other-message-type&quot;&#xA;    };&#xA;&#xA;    // This envelope should be discarded if not processed&#xA;    // successfully within 5 days&#xA;    envelope.DeliverBy = DateTimeOffset.UtcNow.AddDays(5);&#xA;&#xA;&#xA;    // Discard the message after 20 seconds if&#xA;    // not successfully processed before then&#xA;    envelope.DeliverWithin(20.Seconds());&#xA;&#xA;    // Send the envelope and its contained message&#xA;    return bus.SendEnvelope(envelope);&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public Task CustomizingEnvelope(IMessageContext bus)&#xA;{&#xA;    var envelope = new Envelope(new SomeMessage())&#xA;    {&#xA;        // Override the message routing by a Uri&#xA;        Destination = new Uri(&quot;tcp://server1:2000&quot;),&#xA;&#xA;        // Make this a scheduled message&#xA;        ExecutionTime = DateTime.UtcNow.AddDays(1),&#xA;&#xA;        // Direct the receiver that the sender is interested in any response&#xA;        // with this message type&#xA;&#xA;    };&#xA;&#xA;    // This envelope should be discarded if not processed&#xA;    // successfully within 5 days&#xA;    envelope.DeliverBy = DateTimeOffset.UtcNow.AddDays(5);&#xA;&#xA;&#xA;    // Discard the message after 20 seconds if&#xA;    // not successfully processed before then&#xA;    envelope.DeliverWithin(20.Seconds());&#xA;&#xA;    // Send the envelope and its contained message&#xA;    return bus.SendEnvelope(envelope);&#xA;</code></pre>
 
 			      	</div>
 

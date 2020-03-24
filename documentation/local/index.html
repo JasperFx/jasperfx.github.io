@@ -90,7 +90,7 @@
 			  <ul id="sidebar" class="list-group" style="padding-bottom: 20px;">
 
 			  </ul>
-			  	  <h3 class="no-margin">Version</h3><p>0.9.16</p>
+			  	  <h3 class="no-margin">Version</h3><p>1.0.0</p>
 				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration">Messaging Between Systems</a></p>
 				  <h3 class="no-margin">Previous</h3><a href="/documentation/mediator">Jasper as a Mediator</a></p>
 
@@ -133,7 +133,7 @@ other routing rules, all messages enqueued to <code>ICommandBus</code> will be p
 <p>In the absence of any kind of routing rules, any message enqueued with <code>ICommandBus.Enqueue()</code> will just be handled by the
 <em>default</em> local queue. To override that choice on a message type by message type basis, you can use the <code>[LocalQueue]</code> attribute
 on a message type:</p>
-<pre><code class="language-csharp">&#xA;&#xA;// This message type would go to the &quot;important&quot;&#xA;// named queue&#xA;[LocalQueue(&quot;important&quot;)]&#xA;public class ImportantMessage&#xA;{&#xA;&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[LocalQueue(&quot;important&quot;)]&#xA;public class ImportanceMessage&#xA;{&#xA;&#xA;}&#xA;&#xA;</code></pre>
 <p>Otherwise, you can take advantage of the routing rules on the <code>JasperOptions.Endpoints.Publish()</code> method like this:</p>
 <pre><code class="language-csharp">&#xA;public class LocalTransportApp : JasperOptions&#xA;{&#xA;    public LocalTransportApp()&#xA;    {&#xA;        // Publish the message Message2 the &quot;important&quot;&#xA;        // local queue&#xA;        Endpoints.Publish(x =&gt;&#xA;        {&#xA;            x.Message&lt;Message2&gt;();&#xA;            x.ToLocalQueue(&quot;important&quot;);&#xA;        });&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>The routing rules and/or <code>[LocalQueue]</code> routing is also honored for cascading messages, meaning that any message that is handled inside a Jasper system could publish cascading messages to the local worker queues.</p>

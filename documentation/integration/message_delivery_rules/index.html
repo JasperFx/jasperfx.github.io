@@ -52,7 +52,7 @@
 
 				<ul class="navbar-nav justify-content-end">
 					<li class="nav-item"><a class="nav-link" href="/documentation/integration/customizing_envelopes" title="Working with Envelopes">Previous</a></li>
-					<li class="nav-item"><a class="nav-link" href="/documentation/integration/correlation" title="Message Correlation">Next</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/transports" title="Messaging Transports">Next</a></li>
 					<li class="nav-item">
 						<a title="Open the GitHub file for this page" href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/integration/message_delivery_rules.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
 					</li>
@@ -90,8 +90,8 @@
 			  <ul id="sidebar" class="list-group" style="padding-bottom: 20px;">
 
 			  </ul>
-			  	  <h3 class="no-margin">Version</h3><p>0.9.16</p>
-				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration/correlation">Message Correlation</a></p>
+			  	  <h3 class="no-margin">Version</h3><p>1.0.0</p>
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration/transports">Messaging Transports</a></p>
 				  <h3 class="no-margin">Previous</h3><a href="/documentation/integration/customizing_envelopes">Working with Envelopes</a></p>
 
 			  </ul>
@@ -115,6 +115,12 @@ type basis. The most common example is shown below:</p>
 by subclassing the <code>[ModifyEnvelope]</code> attribute. The attribute shown in the previous sample is itself
 implemented like that:</p>
 <pre><code class="language-csharp">&#xA;public class DeliverWithinAttribute : ModifyEnvelopeAttribute&#xA;{&#xA;    private readonly int _seconds;&#xA;&#xA;    public DeliverWithinAttribute(int seconds)&#xA;    {&#xA;        _seconds = seconds;&#xA;    }&#xA;&#xA;    public override void Modify(Envelope envelope)&#xA;    {&#xA;        envelope.DeliverBy = DateTimeOffset.UtcNow.AddSeconds(_seconds);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<h2 id="by-endpoint">By Endpoint</h2>
+<p>You may want to say that all the envelopes sent to a specific endpoint should have the same customization. As an example,
+let's say that you're sending rapid fire status messages to some kind of monitoring tool where you're not terribly worried about any
+particular message getting dropped and each individual message will soon be obsolete. In this case you might want to set
+a message expiration date on every message sent to this endpoint. You can do that with endpoint specific rules like this:</p>
+<pre><code class="language-csharp">&#xA;public class MonitoringDataPublisher : JasperOptions&#xA;{&#xA;    public MonitoringDataPublisher()&#xA;    {&#xA;        Endpoints.PublishAllMessages()&#xA;            .ToPort(2222)&#xA;&#xA;            // Set a message expiration on all&#xA;            // outgoing messages to this&#xA;            // endpoint&#xA;            .CustomizeOutgoing(env =&gt; env.DeliverWithin(2.Seconds()));&#xA;    }&#xA;}&#xA;</code></pre>
 
 			      	</div>
 
@@ -127,7 +133,7 @@ implemented like that:</p>
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/documentation/integration/correlation">Message Correlation</a>
+				        	<strong>Next: </strong><a href="/documentation/integration/transports">Messaging Transports</a>
 
 				        </span>
 			      	</nav>

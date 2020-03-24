@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel=icon href=/content/images/favicon.ico>
+		<title>Jasper - Topic Based Routing</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+
+
+
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+	
+	
+	
+		<style>
+		
+		
+		
+		</style>
+	</head>
+
+    <!-- HTML code from Bootply.com editor -->
+
+    <body  >
+
+
+
+
+	<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary" id="nav">
+			<a href="/" class="navbar-brand">Jasper</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="/documentation" title="Documentation">Documentation</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/getting_started" title="Getting Started">Getting Started</a></li>
+
+					
+				</ul>
+
+				<ul class="navbar-nav justify-content-end">
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/transports" title="Messaging Transports">Previous</a></li>
+					<li class="nav-item"><a class="nav-link" href="/documentation/integration/correlation" title="Message Correlation">Next</a></li>
+					<li class="nav-item">
+						<a title="Open the GitHub file for this page" href="https://github.com/JasperFx/jasper/blob/master/documentation/documentation/integration/topics.md"  class="nav-link" style="margin-right: 10px;"><i class="fa fa-github"></i> Edit on GitHub</a>
+					</li>
+				</ul>
+				
+				<form class="form-inline mt-2 mt-md-0">
+					<input id="search" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="search">
+				  </form>
+		  </div>
+
+		</nav>
+	</header>
+
+	<main role="main" style="margin-top:75px">
+
+
+
+		<!--main-->
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"><li><a href="/">JasperFx</a></li><li><a href="/documentation">Documentation</a></li><li><a href="/documentation/integration">Messaging Between Systems</a></li><li class="active">Topic Based Routing</li></ol>
+				
+			</nav>
+			
+
+			<div class="row">
+		      <!--left-->
+
+		      <div class="col-md-3" id="leftCol">
+				<h5><strong></strong></h5><img src="/content/jasper-icon.png" style="max-width:100%" />
+
+				<br />
+				<br />
+
+			  <ul id="sidebar" class="list-group" style="padding-bottom: 20px;">
+
+			  </ul>
+			  	  <h3 class="no-margin">Version</h3><p>1.0.0</p>
+				  <h3 class="no-margin">Next</h3><p><a href="/documentation/integration/correlation">Message Correlation</a></p>
+				  <h3 class="no-margin">Previous</h3><a href="/documentation/integration/transports">Messaging Transports</a></p>
+
+			  </ul>
+		      </div><!--/left-->
+
+		      <!--right-->
+		      <div class="col-md-9">
+
+			      	<h1>Topic Based Routing</h1>
+
+			      	<hr />
+
+			      	<div id="main-pane">
+
+			      		<!--title:Topic Based Routing-->
+<p>While the <a href="/documentation/integration/transports/azureservicebus">Azure Service Bus Transport</a> and <a href="/documentation/integration/transports/rabbitmq">RabbitMQ Transport</a> options both allow you to explicitly specify message routing rules to a specific named topic (<em>routing key</em> in Rabbit MQ parlance) through the fluent interface, there's another option that amounts to &quot;publish these messages to a topic derived from the message type.&quot; This usage is valuable to allow you top opt into more sophisticated publish/subscribe routing utilizing all the power of tools like Rabbit MQ or Azure Service Bus or whatever other transports Jasper supports later.</p>
+<p>Here's an example of configuring this option with Rabbit MQ:</p>
+<pre><code class="language-csharp">&#xA;public class TopicSendingApp : JasperOptions&#xA;{&#xA;    public TopicSendingApp()&#xA;    {&#xA;        Endpoints.ConfigureRabbitMq(rabbit =&gt;&#xA;        {&#xA;            rabbit.ConnectionFactory.HostName = &quot;localhost&quot;;&#xA;            rabbit.DeclareExchange(&quot;numbers&quot;, e =&gt; e.ExchangeType = ExchangeType.Topic);&#xA;            rabbit.AutoProvision = true;&#xA;        });&#xA;&#xA;        // This directs Jasper to send all messages&#xA;        // to the &quot;numbers&quot; exchange in Rabbit MQ with&#xA;        // a routing key derived from the message type&#xA;        Endpoints.PublishAllMessages()&#xA;            .ToRabbitTopics(&quot;numbers&quot;)&#xA;            .OutgoingTopicNameIs&lt;NumberMessage&gt;(x =&gt; x.Topic);&#xA;&#xA;        Extensions.UseMessageTrackingTestingSupport();&#xA;    }&#xA;}&#xA;</code></pre>
+<p>And another example doing the same configuration with Azure Service Bus:</p>
+<pre><code class="language-csharp">&#xA;public class TopicSendingApp : JasperOptions&#xA;{&#xA;    public TopicSendingApp( )&#xA;    {&#xA;        Endpoints.ConfigureAzureServiceBus(asb =&gt;&#xA;        {&#xA;            asb.ConnectionString = end_to_end.ConnectionString;&#xA;        });&#xA;&#xA;        // This directs Jasper to send all messages to&#xA;        // an Azure Service Bus topic name derived from the&#xA;        // message type&#xA;        Endpoints.PublishAllMessages()&#xA;            .ToAzureServiceBusTopics()&#xA;            .OutgoingTopicNameIs&lt;NumberMessage&gt;(x =&gt; x.Topic);&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
+<p>Using one of the two configured applications above, you could send this message type:</p>
+<pre><code class="language-csharp">&#xA;[Topic(&quot;items&quot;)]&#xA;public class ItemCreated&#xA;{&#xA;    public string Name { get; set; }&#xA;}&#xA;</code></pre>
+<p>like so:</p>
+<pre><code class="language-csharp">&#xA;public static async Task SendMessage(IMessagePublisher publisher)&#xA;{&#xA;    await publisher.Send(new ItemCreated&#xA;    {&#xA;        Name = &quot;NewItem&quot;&#xA;    });&#xA;}&#xA;</code></pre>
+<p>In Jasper's internal routing, it would determine that the topic name for <code>ItemCreated</code> is <em>items</em> and publish to either the configured <a href="https://www.rabbitmq.com/tutorials/tutorial-five-dotnet.html">Rabbit MQ topic exchange</a> or Azure Service Bus connection using the topic name <em>items</em>.</p>
+<div class="alert-info alert"><p><strong>Note!</strong>
+Keep reading to the next section if you dislike using attributes, because the <code>[Topic]</code> attribute is not required on your message classes.</p>
+</div>
+<h2 id="how-topic-name-is-derived">How Topic Name is Derived</h2>
+<p>When you publish a message with Jasper that is routed by topic name, the topic name is derived from the message and/or message type with this order of precedence:</p>
+<ol>
+<li>A user-supplied topic name through the <code>IMessagePublisher.SendToTopic(message, topicName)</code> as shown in the section below titled <em>Explicitly Send to a Named Topic</em></li>
+<li>A <code>[Topic]</code> attribute directly on the message class</li>
+<li>Any applicable <em>Topic Naming Rules</em> as shown in a section below</li>
+<li>The <a href="/documentation/execution/messages">message identifier</a> for the message type, which can in turn be overridden with the <code>[MessageIdentity]</code> attribute</li>
+</ol>
+<h2 id="explicitly-send-to-a-named-topic">Explicitly Send to a Named Topic</h2>
+<p>You can override the topic routing with explicit code like this sample shown below:</p>
+<pre><code class="language-csharp">&#xA;public static async Task SendToTopic(IMessagePublisher publisher)&#xA;{&#xA;    var @event = new ItemCreated&#xA;    {&#xA;        Name = &quot;New Thing&quot;&#xA;    };&#xA;&#xA;    // This call sends the ItemCreated message to the&#xA;    // &quot;NorthAmerica&quot; topic&#xA;    await publisher.SendToTopic(@event, &quot;NorthAmerica&quot;);&#xA;&#xA;}&#xA;</code></pre>
+<h2 id="using-the-topic-attribute">Using the [Topic] Attribute</h2>
+<p>You can explicitly set the topic name for a message type by decorating it or its parent type with
+the <code>[Topic]</code> attribute like this:</p>
+<pre><code class="language-csharp">&#xA;[Topic(&quot;one&quot;)]&#xA;public class TopicMessage1&#xA;{&#xA;&#xA;}&#xA;</code></pre>
+<h2 id="topic-naming-rules">Topic Naming Rules</h2>
+<p>You can use a <em>topic naming rule</em> in your system that derives the topic name for a message using some combination of the message type and message instance.</p>
+<p>Take for an example (stolen from Rabbit MQ documentation) where a custom logging message may be effectively routed by its <code>Priority</code>:</p>
+<pre><code class="language-csharp">&#xA;public class LogMessage&#xA;{&#xA;    public string Message { get; set; }&#xA;    public string Priority { get; set; }&#xA;}&#xA;</code></pre>
+<p>You can set up a topic naming rule to use the value of the <code>LogMessage.Priority</code> property as the topic name like so:</p>
+<pre><code class="language-csharp">&#xA;public class PublishWithTopicRulesApp : JasperOptions&#xA;{&#xA;    public PublishWithTopicRulesApp()&#xA;    {&#xA;        Endpoints.PublishAllMessages()&#xA;            .ToAzureServiceBusTopics()&#xA;&#xA;            // This is setting up a topic name rule&#xA;            // for any message of type that can be&#xA;            // cast to LogMessage&#xA;            .OutgoingTopicNameIs&lt;LogMessage&gt;(x =&gt; x.Priority);&#xA;    }&#xA;&#xA;    public override void Configure(IHostEnvironment hosting, IConfiguration config)&#xA;    {&#xA;        var connectionString = config.GetConnectionString(&quot;azureservicebus&quot;);&#xA;        Endpoints.ConfigureAzureServiceBus(connectionString);&#xA;    }&#xA;}&#xA;</code></pre>
+<p>Finally, in usage you just use <code>IMessagePublisher.Send()</code> as you normally do:</p>
+<pre><code class="language-csharp">&#xA;public static async Task SendLogMessage(IMessagePublisher publisher)&#xA;{&#xA;    var message = new LogMessage&#xA;    {&#xA;        Message = &quot;Watch out!&quot;,&#xA;        Priority = &quot;High&quot;&#xA;    };&#xA;&#xA;    // In this sample, Jasper will route the LogMessage&#xA;    // message to the &quot;High&quot; topic&#xA;    await publisher.Send(message);&#xA;}&#xA;</code></pre>
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/documentation/integration/transports">Messaging Transports</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/documentation/integration/correlation">Message Correlation</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+			  </div><!--/row-->
+			  
+			  <br />
+			  <br />
+		</div><!--/container-->
+	</main>
+<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:http://jasperfx.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+});
+
+$('ol.breadcrumb > li').each(function(i,li){
+	$(li).addClass('breadcrumb-item');
+});
+
+</script>
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+		<script type="text/javascript" src="/content/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+    </foot>
+</html>
