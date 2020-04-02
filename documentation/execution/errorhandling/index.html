@@ -90,7 +90,7 @@
 			  <ul id="sidebar" class="list-group" style="padding-bottom: 20px;">
 
 			  </ul>
-			  	  <h3 class="no-margin">Version</h3><p>1.0.0</p>
+			  	  <h3 class="no-margin">Version</h3><p>1.1.0</p>
 				  <h3 class="no-margin">Next</h3><p><a href="/documentation/execution/cascading">Cascading Messages</a></p>
 				  <h3 class="no-margin">Previous</h3><a href="/documentation/execution/discovery">Message Handler Discovery</a></p>
 
@@ -123,6 +123,8 @@ transport that the message arrived from on the first attempt.</p>
 <li>Choose to re-execute the message later</li>
 <li>Re-queue the message for later execution at the back of the line</li>
 <li>Just bail out and move the message out to the error queues</li>
+<li>Discard the message</li>
+<li>Script out how an error is handled on various attempts</li>
 <li>Apply error handling policies globally, by configured policies, or explicitly by chain</li>
 <li>Use custom error handling to do whatever you want utilizing Jasper's <code>IContinuation</code> interface</li>
 </ul>
@@ -155,10 +157,14 @@ like the one shown below:</p>
 <pre><code class="language-csharp">&#xA;public class ContinuationTypes : JasperOptions&#xA;{&#xA;    public ContinuationTypes()&#xA;    {&#xA;&#xA;        // Try to execute the message again without going&#xA;        // back through the queue with a maximum number of attempts&#xA;        // The default is 3&#xA;        // The message will be dead lettered if it exceeds the maximum&#xA;        // number of attemts&#xA;        Handlers.OnException&lt;SqlException&gt;().RetryNow(5);&#xA;&#xA;&#xA;        // Retry the message again, but wait for the specified time&#xA;        // The message will be dead lettered if it exhausts the delay&#xA;        // attempts&#xA;        Handlers&#xA;            .OnException&lt;SqlException&gt;()&#xA;            .RetryLater(3.Seconds(), 10.Seconds(), 20.Seconds());&#xA;&#xA;        // Put the message back into the queue where it will be&#xA;        // attempted again&#xA;        // The message will be dead lettered if it exceeds the maximum number&#xA;        // of attempts&#xA;        Handlers.OnException&lt;SqlException&gt;().Requeue(5);&#xA;&#xA;        // Immediately move the message into the error queue for this transport&#xA;        Handlers.OnException&lt;SqlException&gt;().MoveToErrorQueue();&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The <code>RetryLater()</code> function uses <a href="/documentation/integration/scheduled">Scheduled Message Delivery and Execution</a>.</p>
 <p>See also <a href="/documentation/execution/dead_letter_queue">Dead Letter Envelopes</a> for more information.</p>
+<h2 id="scripting-error-handling-by-attempt">Scripting Error Handling by Attempt</h2>
+<p>Using the <code>TakeActions()</code> method, you can script out fine-grained retry/requeue/discard policies for an exception
+by attempt number as shown below:</p>
+<p class="bg-warning" style="padding:5px"><b>Unknown topic key &#x27;AppWithScriptedErrorHandling&#x27;</b><small> -- CTRL&#x2B;SHIFT&#x2B;R to force refresh the topic tree</small></p>
 <h2 id="exponential-backoff-policies">Exponential Backoff Policies</h2>
 <p>By integrating Polly for our retry policies, Jasper gets <a href="https://en.wikipedia.org/wiki/Exponential_backoff">exponential backoff</a> retry scheduling nearly for free.</p>
 <p>To reschedule a message to be retried later at increasingly longer wait times, use this syntax:</p>
-<pre><code class="language-csharp">&#xA;public class AppWithErrorHandling : JasperOptions&#xA;{&#xA;    public AppWithErrorHandling()&#xA;    {&#xA;        // On a SqlException, reschedule the message to be retried&#xA;        // at 3 seconds, then 15, then 30 seconds later&#xA;        Handlers.OnException&lt;SqlException&gt;()&#xA;            .RetryLater(3.Seconds(), 15.Seconds(), 30.Seconds());&#xA;&#xA;&#xA;    }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class AppWithErrorHandling : JasperOptions&#xA;{&#xA;    public AppWithErrorHandling()&#xA;    {&#xA;        // On a SqlException, reschedule the message to be retried&#xA;        // at 3 seconds, then 15, then 30 seconds later&#xA;        Handlers.OnException&lt;SqlException&gt;()&#xA;            .RetryLater(3.Seconds(), 15.Seconds(), 30.Seconds());&#xA;&#xA;        // This is another equivalent option&#xA;        Handlers.OnException&lt;TimeoutException&gt;()&#xA;            .TakeActions(x =&gt;&#xA;            {&#xA;                x.RetryLater(3.Seconds());&#xA;                x.RetryLater(15.Seconds());&#xA;                x.RetryLater(30.Seconds());&#xA;&#xA;                // Jasper will automatically move the&#xA;                // message to the dead letter queue&#xA;                // after a 4th failure&#xA;            });&#xA;    }&#xA;}&#xA;</code></pre>
 <h2 id="custom-actions-with-icontinuation">Custom Actions with IContinuation</h2>
 <p>If you want to write a custom response to failed message handling, you may need to write a custom <code>IContinuation</code> that just tells Jasper &quot;what do I do now with this message?&quot;:</p>
 <pre><code class="language-csharp">&#xA;public interface IContinuation&#xA;{&#xA;    Task Execute(IMessagingRoot root, IChannelCallback channel, Envelope envelope,&#xA;        IQueuedOutgoingMessages messages, DateTime utcNow);&#xA;}&#xA;&#xA;</code></pre>
