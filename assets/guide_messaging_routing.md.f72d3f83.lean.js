@@ -1,0 +1,1 @@
+import{_ as n,c as s,o as a,d as t}from"./app.ba9181fa.js";const d='{"title":"Message Routing","description":"","frontmatter":{},"relativePath":"guide/messaging/routing.md","lastUpdated":1655492219748}',p={},e=t("",12),o=[e];function c(u,l,i,k,r,m){return a(),s("div",null,o)}var h=n(p,[["render",c]]);export{d as __pageData,h as default};
